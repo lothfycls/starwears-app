@@ -2,8 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:provider/provider.dart';
+import 'package:starwears/Screens/BrandScreen.dart';
+import 'package:starwears/Screens/CategoriesScreen.dart';
+import 'package:starwears/Screens/CelebritiesScreen.dart';
+import 'package:starwears/Screens/ListingScreen.dart';
+import 'package:starwears/Screens/ProductScreen.dart';
+import 'package:starwears/Screens/ProductsScreen.dart';
 
+import '../Providers/IndexProvider.dart';
+import '../widgets/BidCard.dart';
 import '../widgets/HomeCarousel.dart';
+import '../widgets/ListingCard.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -15,6 +25,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
+    IndexProvider indexProvider = Provider.of<IndexProvider>(context);
+
     return ListView(padding: EdgeInsets.only(bottom: 20), children: [
       HomeCarousel(),
       Container(
@@ -35,7 +47,9 @@ class _MainScreenState extends State<MainScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  indexProvider.setCurrentIndex(3);
+                },
               ),
             ),
             SizedBox(
@@ -52,7 +66,12 @@ class _MainScreenState extends State<MainScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => CategoriesScreen()),
+                  );
+                },
               ),
             ),
             SizedBox(
@@ -69,7 +88,12 @@ class _MainScreenState extends State<MainScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => BrandScreen()),
+                  );
+                },
               ),
             ),
             SizedBox(
@@ -86,11 +110,32 @@ class _MainScreenState extends State<MainScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                   indexProvider.setCurrentIndex(0);
+                },
               ),
             ),
             SizedBox(
               width: 15,
+            ),
+            Container(
+              child: RaisedButton(
+                child: Text(
+                  'Celebrities',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                  textAlign: TextAlign.center,
+                ),
+                color: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                onPressed: () {
+                   Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => CelebretiesScreen()),
+                  );
+                },
+              ),
             ),
           ],
           scrollDirection: Axis.horizontal,
@@ -109,21 +154,29 @@ class _MainScreenState extends State<MainScreen> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(right: 20),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_right_alt,
-                    size: 30,
+          InkWell(
+            onTap:(){
+               Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => ProductsScreen()),
+                  );
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 20),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_right_alt,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      // Do something when the button is pressed
+                    },
                   ),
-                  onPressed: () {
-                    // Do something when the button is pressed
-                  },
-                ),
-                Text("See All", style: TextStyle(color: Colors.red)),
-              ],
+                  Text("See All", style: TextStyle(color: Colors.red)),
+                ],
+              ),
             ),
           ),
         ],
@@ -136,81 +189,7 @@ class _MainScreenState extends State<MainScreen> {
           scrollDirection: Axis.horizontal,
           itemCount: 4,
           itemBuilder: (context, index) {
-            return Container(
-              height: 340,
-              width: 200,
-              child: Card(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        width: 200,
-                        // height: 50,
-                        child: Image.asset(
-                            fit: BoxFit.fitWidth,
-                            'assets/images/imagecarousel.png')),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, top: 10),
-                      child: Text('Louis Vuitton Suit',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text('Worn at balon d’or'),
-                    ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text("\$12,600",
-                          style: TextStyle(color: Colors.orange)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text('Owner: Benzema'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text('Bid: User9099'),
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      children: [
-                        RaisedButton.icon(
-                          elevation: 0,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          padding: EdgeInsets.zero,
-                          icon: Icon(
-                            Icons.brightness_1,
-                            color: Colors.green,
-                            size: 10,
-                          ),
-                          label: Text(
-                            'Active',
-                            style: TextStyle(fontSize: 10),
-                          ),
-                          onPressed: () {},
-                        ),
-                        SizedBox(width: 5),
-                        FlatButton(
-                          height: 15,
-                          padding: EdgeInsets.all(0),
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: Colors.green,
-                                  width: 1,
-                                  style: BorderStyle.solid),
-                              borderRadius: BorderRadius.circular(1)),
-                          child: Text('Place bid',
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 10)),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
+            return BidCard();
           },
         ),
       ),
@@ -224,32 +203,18 @@ class _MainScreenState extends State<MainScreen> {
       Container(
         height: 130,
         child: ListView.builder(
-
-             padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: EdgeInsets.symmetric(horizontal: 15),
             scrollDirection: Axis.horizontal,
             itemCount: 4,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          width: 100,
-                          // height: 50,
-                          child: Image.asset(
-                              fit: BoxFit.fitWidth,
-                              'assets/images/imagecarousel.png')),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Suits",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      )
-                    ]),
-              );
+              return InkWell(
+                onTap: (() {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => CategoriesScreen()),
+                  );
+                }),
+                child: ImageCard(title:"suits"));
             }),
       ),
       Stack(
@@ -297,21 +262,29 @@ class _MainScreenState extends State<MainScreen> {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(right: 20),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_right_alt,
-                    size: 30,
+          InkWell(
+            onTap: (){
+              Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => ListingScreen()),
+                  );
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 20),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_right_alt,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      // Do something when the button is pressed
+                    },
                   ),
-                  onPressed: () {
-                    // Do something when the button is pressed
-                  },
-                ),
-                Text("See All", style: TextStyle(color: Colors.red)),
-              ],
+                  Text("See All", style: TextStyle(color: Colors.red)),
+                ],
+              ),
             ),
           ),
         ],
@@ -324,64 +297,12 @@ class _MainScreenState extends State<MainScreen> {
           scrollDirection: Axis.horizontal,
           itemCount: 4,
           itemBuilder: (context, index) {
-            return Container(
-              height: 300,
-              width: 200,
-              child: Card(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        width: 200,
-                        // height: 50,
-                        child: Image.asset(
-                            fit: BoxFit.fitWidth,
-                            'assets/images/imagecarousel.png')),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, top: 10),
-                      child: Text('5th December'),
-                    ),
-                    SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        'Balenciaga Shoes',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0),
-                      child: Text(
-                        'Worn at balon d’or',
-                        style: TextStyle(fontSize: 11),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 7),
-                      height: 20,
-                      width: double.infinity,
-                      child: FlatButton(
-                        onPressed: () {
-                          // Code to execute when button is pressed
-                        },
-                        color: Colors.red,
-                        textColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Text('Place Bid'),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            );
+            return  ListingCard();
           },
         ),
       ),
+     
       Container(
-         
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Text(
           "Featured Celebrities",
@@ -391,37 +312,23 @@ class _MainScreenState extends State<MainScreen> {
       Container(
         height: 130,
         child: ListView.builder(
-           padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: EdgeInsets.symmetric(horizontal: 15),
 
             // padding: EdgeInsets.all(10),
             scrollDirection: Axis.horizontal,
             itemCount: 4,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          width: 100,
-                          // height: 50,
-                          child: Image.asset(
-                              fit: BoxFit.fitWidth,
-                              'assets/images/imagecarousel.png')),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Benzema",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      )
-                    ]),
-              );
+              return InkWell(
+                onTap: (){
+                   Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => CelebretiesScreen()),
+                  );
+                },
+                child: ImageCard(title:"Benzima"));
             }),
       ),
       Container(
-         
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Text(
           "Featured Brands",
@@ -431,35 +338,58 @@ class _MainScreenState extends State<MainScreen> {
       Container(
         height: 130,
         child: ListView.builder(
-           padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: EdgeInsets.symmetric(horizontal: 15),
 
             // padding: EdgeInsets.all(10),
             scrollDirection: Axis.horizontal,
             itemCount: 4,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          width: 100,
-                          // height: 50,
-                          child: Image.asset(
-                              fit: BoxFit.fitWidth,
-                              'assets/images/imagecarousel.png')),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Louis Vuitton",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      )
-                    ]),
-              );
+              return InkWell(
+                onTap: (() {
+                   Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => BrandScreen()),
+                  );
+                }),
+                child: ImageCard(title:"Louis Vuitton"));
             }),
       ),
     ]);
+  }
+}
+
+
+
+class ImageCard extends StatelessWidget {
+  String title;
+   ImageCard({
+
+    Key? key,
+    required this.title
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+                width: 100,
+                // height: 50,
+                child: Image.asset(
+                    fit: BoxFit.fitWidth,
+                    'assets/images/imagecarousel.png')),
+            SizedBox(
+              height: 10,
+            ),
+            Text(
+              title,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 14),
+            )
+          ]),
+    );
   }
 }

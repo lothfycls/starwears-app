@@ -1,5 +1,6 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:starwears/Screens/HomeScreen.dart';
 import 'package:starwears/Screens/SignUpScreen.dart';
 
 class introScreen extends StatefulWidget {
@@ -44,8 +45,8 @@ class _introScreenState extends State<introScreen> {
                         bottomLeft: Radius.circular(100),
                         // topRight: Radius.circular(100),
                       ),
-                      child: Image.network(
-                          fit: BoxFit.fill, _imageUrls[_currentIndex]));
+                      child: Image.asset(
+                          fit: BoxFit.fill, "assets/images/imagecarousel.png"));
                 },
               ),
             ),
@@ -62,11 +63,11 @@ class _introScreenState extends State<introScreen> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                     Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     },
                   ),
                   Image.asset(
-                    color:Colors.white,
+                    color: Colors.white,
                     'assets/images/logo.png',
                     height: 50,
                   ),
@@ -100,7 +101,7 @@ class _introScreenState extends State<introScreen> {
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 15,
           ),
           Center(
             child: RaisedButton(
@@ -110,34 +111,24 @@ class _introScreenState extends State<introScreen> {
               ),
               color: Colors.black,
               textColor: Colors.white,
-              child: Text(
-                _currentIndex==3?'Finish':
-                'Next'),
+              child: Text(_currentIndex == 3 ? 'Finish' : 'Next'),
               onPressed: () {
-                if(_currentIndex==3){
+                if (_currentIndex == 3) {
                   Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SignUpScreen(),
-              ),
-            );
-                }else{
-                setState(() {
-
-                  _currentIndex = (_currentIndex + 1) % _imageUrls.length;
-                });}
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HomeScreen(),
+                    ),
+                  );
+                } else {
+                  setState(() {
+                    _currentIndex = (_currentIndex + 1) % _imageUrls.length;
+                  });
+                }
                 // Handle the button press
               },
             ),
           ),
-          // RaisedButton(
-          //   child: Text('Next'),
-          //   onPressed: () {
-          //     setState(() {
-          //       _currentIndex = (_currentIndex + 1) % _imageUrls.length;
-          //     });
-          //   },
-          // ),
         ],
       ),
     );
