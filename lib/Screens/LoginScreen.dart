@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/Screens/HomeScreen.dart';
 import 'package:starwears/Screens/SignUpScreen.dart';
+
+import '../bloc/authentication_bloc.dart';
+import '../models/user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -11,18 +16,60 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
+  }
+
+  _showAlertDialog(errorMsg) {
+    return showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text(
+                  'Login Failed',
+                  style: TextStyle(color: Colors.black),
+                ),
+                content: Text(errorMsg),
+              );
+            })
+        .then((val) =>
+            BlocProvider.of<AuthenticationBloc>(context).add(InitAuth()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        leading:  IconButton(
+        leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
-          onPressed: () {Navigator.of(context).pop();},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
         backgroundColor: Colors.white,
       ),
@@ -31,7 +78,9 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             // Logo
             Image.asset('assets/images/logo.png'),
-            SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
             Text(
               "STARWEARS",
               style: TextStyle(fontSize: 10),
@@ -131,6 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 child: TextFormField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     hintText: "email",
                   ),
@@ -150,6 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 child: TextFormField(
+                  controller: passwordController,
                   decoration: InputDecoration(
                     hintText: "password",
                   ),
@@ -157,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             SizedBox(height: 12),
-           
+
             FlatButton(
               child: Text(
                 'Forgot password?',
@@ -168,20 +219,36 @@ class _LoginScreenState extends State<LoginScreen> {
               },
             ),
 
-            FlatButton(
-              padding: EdgeInsets.symmetric(horizontal: 100),
-              color: Colors.black,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ),
-              onPressed: () {
-                // Perform some action
+            BlocConsumer<AuthenticationBloc, AuthenticationState>(
+              listener: (context, state) {
+                if (state is LoginFailed) {
+                  _onWidgetDidBuild(_showAlertDialog(state.message));
+                }
+
+                if (state is AuthSuccess) {
+                  _onWidgetDidBuild(()=>Navigator.pushAndRemoveUntil(
+                      context, MaterialPageRoute(builder: (context)=>HomeScreen()), (route) => false));
+                }
               },
-              child: Text(
-                "Login",
-                textAlign: TextAlign.center,
-              ),
+              builder: (context, state) {
+                return FlatButton(
+                  padding: const EdgeInsets.symmetric(horizontal: 100),
+                  color: Colors.black,
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
+                  onPressed: () async {
+                    BlocProvider.of<AuthenticationBloc>(context).add(LoginUser(
+                        BidUser(emailController.text.trim(),
+                            passwordController.text)));
+                  },
+                  child: Text(
+                    "Login",
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
             ),
             SizedBox(height: 20),
             // Divider
@@ -202,12 +269,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(color: Colors.blue),
                   ),
                   onPressed: () {
-                     Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SignUpScreen(),
-              ),
-            );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignUpScreen(),
+                      ),
+                    );
                     // handle button press
                   },
                 ),

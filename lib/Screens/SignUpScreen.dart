@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
+import 'package:starwears/bloc/authentication_bloc.dart';
+import 'package:starwears/models/user.dart';
+
+import 'HomeScreen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -11,6 +14,45 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
+  }
+
+  _showAlertDialog(errorMsg) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Sign Up Failed',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        })  .then((val) =>
+    BlocProvider.of<AuthenticationBloc>(context).add(InitAuth()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +64,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Icons.arrow_back_ios,
             color: Colors.black,
           ),
-          onPressed: () {Navigator.of(context).pop();},
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
         backgroundColor: Colors.white,
       ),
@@ -31,7 +75,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           children: [
             // Logo
             Image.asset('assets/images/logo.png'),
-            SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
 
             Text(
               "STARWEARS",
@@ -132,6 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 child: TextFormField(
+                  controller: emailController,
                   decoration: InputDecoration(
                     hintText: "email",
                   ),
@@ -151,6 +198,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 child: TextFormField(
+                  controller: passwordController,
                   decoration: InputDecoration(
                     hintText: "password",
                   ),
@@ -185,20 +233,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
             //   },
             // ),
 
-            FlatButton(
-              padding: EdgeInsets.symmetric(horizontal: 100),
-              color: Colors.black,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ),
-              onPressed: () {
-                // Perform some action
+            BlocConsumer<AuthenticationBloc, AuthenticationState>(
+              listener: (context, state) {
+                if (state is CreationFailed) {
+                  _onWidgetDidBuild(_showAlertDialog(state.message));
+                }
+                if (state is AuthSuccess) {
+                  _onWidgetDidBuild(() => Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      (route) => false));
+                }
               },
-              child: Text(
-                "Login",
-                textAlign: TextAlign.center,
-              ),
+              builder: (context, state) {
+                return FlatButton(
+                  padding: const EdgeInsets.symmetric(horizontal: 100),
+                  color: Colors.black,
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
+                  onPressed: () async {
+                    BlocProvider.of<AuthenticationBloc>(context).add(CreateUser(
+                        BidUser(emailController.text.trim(),
+                            passwordController.text)));
+                  },
+                  child: Text(
+                    "Login",
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
             ),
             SizedBox(height: 20),
             // Divider

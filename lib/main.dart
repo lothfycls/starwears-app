@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:starwears/Screens/SplashScreen.dart';
+import 'package:starwears/bloc/authentication_bloc.dart';
+import 'package:starwears/bloc/brand_bloc.dart';
 
 import 'Providers/IndexProvider.dart';
 import 'Screens/HomeScreen.dart';
@@ -20,14 +23,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-          ChangeNotifierProvider(create: (context) => IndexProvider()),
-         
-        ],
+        ChangeNotifierProvider(create: (context) => IndexProvider()),
+        BlocProvider(create: (_) => AuthenticationBloc()),
+        BlocProvider(create: (_) => BrandBloc()),
+      ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         builder: (context, child) => ResponsiveWrapper.builder(
           BouncingScrollWrapper.builder(context, child!),
           maxWidth: 1200,
           minWidth: 450,
+
           defaultScale: true,
           breakpoints: [
             const ResponsiveBreakpoint.resize(480, name: MOBILE),
@@ -37,13 +43,12 @@ class MyApp extends StatelessWidget {
             const ResponsiveBreakpoint.autoScale(2460, name: "4K"),
           ],
           // background: Container(color: const Color(0xFFF5F5F5))
-          ),
+        ),
         title: 'starwears',
         theme: ThemeData(
-          
           primarySwatch: Colors.blue,
         ),
-        home: SplashScreen(),
+        home: const SignUpScreen(),
       ),
     );
   }

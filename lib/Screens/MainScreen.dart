@@ -111,7 +111,7 @@ class _MainScreenState extends State<MainScreen> {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 onPressed: () {
-                   indexProvider.setCurrentIndex(0);
+                  indexProvider.setCurrentIndex(0);
                 },
               ),
             ),
@@ -130,7 +130,7 @@ class _MainScreenState extends State<MainScreen> {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 onPressed: () {
-                   Navigator.of(context).push(
+                  Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (BuildContext context) => CelebretiesScreen()),
                   );
@@ -155,11 +155,11 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           InkWell(
-            onTap:(){
-               Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => ProductsScreen()),
-                  );
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (BuildContext context) => ProductsScreen()),
+              );
             },
             child: Container(
               margin: EdgeInsets.only(right: 20),
@@ -208,13 +208,14 @@ class _MainScreenState extends State<MainScreen> {
             itemCount: 4,
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: (() {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => CategoriesScreen()),
-                  );
-                }),
-                child: ImageCard(title:"suits"));
+                  onTap: (() {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              CategoriesScreen()),
+                    );
+                  }),
+                  child: ImageCard(title: "suits"));
             }),
       ),
       Stack(
@@ -263,11 +264,11 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ),
           InkWell(
-            onTap: (){
+            onTap: () {
               Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => ListingScreen()),
-                  );
+                MaterialPageRoute(
+                    builder: (BuildContext context) => ListingScreen()),
+              );
             },
             child: Container(
               margin: EdgeInsets.only(right: 20),
@@ -297,11 +298,10 @@ class _MainScreenState extends State<MainScreen> {
           scrollDirection: Axis.horizontal,
           itemCount: 4,
           itemBuilder: (context, index) {
-            return  ListingCard();
+            return ListingCard();
           },
         ),
       ),
-     
       Container(
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Text(
@@ -319,13 +319,14 @@ class _MainScreenState extends State<MainScreen> {
             itemCount: 4,
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: (){
-                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => CelebretiesScreen()),
-                  );
-                },
-                child: ImageCard(title:"Benzima"));
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              CelebretiesScreen()),
+                    );
+                  },
+                  child: ImageCard(title: "Benzima"));
             }),
       ),
       Container(
@@ -345,51 +346,41 @@ class _MainScreenState extends State<MainScreen> {
             itemCount: 4,
             itemBuilder: (context, index) {
               return InkWell(
-                onTap: (() {
-                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => BrandScreen()),
-                  );
-                }),
-                child: ImageCard(title:"Louis Vuitton"));
+                  onTap: (() {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => BrandScreen()),
+                    );
+                  }),
+                  child: ImageCard(title: "Louis Vuitton"));
             }),
       ),
     ]);
   }
 }
 
-
-
 class ImageCard extends StatelessWidget {
   String title;
-   ImageCard({
-
-    Key? key,
-    required this.title
-  }) : super(key: key);
+  ImageCard({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-                width: 100,
-                // height: 50,
-                child: Image.asset(
-                    fit: BoxFit.fitWidth,
-                    'assets/images/imagecarousel.png')),
-            SizedBox(
-              height: 10,
-            ),
-            Text(
-              title,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 14),
-            )
-          ]),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Container(
+            width: 100,
+            // height: 50,
+            child: Image.asset(
+                fit: BoxFit.fitWidth, 'assets/images/imagecarousel.png')),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          title,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+        )
+      ]),
     );
   }
 }
