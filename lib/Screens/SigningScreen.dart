@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/Screens/AccountScreen.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/Screens/SignUpScreen.dart';
+
+import '../bloc/authentication_bloc.dart';
 
 class SigningScreen extends StatefulWidget {
   const SigningScreen({Key? key}) : super(key: key);
@@ -15,137 +18,168 @@ class SigningScreen extends StatefulWidget {
 class _SigningScreenState extends State<SigningScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
-        toolbarHeight: 40,
-        centerTitle: true,
-        title: Text(
-          'Account',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 17.0,
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            padding: EdgeInsets.only(right: 15),
-            icon: Icon(
-              Icons.notifications,
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state) {
+      if (state is AuthSuccess) {
+        return Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 50),
+            width: double.infinity,
+            child: FlatButton(
+              // padding: EdgeInsets.symmetric(horizontal: 120),
               color: Colors.black,
-              size: 22,
-            ),
-            onPressed: () {
-              // Perform some action when the button is pressed
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        width: double.infinity,
-        child: Column(
-          children: [
-            // Logo
-            Image.asset('assets/images/logo.png'),
-            SizedBox(
-              height: 5,
-            ),
-
-            Text(
-              "STARWEARS",
-              style: TextStyle(fontSize: 10),
-            ),
-            SizedBox(height: 24),
-            // Text
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 80),
+              textColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+              ),
+              onPressed: () {
+                BlocProvider.of<AuthenticationBloc>(context).add(InitAuth());
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (route) => false);
+              },
               child: Text(
-                'Login or sign up to bid, manage your portfolio or personalise your account',
-                // style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                "Logout",
+                textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(
-              height: 100,
+          ),
+        );
+      } else {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 40,
+            centerTitle: true,
+            title: Text(
+              'Account',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 17.0,
+              ),
             ),
+            actions: <Widget>[
+              IconButton(
+                padding: EdgeInsets.only(right: 15),
+                icon: Icon(
+                  Icons.notifications,
+                  color: Colors.black,
+                  size: 22,
+                ),
+                onPressed: () {
+                  // Perform some action when the button is pressed
+                },
+              ),
+            ],
+          ),
+          body: Container(
+            width: double.infinity,
+            child: Column(
+              children: [
+                // Logo
+                Image.asset('assets/images/logo.png'),
+                SizedBox(
+                  height: 5,
+                ),
 
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 50),
-              width: double.infinity,
-              child: FlatButton(
-                // padding: EdgeInsets.symmetric(horizontal: 120),
-                color: Colors.black,
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
+                Text(
+                  "STARWEARS",
+                  style: TextStyle(fontSize: 10),
                 ),
-                onPressed: () {
-                 Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => SignUpScreen()),
-                  );
-                },
-                child: Text(
-                  "Sign Up",
-                  textAlign: TextAlign.center,
+                SizedBox(height: 24),
+                // Text
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 80),
+                  child: Text(
+                    'Login or sign up to bid, manage your portfolio or personalise your account',
+                    // style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
                 ),
-              ),
+                SizedBox(
+                  height: 100,
+                ),
+
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 50),
+                  width: double.infinity,
+                  child: FlatButton(
+                    // padding: EdgeInsets.symmetric(horizontal: 120),
+                    color: Colors.black,
+                    textColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => SignUpScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Sign Up",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 50),
+                  width: double.infinity,
+                  child: FlatButton(
+                    // padding: EdgeInsets.symmetric(horizontal: 120),
+                    color: Colors.black,
+                    textColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => LoginScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Login",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 50),
+                  width: double.infinity,
+                  child: FlatButton(
+                    // padding: EdgeInsets.symmetric(horizontal: 120),
+                    color: Colors.black,
+                    textColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => AccountScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Profile",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 50),
-              width: double.infinity,
-              child: FlatButton(
-                // padding: EdgeInsets.symmetric(horizontal: 120),
-                color: Colors.black,
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                ),
-                onPressed: () {
-                 Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => LoginScreen()),
-                  );
-                },
-                child: Text(
-                  "Login",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 50),
-              width: double.infinity,
-              child: FlatButton(
-                // padding: EdgeInsets.symmetric(horizontal: 120),
-                color: Colors.black,
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                ),
-                onPressed: () {
-                 Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => AccountScreen()),
-                  );
-                },
-                child: Text(
-                  "Profile",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
+      }
+    });
   }
 }
