@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:starwears/Screens/SplashScreen.dart';
 import 'package:starwears/bloc/authentication_bloc.dart';
+import 'package:starwears/bloc/banner_bloc.dart';
 import 'package:starwears/bloc/brand_bloc.dart';
+import 'package:starwears/bloc/celebrity_bloc.dart';
 
 import 'Providers/IndexProvider.dart';
 import 'Screens/HomeScreen.dart';
@@ -26,6 +28,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => IndexProvider()),
         BlocProvider(create: (_) => AuthenticationBloc()),
         BlocProvider(create: (_) => BrandBloc()),
+        BlocProvider(
+          create: (_) => BannerBloc(),
+        ),
+        BlocProvider(create: (_)=>CelebrityBloc()
+        ,)
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -48,7 +55,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const SignUpScreen(),
+        home: HomeScreen(),
       ),
     );
   }

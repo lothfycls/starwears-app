@@ -8,12 +8,16 @@ class Brand {
     required this.name,
     required this.image,
   });
-factory Brand.fromJson(Map<String,dynamic> json){
-  return Brand(
-    id: json["id"],
-    name: json["name"],
-    image : json["image"]
-  );
+static List<Brand> fromJson(dynamic json){
+  List<Brand> brands= [];
+  for(var element in json){
+  brands.add(
+  Brand(id:element["id"],
+  name:element["name"],
+  image:element["image"],
+));
+  }
+  return brands;
+  
 }
-
 }

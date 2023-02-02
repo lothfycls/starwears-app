@@ -1,16 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:starwears/Screens/BrandScreen.dart';
 import 'package:starwears/Screens/CategoriesScreen.dart';
 import 'package:starwears/Screens/CelebritiesScreen.dart';
 import 'package:starwears/Screens/ListingScreen.dart';
-import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/Screens/ProductsScreen.dart';
 
 import '../Providers/IndexProvider.dart';
+import '../bloc/banner_bloc.dart';
+import '../bloc/brand_bloc.dart';
+import '../bloc/celebrity_bloc.dart';
 import '../widgets/BidCard.dart';
 import '../widgets/HomeCarousel.dart';
 import '../widgets/ListingCard.dart';
@@ -24,10 +24,19 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<BrandBloc>(context).add(GetBrands());
+    BlocProvider.of<BannerBloc>(context).add(GetBanner());
+    BlocProvider.of<CelebrityBloc>(context).add(GetCelebrities());
+  }
+
+  @override
   Widget build(BuildContext context) {
     IndexProvider indexProvider = Provider.of<IndexProvider>(context);
 
-    return ListView(padding: EdgeInsets.only(bottom: 20), children: [
+    return ListView(padding: const EdgeInsets.only(bottom: 20), children: [
       HomeCarousel(),
       Container(
         height: 25,
@@ -201,7 +210,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       Container(
-        height: 130,
+        height: 200,
         child: ListView.builder(
             padding: EdgeInsets.symmetric(horizontal: 15),
             scrollDirection: Axis.horizontal,
@@ -215,7 +224,11 @@ class _MainScreenState extends State<MainScreen> {
                               CategoriesScreen()),
                     );
                   }),
-                  child: ImageCard(title: "suits"));
+                  child: ImageCard(
+                    title: "suits",
+                    image:
+                        "https://images.unsplash.com/photo-1675241816662-faab5f4c3f88?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1964&q=80",
+                  ));
             }),
       ),
       Stack(
@@ -267,7 +280,9 @@ class _MainScreenState extends State<MainScreen> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                    builder: (BuildContext context) => ListingScreen()),
+                    builder: (BuildContext context) => ListingScreen(
+                          banners: BlocProvider.of<BannerBloc>(context).banners,
+                        )),
               );
             },
             child: Container(
@@ -290,17 +305,36 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      Container(
-        height: 300,
-        // width: 300,
-        child: ListView.builder(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          scrollDirection: Axis.horizontal,
-          itemCount: 4,
-          itemBuilder: (context, index) {
-            return ListingCard();
-          },
-        ),
+      BlocBuilder<BannerBloc, BannerState>(
+        builder: (context, state) {
+          if (state is BannerReady) {
+            return Container(
+              height: 300,
+              // width: 300,
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                scrollDirection: Axis.horizontal,
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  return ListingCard(
+                    creationDate: state.banners[index].creationDate,
+                    title: state.banners[index].title,
+                    description: state.banners[index].description,
+                    imagePath: state.banners[index].image,
+                  );
+                },
+              ),
+            );
+          } else if (state is BannerFailed) {
+            return const Center(
+              child: Text("Error"),
+            );
+          } else {
+            return const Center(
+              child: Text("No banners"),
+            );
+          }
+        },
       ),
       Container(
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -309,25 +343,43 @@ class _MainScreenState extends State<MainScreen> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
-      Container(
-        height: 130,
-        child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+      BlocBuilder<CelebrityBloc, CelebrityState>(
+        builder: (context, state) {
+          if (state is CelebritiesReady) {
+            return Container(
+              height: 150,
+              child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
 
-            // padding: EdgeInsets.all(10),
-            scrollDirection: Axis.horizontal,
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              CelebretiesScreen()),
-                    );
-                  },
-                  child: ImageCard(title: "Benzima"));
-            }),
+                  // padding: EdgeInsets.all(10),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    CelebretiesScreen()),
+                          );
+                        },
+                        child: ImageCard(
+                          title: state.celebrities[index].name,
+                          image: state.celebrities[index].pictures[0],
+                        ));
+                  }),
+            );
+          }
+          if (state is CelebritiesFailed) {
+            return const Center(
+              child: Text("error"),
+            );
+          } else {
+            return const Center(
+              child: Text("no celebrtieis"),
+            );
+          }
+        },
       ),
       Container(
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -336,24 +388,43 @@ class _MainScreenState extends State<MainScreen> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
-      Container(
-        height: 130,
-        child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+      BlocBuilder<BrandBloc, BrandState>(
+        builder: (context, state) {
+          if (state is BrandsReady) {
+            return Container(
+              height: 150,
+              child: ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 15),
 
-            // padding: EdgeInsets.all(10),
-            scrollDirection: Axis.horizontal,
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return InkWell(
-                  onTap: (() {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => BrandScreen()),
-                    );
+                  // padding: EdgeInsets.all(10),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.brands.length,
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                        onTap: (() {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    BrandScreen()),
+                          );
+                        }),
+                        child: ImageCard(
+                          title: state.brands[index].name,
+                          image: state.brands[index].image,
+                        ));
                   }),
-                  child: ImageCard(title: "Louis Vuitton"));
-            }),
+            );
+          }
+          if (state is BrandsFailed) {
+            return Center(
+              child: Text("Brands error"),
+            );
+          } else {
+            return Center(
+              child: Text("No brands"),
+            );
+          }
+        },
       ),
     ]);
   }
@@ -361,7 +432,9 @@ class _MainScreenState extends State<MainScreen> {
 
 class ImageCard extends StatelessWidget {
   String title;
-  ImageCard({Key? key, required this.title}) : super(key: key);
+  String image;
+  ImageCard({Key? key, required this.title, required this.image})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -370,9 +443,8 @@ class ImageCard extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Container(
             width: 100,
-            // height: 50,
-            child: Image.asset(
-                fit: BoxFit.fitWidth, 'assets/images/imagecarousel.png')),
+            height: 100,
+            child: Image.network(fit: BoxFit.cover, image)),
         SizedBox(
           height: 10,
         ),

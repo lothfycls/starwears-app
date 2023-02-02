@@ -1,16 +1,18 @@
+import '../models/banner.dart';
 import '../models/brand.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class BrandService {
+class BannersService {
   final String url = "https://lobster-app-vpw8u.ondigitalocean.app";
-  final String getAllBrandsEndpoint = "/brand/findall";
+  final String getAllBrandsEndpoint = "/banner/findall";
 
-  Future getBrands() async {
+  Future getBanners() async {
     final response = await http.get(Uri.parse(url + getAllBrandsEndpoint));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      return Brand.fromJson(json);
+      print("worked");
+      return Banner.fromJson(json);
     } else {
       throw Exception(json["message"]);
     }

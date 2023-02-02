@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:starwears/widgets/BidCard.dart';
-import 'package:starwears/widgets/CategoryCard.dart';
-import 'package:starwears/widgets/ListingCard.dart';
 
-import '../widgets/CelebritiesCard.dart';
+import '../models/banner.dart' as banner;
+import '../widgets/ListingCard.dart';
 
 class ListingScreen extends StatefulWidget {
-  const ListingScreen({Key? key}) : super(key: key);
-
+  const ListingScreen({Key? key, required this.banners}) : super(key: key);
+  final List<banner.Banner> banners;
   @override
   State<ListingScreen> createState() => _ListingScreenState();
 }
@@ -73,18 +69,22 @@ class _ListingScreenState extends State<ListingScreen> {
           ],
         ),
         body: GridView.builder(
-          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
 
           // itemExtent: 1/2,
           // physics: NeverScrollableScrollPhysics(),
-          
+
           scrollDirection: Axis.vertical,
-          itemCount: 7,
+          itemCount: widget.banners.length,
           itemBuilder: (BuildContext context, int index) {
-            return ListingCard();
+            return ListingCard(creationDate: widget.banners[index].creationDate,
+            title: widget.banners[index].title,
+            description: widget.banners[index].description,
+            imagePath: widget.banners[index].image,);
           },
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: (MediaQuery.of(context).size.width/220).truncate(),
+            crossAxisCount:
+                (MediaQuery.of(context).size.width / 220).truncate(),
             childAspectRatio: 0.7,
             mainAxisSpacing: 10.0,
             crossAxisSpacing: 10.0,

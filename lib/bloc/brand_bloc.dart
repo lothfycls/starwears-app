@@ -15,7 +15,7 @@ class BrandBloc extends Bloc<BrandEvent, BrandState> {
         List<Brand> brands = await brandService.getBrands();
         emit(BrandsReady(brands: brands));
       } catch (e) {
-        emit(BrandsFailed(error:e.toString()));
+        emit(BrandsFailed(error: e.toString()));
       }
     });
   }
