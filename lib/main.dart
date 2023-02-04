@@ -6,7 +6,9 @@ import 'package:starwears/Screens/SplashScreen.dart';
 import 'package:starwears/bloc/authentication_bloc.dart';
 import 'package:starwears/bloc/banner_bloc.dart';
 import 'package:starwears/bloc/brand_bloc.dart';
+import 'package:starwears/bloc/category_bloc.dart';
 import 'package:starwears/bloc/celebrity_bloc.dart';
+import 'package:starwears/bloc/products_bloc.dart';
 
 import 'Providers/IndexProvider.dart';
 import 'Screens/HomeScreen.dart';
@@ -32,7 +34,9 @@ class MyApp extends StatelessWidget {
           create: (_) => BannerBloc(),
         ),
         BlocProvider(create: (_)=>CelebrityBloc()
-        ,)
+        ,),
+        BlocProvider(create: (_)=>CategoryBloc()),
+        BlocProvider(create: (_)=>ProductsBloc())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

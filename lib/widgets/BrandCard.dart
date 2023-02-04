@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:starwears/models/product.dart';
 
 class BrandCard extends StatelessWidget {
+  final Product product;
   const BrandCard({
-    Key? key,
+    Key? key,required this.product
   }) : super(key: key);
 
   @override
@@ -25,15 +27,15 @@ class BrandCard extends StatelessWidget {
                 height: 200,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                      fit: BoxFit.cover, 'assets/images/imagecarousel.png'),
+                  child: Image.network(
+                      fit: BoxFit.cover, product.images[0]),
                 )),
             Container(
               height: 60,
               padding: const EdgeInsets.only(left: 10.0, top: 10),
               width: MediaQuery.of(context).size.width - 10,
               child: Text(
-                "Nike Jordans worn by J. Cole in “The London” Music Video 2011",
+                product.name,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.clip,
@@ -50,7 +52,7 @@ class BrandCard extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "\$12,600",
+                    "\$${product.lastPrice}",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -68,8 +70,8 @@ class BrandCard extends StatelessWidget {
                   ),
                   SizedBox(width: 18),
                   Text(
-                    "5d 18h",
-                    style: TextStyle(
+                    product.auctionEnd,
+                    style:const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 10,
                       // color: Color(0xffEB9B00),

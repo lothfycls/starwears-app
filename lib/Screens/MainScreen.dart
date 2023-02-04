@@ -10,6 +10,7 @@ import 'package:starwears/Screens/ProductsScreen.dart';
 import '../Providers/IndexProvider.dart';
 import '../bloc/banner_bloc.dart';
 import '../bloc/brand_bloc.dart';
+import '../bloc/category_bloc.dart';
 import '../bloc/celebrity_bloc.dart';
 import '../widgets/BidCard.dart';
 import '../widgets/HomeCarousel.dart';
@@ -30,6 +31,7 @@ class _MainScreenState extends State<MainScreen> {
     BlocProvider.of<BrandBloc>(context).add(GetBrands());
     BlocProvider.of<BannerBloc>(context).add(GetBanner());
     BlocProvider.of<CelebrityBloc>(context).add(GetCelebrities());
+    BlocProvider.of<CategoryBloc>(context).add(GetCategories());
   }
 
   @override
@@ -100,7 +102,7 @@ class _MainScreenState extends State<MainScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (BuildContext context) => BrandScreen()),
+                        builder: (BuildContext context) => BrandScreen(currentBrand: 0,)),
                   );
                 },
               ),
@@ -209,27 +211,38 @@ class _MainScreenState extends State<MainScreen> {
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
-      Container(
-        height: 200,
-        child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 15),
-            scrollDirection: Axis.horizontal,
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return InkWell(
-                  onTap: (() {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              CategoriesScreen()),
-                    );
-                  }),
-                  child: ImageCard(
-                    title: "suits",
-                    image:
-                        "https://images.unsplash.com/photo-1675241816662-faab5f4c3f88?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1964&q=80",
-                  ));
-            }),
+      BlocBuilder<CategoryBloc, CategoryState>(
+        builder: (context, state) {
+          if (state is CategoriesReady) {
+             return Container(
+            height: 200,
+            child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                scrollDirection: Axis.horizontal,
+                itemCount: state.categories.length,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                      onTap: (() {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  CategoriesScreen()),
+                        );
+                      }),
+                      child: ImageCard(
+                        title: state.categories[index].name,
+                        image:
+                            "https://images.unsplash.com/photo-1675241816662-faab5f4c3f88?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1964&q=80",
+                      ));
+                }),
+          );
+          } else {
+            return const Center(
+              child: Text("no categories"),
+            );
+          }
+         
+        },
       ),
       Stack(
         children: [
@@ -349,7 +362,7 @@ class _MainScreenState extends State<MainScreen> {
             return Container(
               height: 150,
               child: ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  padding:const EdgeInsets.symmetric(horizontal: 15),
 
                   // padding: EdgeInsets.all(10),
                   scrollDirection: Axis.horizontal,
@@ -360,7 +373,7 @@ class _MainScreenState extends State<MainScreen> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    CelebretiesScreen()),
+                                  const  CelebretiesScreen()),
                           );
                         },
                         child: ImageCard(
@@ -405,7 +418,7 @@ class _MainScreenState extends State<MainScreen> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    BrandScreen()),
+                                    BrandScreen(currentBrand: index,)),
                           );
                         }),
                         child: ImageCard(
@@ -445,12 +458,12 @@ class ImageCard extends StatelessWidget {
             width: 100,
             height: 100,
             child: Image.network(fit: BoxFit.cover, image)),
-        SizedBox(
+       const SizedBox(
           height: 10,
         ),
         Text(
           title,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          style:const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
         )
       ]),
     );

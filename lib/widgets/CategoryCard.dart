@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CategoryCard extends StatelessWidget {
+  final String image;
+  final String name;
+  final String price;
+  final String expirationDate;
   const CategoryCard({
-    Key? key,
+    Key? key, required this.image, required this.name, required this.price, required this.expirationDate,
   }) : super(key: key);
 
   @override
@@ -25,15 +29,15 @@ class CategoryCard extends StatelessWidget {
                 height: 200,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                      fit: BoxFit.cover, 'assets/images/imagecarousel.png'),
+                  child: Image.network(
+                      fit: BoxFit.cover,image),
                 )),
             Container(
               height: 60,
               padding: const EdgeInsets.only(left: 10.0, top: 10),
               width: MediaQuery.of(context).size.width - 10,
               child: Text(
-                "Black Channel dress worn by beyonce at the25th BET Awards ",
+                name,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.clip,
@@ -44,13 +48,13 @@ class CategoryCard extends StatelessWidget {
               padding: const EdgeInsets.only(left: 10.0),
               child: Text('Owner: Benzema'),
             ),
-             SizedBox(height: 10),
+            SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: 10.0,bottom: 10),
+              padding: const EdgeInsets.only(left: 10.0, bottom: 10),
               child: Row(
                 children: [
                   Text(
-                    "\$12,600",
+                    "\$"+price,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -58,18 +62,23 @@ class CategoryCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 70),
-                  Text("17  Bids",style: TextStyle(
+                  Text(
+                    "17  Bids",
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 10,
                       // color: Color(0xffEB9B00),
-                    ),),
+                    ),
+                  ),
                   SizedBox(width: 18),
-                  Text("5d 18h",style: TextStyle(
+                  Text(
+                    expirationDate,
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 10,
                       // color: Color(0xffEB9B00),
-                    ),),
-                 
+                    ),
+                  ),
                 ],
               ),
             ),

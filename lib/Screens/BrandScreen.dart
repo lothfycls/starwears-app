@@ -1,30 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/bloc/products_bloc.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
+import '../bloc/brand_bloc.dart';
 import '../widgets/BrandCard.dart';
 
 class BrandScreen extends StatefulWidget {
-  const BrandScreen({Key? key}) : super(key: key);
-
+  const BrandScreen({Key? key, required this.currentBrand}) : super(key: key);
+  final int currentBrand;
   @override
   State<BrandScreen> createState() => _BrandScreenState();
 }
 
 class _BrandScreenState extends State<BrandScreen> {
-  List<String> items = [
-    'Nike',
-    'Chanel',
-    'Balenciaga',
-    'Rolex',
-    
-  ];
-
-  int _value = 0;
+  late int _value;
+  @override
+  void initState() {
+    // TODO: implement initState
+    BlocProvider.of<ProductsBloc>(context)
+        .add(GetBrandProducts(brandId: widget.currentBrand+1));
+    _value = widget.currentBrand;
+    super.initState();
+  }
 
   void _onChanged(int value) {
+    BlocProvider.of<ProductsBloc>(context)
+        .add(GetBrandProducts(brandId: value + 1));
     setState(() {
       _value = value;
     });
@@ -89,52 +94,74 @@ class _BrandScreenState extends State<BrandScreen> {
         ),
         body: Column(
           children: [
-            Container(
-                height: 40,
-                margin: const EdgeInsets.only(left: 20),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: items.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Stack(
-                      children: <Widget>[
-                        Container(
-                          // width: 100,
-                          child: FlatButton(
-                            onPressed: () => _onChanged(index),
-                            child: Text(items[index]),
-                          ),
-                        ),
-                        _value == index
-                            ? Positioned(
-                                bottom: 0,
-                                left: 15,
-                                right: 0,
-                                child: Container(
-                                  height: 2.0,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              )
-                            : Container()
-                      ],
-                    );
-                  },
-                ),
-              
-              ),
+            BlocBuilder<BrandBloc, BrandState>(
+              builder: (context, state) {
+                if (state is BrandsReady) {
+                  return Container(
+                    height: 40,
+                    margin: const EdgeInsets.only(left: 20),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.brands.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Stack(
+                          children: <Widget>[
+                            Container(
+                              // width: 100,
+                              child: FlatButton(
+                                onPressed: () => _onChanged(index),
+                                child: Text(state.brands[index].name),
+                              ),
+                            ),
+                            _value == index
+                                ? Positioned(
+                                    bottom: 0,
+                                    left: 15,
+                                    right: 0,
+                                    child: Container(
+                                      height: 2.0,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  )
+                                : Container()
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return const Center(
+                    child: Text("No brands"),
+                  );
+                }
+              },
+            ),
             Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                
-                // itemExtent: 1/2,
-                // physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                itemCount: 3,
-                itemBuilder: (BuildContext context, int index) {
-                  return  BrandCard();
+              child: BlocBuilder<ProductsBloc, ProductsState>(
+                builder: (context, state) {
+                  print(state);
+                  if (state is ProductsReady) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+
+                      // itemExtent: 1/2,
+                      // physics: NeverScrollableScrollPhysics(),
+                      scrollDirection: Axis.vertical,
+                      itemCount: state.products.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return BrandCard(
+                          product: state.products[index],
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                      child: Text("no products"),
+                    );
+                  }
                 },
               ),
             ),

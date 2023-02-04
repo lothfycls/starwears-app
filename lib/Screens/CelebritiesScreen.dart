@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/bloc/celebrity_bloc.dart';
+import 'package:starwears/models/celebrity.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
+import '../bloc/products_bloc.dart';
 import '../widgets/CelebritiesCard.dart';
 
 class CelebretiesScreen extends StatefulWidget {
   const CelebretiesScreen({Key? key}) : super(key: key);
-
   @override
   State<CelebretiesScreen> createState() => _CelebretiesScreenState();
 }
 
 class _CelebretiesScreenState extends State<CelebretiesScreen> {
-  
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,15 +74,25 @@ class _CelebretiesScreenState extends State<CelebretiesScreen> {
             ),
           ],
         ),
-        body: ListView.builder(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          
-          // itemExtent: 1/2,
-          // physics: NeverScrollableScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          itemCount: 3,
-          itemBuilder: (BuildContext context, int index) {
-            return  CelebritiesCard();
+        body: BlocBuilder<CelebrityBloc, CelebrityState>(
+          builder: (context, state) {
+            if (state is CelebritiesReady) {
+              return ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+
+                // itemExtent: 1/2,
+                // physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemCount: state.celebrities.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return CelebritiesCard(
+                    celebrity: state.celebrities[index],
+                  );
+                },
+              );
+            } else {
+              return const Center(child: Text("no celebrities"));
+            }
           },
         ));
   }
