@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/Screens/PlaceBidScreen.dart';
 import 'package:starwears/Screens/ProductDetailsScreen.dart';
+import 'package:starwears/models/product.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
+import '../bloc/products_bloc.dart';
 import '../widgets/AboutItemCard.dart';
 import '../widgets/CelebritiesCard.dart';
 
 class ProductScreen extends StatefulWidget {
-  const ProductScreen({Key? key}) : super(key: key);
+  final Product product;
+  const ProductScreen({Key? key,required this.product}) : super(key: key);
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -85,25 +89,25 @@ class _ProductScreenState extends State<ProductScreen> {
               width: double.infinity,
               height: 250,
               child: PageView.builder(
-                itemCount: 3,
+                itemCount: widget.product.images.length,
                 onPageChanged: (index) {
                   setState(() {
                     _currentIndex = index;
                   });
                 },
                 itemBuilder: (context, index) {
-                  return Image.asset(
-                      fit: BoxFit.cover, 'assets/images/imagecarousel.png');
+                  return Image.network(
+                      fit: BoxFit.cover, widget.product.images[index]);
                 },
               ),
             ),
             Container(
-              padding: EdgeInsets.all(8),
+              padding:const EdgeInsets.all(8),
               //  color: Colors.black.withOpacity(0.5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  3,
+                  widget.product.images.length,
                   (index) => Container(
                     margin: EdgeInsets.symmetric(horizontal: 4),
                     width: 8,
@@ -126,7 +130,7 @@ class _ProductScreenState extends State<ProductScreen> {
               padding: const EdgeInsets.only(left: 10.0, top: 10),
               width: MediaQuery.of(context).size.width - 10,
               child: Text(
-                "Black Channel dress worn by beyonce at the25th BET Awards ",
+                widget.product.name,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.clip,
@@ -138,7 +142,7 @@ class _ProductScreenState extends State<ProductScreen> {
             Container(
               margin: EdgeInsets.only(left: 30),
               child: Text(
-                "\$12,600",
+                "\$${widget.product.lastPrice}",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
               ),
             ),
@@ -157,7 +161,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     width: 20,
                   ),
                   Text(
-                    "5d 18h",
+                    widget.product.auctionEnd,
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -169,7 +173,7 @@ class _ProductScreenState extends State<ProductScreen> {
             Container(
               margin: EdgeInsets.only(left: 30),
               child: Text(
-                "Last Bid: User9709",
+                "Last Bid:${widget.product.lastBidder}",
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
             ),
@@ -201,9 +205,9 @@ class _ProductScreenState extends State<ProductScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (BuildContext context) =>PlaceBidScreen()),
+                        builder: (BuildContext context) => PlaceBidScreen(productId: widget.product.id,)),
                   );
-                 },
+                },
               ),
             ),
             SizedBox(
@@ -232,10 +236,10 @@ class _ProductScreenState extends State<ProductScreen> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            ProductDetailsScreen()),
+                            ProductDetailsScreen(product: widget.product,)),
                   );
                 },
-                child: AboutItemCard()),
+                child: AboutItemCard(product:widget.product)),
             SizedBox(
               height: 15,
             ),
@@ -254,8 +258,7 @@ class _ProductScreenState extends State<ProductScreen> {
               // padding: const EdgeInsets.only(left: 10.0, top: 10),
               width: MediaQuery.of(context).size.width - 10,
               child: Text(
-                ''' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim.
-                ''',
+               widget.product.description,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 15,
@@ -273,17 +276,33 @@ class _ProductScreenState extends State<ProductScreen> {
             SizedBox(
               height: 8,
             ),
-            Container(
-              height: 340,
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Container(width: 180, child: BidCard());
-                },
-              ),
-            ),
+            BlocBuilder<ProductsBloc, ProductsState>(builder: (context, state) {
+              if (state is ProductsReady) {
+                return Container(
+                  height: 340,
+                  // width: 300,
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: state.products.length,
+                    itemBuilder: (context, index) {
+                      return BidCard(
+                        description: state.products[index].description,
+                        imagePath: state.products[index].images[0],
+                        lastBidUser: '',
+                        lastPrice: state.products[index].lastPrice,
+                        name: state.products[index].name,
+                        owner: state.products[index].ownerName,
+                        product: state.products[index],
+                        state: state.products[index].state,
+                      );
+                    },
+                  ),
+                );
+              } else {
+                return Center(child: Text("No trending"));
+              }
+            }),
           ],
         ),
       ),

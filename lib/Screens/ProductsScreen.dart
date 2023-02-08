@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
+import '../bloc/products_bloc.dart';
 import '../widgets/CelebritiesCard.dart';
 import 'ProductScreen.dart';
 
@@ -72,38 +74,58 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           ],
         ),
-        body: GridView.builder(
-          
-
-          // physics: NeverScrollableScrollPhysics(),
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: (MediaQuery.of(context).size.width/220).truncate(),
-          //  childAspectRatio: MediaQuery.of(context).size.width /
-          //             (MediaQuery.of(context).size.height-250),
+        body: BlocBuilder<ProductsBloc, ProductsState>(
+          builder: (context, state) {
+            if (state is ProductsReady) {
+              return GridView.builder(
+                // physics: NeverScrollableScrollPhysics(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:
+                      (MediaQuery.of(context).size.width / 220).truncate(),
+                  //  childAspectRatio: MediaQuery.of(context).size.width /
+                  //             (MediaQuery.of(context).size.height-250),
                   childAspectRatio: 0.6,
 
-            mainAxisSpacing: 10.0,
-            crossAxisSpacing: 10.0,
-          ),
-          // itemExtent: 1/2,
-          // physics: NeverScrollableScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          itemCount: 7,
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-                onTap: (() {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => ProductScreen()),
-                  );
-                }),
-                child: BidCard());
+                  mainAxisSpacing: 10.0,
+                  crossAxisSpacing: 10.0,
+                ),
+                // itemExtent: 1/2,
+                // physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemCount: state.products.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                      onTap: (() {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  ProductScreen(product: state.products[index])),
+                        );
+                      }),
+                      child: BidCard(
+                        product: state.products[index],
+                        description: state.products[index].description,
+                        imagePath: state.products[index].images[0],
+                        lastBidUser: state.products[index].lastBidder,
+                        lastPrice: state.products[index].lastPrice,
+                        name: state.products[index].name,
+                        owner: state.products[index].ownerName,
+                        state: state.products[index].state,
+                      ));
+                },
+                // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                //   childAspectRatio: 0.55,
+                //   crossAxisCount: 2,
+                // ),
+              );
+            } else {
+              return Center(
+                child: Text("No products"),
+              );
+            }
           },
-          // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //   childAspectRatio: 0.55,
-          //   crossAxisCount: 2,
-          // ),
         ));
   }
 }

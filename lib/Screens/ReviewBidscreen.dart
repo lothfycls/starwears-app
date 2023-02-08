@@ -1,19 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/bloc/bid_bloc.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
 import '../widgets/BrandCard.dart';
 
 class ReviewBidScreen extends StatefulWidget {
-  const ReviewBidScreen({Key? key}) : super(key: key);
+  final double bidAmount;
+  final int productId;
+  const ReviewBidScreen(
+      {Key? key, required this.bidAmount, required this.productId})
+      : super(key: key);
 
   @override
   State<ReviewBidScreen> createState() => _ReviewBidScreenState();
 }
 
 class _ReviewBidScreenState extends State<ReviewBidScreen> {
+  void _onWidgetDidBuild(Function callback) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      callback();
+    });
+  }
+
+  _showAlertDialog(errorMsg) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Bid adding Failed',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        }).then((val) => BlocProvider.of<BidBloc>(context).add(InitBid()));
+  }
+
+  _showSuccesDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return const AlertDialog(
+            title: const Text(
+              'Bid added successfully',
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }).then((val) => BlocProvider.of<BidBloc>(context).add(InitBid()));
+  }
+
   double? _bid = 0;
   final TextEditingController _controller = TextEditingController();
   @override
@@ -67,120 +106,132 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-
-               Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 25,
-          ),
-          
-         
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 236, 233, 233),
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-            ),
-            margin: EdgeInsets.symmetric(horizontal: 40),
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      "Your Max Bid",
-                      style: TextStyle(color: Color(0xff53565A)),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 236, 233, 233),
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      margin: EdgeInsets.symmetric(horizontal: 40),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Your Max Bid",
+                                style: TextStyle(color: Color(0xff53565A)),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "Time Left",
+                                style: TextStyle(color: Color(0xff53565A)),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "Postage",
+                                style: TextStyle(color: Color(0xff53565A)),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "Estimated Total",
+                                style: TextStyle(color: Color(0xff53565A)),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            width: 60,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "\$${widget.bidAmount}",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "9d 22h",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "\$25",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "\$ 16,024",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
-                    Text(
-                      "Time Left",
-                      style: TextStyle(color: Color(0xff53565A)),
+                    BlocListener<BidBloc, BidState>(
+                      listener: (context, state) {
+                        if (state is BidsFailed) {
+                          _onWidgetDidBuild(()=>_showAlertDialog(state.error));
+                        }
+                        if (state is BidAdded) {
+                          _onWidgetDidBuild(()=>_showSuccesDialog());
+                        }
+                      },
+                      child: Container(
+                        height: 45,
+                        width: double.infinity,
+                        margin: EdgeInsets.symmetric(horizontal: 30),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50.0)),
+                          color: Colors.black,
+                          child: Text(
+                            'Confirm Bid',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {
+                            BlocProvider.of<BidBloc>(context).add(AddBid(
+                                amount: widget.bidAmount.toInt(),
+                                productId: widget.productId));
+                            /* do something */
+                          },
+                        ),
+                      ),
                     ),
                     SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Postage",
-                      style: TextStyle(color: Color(0xff53565A)),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Estimated Total",
-                      style: TextStyle(color: Color(0xff53565A)),
-                    ),
+                      height: 20,
+                    )
                   ],
                 ),
-                SizedBox(
-                  width: 60,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "\$ 15,999",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "9d 22h",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "\$25",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "\$ 16,024",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            height: 45,
-            width: double.infinity,
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50.0)),
-              color: Colors.black,
-              child: Text(
-                'Confirm Bid',
-                style: TextStyle(color: Colors.white),
-              ),
-              onPressed: () {/* do something */},
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          )
-        ],
-      ),
-    )
-              
+              )
             ],
           ),
         ));

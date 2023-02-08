@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/widgets/BidCard.dart';
+
+import '../bloc/products_bloc.dart';
 
 class AuctionScreen extends StatefulWidget {
   const AuctionScreen({Key? key}) : super(key: key);
@@ -13,8 +14,23 @@ class AuctionScreen extends StatefulWidget {
 class _AuctionScreenState extends State<AuctionScreen> {
   List<String> items = ['Active', 'My bids', 'Ended'];
   int _value = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<ProductsBloc>(context).add(GetActiveProducts());
+  }
 
   void _onChanged(int value) {
+    if (value == 0) {
+      BlocProvider.of<ProductsBloc>(context).add(GetActiveProducts());
+    }
+    if (value == 1) {
+      BlocProvider.of<ProductsBloc>(context).add(GetUserBidProducts());
+    }
+    if (value == 2) {
+      BlocProvider.of<ProductsBloc>(context).add(GetEndedProducts());
+    }
     setState(() {
       _value = value;
     });
@@ -124,29 +140,47 @@ class _AuctionScreenState extends State<AuctionScreen> {
             SizedBox(
               height: 10,
             ),
-            Expanded(
-              child: GridView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                itemCount: 6, // number of items in your data source
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount:
-                      (MediaQuery.of(context).size.width / 220).truncate(),
-                  // childAspectRatio: MediaQuery.of(context).size.width /
-                  //     (MediaQuery.of(context).size.height-250),
-                  childAspectRatio: 0.6,
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 10.0,
-                ),
-                // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                //   crossAxisSpacing: 5,
-                //   mainAxisSpacing: 10,
-                //   childAspectRatio: 0.57,
-                //   crossAxisCount: 2, // number of elements in each row
-                // ),
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(height: 130, child: BidCard());
-                },
-              ),
+            BlocBuilder<ProductsBloc, ProductsState>(
+              builder: (context, state) {
+                if (state is ProductsReady) {
+                  return Expanded(
+                    child: GridView.builder(
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                      itemCount: state.products
+                          .length, // number of items in your data source
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount:
+                            (MediaQuery.of(context).size.width / 220)
+                                .truncate(),
+                        // childAspectRatio: MediaQuery.of(context).size.width /
+                        //     (MediaQuery.of(context).size.height-250),
+                        childAspectRatio: 0.55,
+                        mainAxisSpacing: 10.0,
+                        crossAxisSpacing: 10.0,
+                      ),
+
+                      itemBuilder: (BuildContext context, int index) {
+                        return BidCard(
+                          product: state.products[index],
+                          description: state.products[index].description,
+                          imagePath: state.products[index].images[0],
+                          lastBidUser: state.products[index].lastBidder,
+                          lastPrice: state.products[index].lastPrice,
+                          name: state.products[index].name,
+                          owner: state.products[index].ownerName,
+                          state: state.products[index].state,
+                        );
+                      },
+                    ),
+                  );
+                } else if (state is ProductsFailed) {
+                  return Center(child: Text(state.error));
+                } else {
+                  return Center(
+                    child: Text("Initial"),
+                  );
+                }
+              },
             )
           ],
         ));

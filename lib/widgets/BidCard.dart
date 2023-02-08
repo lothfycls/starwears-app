@@ -1,47 +1,95 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class BidCard extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
+import 'package:starwears/Screens/PlaceBidScreen.dart';
+import 'package:starwears/Screens/ProductScreen.dart';
+import 'package:starwears/bloc/bid_bloc.dart';
+
+import '../models/bid.dart';
+import '../models/product.dart';
+
+class BidCard extends StatefulWidget {
+  final String name;
+  final String description;
+  final String owner;
+  final String lastBidUser;
+  final int lastPrice;
+  final String state;
+  final String imagePath;
+  final Product product;
   const BidCard({
     Key? key,
+    required this.name,
+    required this.description,
+    required this.owner,
+    required this.product,
+    required this.lastBidUser,
+    required this.lastPrice,
+    required this.state,
+    required this.imagePath,
   }) : super(key: key);
 
   @override
+  State<BidCard> createState() => _BidCardState();
+}
+
+class _BidCardState extends State<BidCard> {
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      // height: 240,
-      width: 200,
-      child: Card(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => ProductScreen(product: widget.product)));
+      },
+      child: Container(
+        width: 200,
+        margin: const EdgeInsets.only(right: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+              bottom:
+                  BorderSide(color: Colors.black.withOpacity(0.3), width: 1),
+              top: BorderSide(color: Colors.black.withOpacity(0.3), width: 1),
+              left: BorderSide(color: Colors.black.withOpacity(0.3), width: 1),
+              right:
+                  BorderSide(color: Colors.black.withOpacity(0.3), width: 1)),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            Image.network(
+                height: 150,
                 width: double.infinity,
-                // height: 50,
-                child: Image.asset(
-                    fit: BoxFit.fitWidth,
-                    'assets/images/imagecarousel.png')),
+                fit: BoxFit.cover,
+                widget.imagePath),
             Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 10),
-              child: Text('Louis Vuitton Suit',
+              child: Text(widget.name,
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text('Worn at balon d’or'),
+              child: Text(widget.description),
             ),
             SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text("\$12,600",
+              child: Text("\$ ${widget.lastPrice}",
                   style: TextStyle(color: Colors.orange)),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text('Owner: Benzema'),
+              child: Text('Owner: ${widget.owner}'),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text('Bid: User9099'),
+              child: Text('Bid:${widget.lastBidUser}'),
             ),
             SizedBox(height: 10),
             Row(
@@ -62,22 +110,34 @@ class BidCard extends StatelessWidget {
                   onPressed: () {},
                 ),
                 SizedBox(width: 5),
-                Container(
-                  width: 55,
-                  child: FlatButton(
-                    height: 15,
-                  
-                    padding: EdgeInsets.all(0),
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            color: Colors.green,
-                            width: 1,
-                            style: BorderStyle.solid),
-                        borderRadius: BorderRadius.circular(1)),
-                    child: Text('Place bid',
-                        style:
-                            TextStyle(color: Colors.black, fontSize: 10)),
-                    onPressed: () {},
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                PlaceBidScreen(productId: widget.product.id)));
+                  },
+                  child: Container(
+                    width: 55,
+                    child: FlatButton(
+                      height: 15,
+                      padding: EdgeInsets.all(0),
+                      shape: RoundedRectangleBorder(
+                          side: BorderSide(
+                              color: Colors.green,
+                              width: 1,
+                              style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(1)),
+                      child: Text('Place bid',
+                          style: TextStyle(color: Colors.black, fontSize: 10)),
+                      onPressed: () async {
+                        MaterialPageRoute(
+                            builder: ((context) => PlaceBidScreen(
+                                  productId: widget.product.id,
+                                )));
+                      },
+                    ),
                   ),
                 ),
               ],

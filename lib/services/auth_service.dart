@@ -21,7 +21,10 @@ class AuthService {
         await http.post(Uri.parse(authUrl + loginEndpoint), body: data);
     final json = jsonDecode(response.body);
     if (response.statusCode == 201) {
-      return json[0];
+      return {
+        "id": json[1] as int,
+        "email": user.email,
+      };
     } else {
       throw Exception(json["message"]);
     }
@@ -37,7 +40,7 @@ class AuthService {
         await http.post(Uri.parse(authUrl + signUpEdnpoint), body: data);
     final res = jsonDecode(response.body);
     if (response.statusCode == 201) {
-      return res[0];
+      return {"id": res[1] as int, "email": user.email};
     } else {
       throw Exception(res["message"]);
     }

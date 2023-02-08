@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/bloc/authentication_bloc.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -10,10 +12,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _firstName = "John";
   String _lastName = "John";
   String _userName = "John";
-  String _email = "john.doe@example.com";
+  String _email = "";
   String _phoneNumber = "+212612345678";
   String _adress = '''243 john doe street 
-Sheffield Road,
+Sheffield Road
 778U 5yd
 London''';
 
@@ -26,6 +28,7 @@ London''';
 
   @override
   void initState() {
+    _email = BlocProvider.of<AuthenticationBloc>(context).email!;
     _firstNameController.text = _firstName;
     _emailController.text = _email;
     _lastNameController.text = _lastName;

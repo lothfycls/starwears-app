@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:starwears/Screens/BidsScreen.dart';
-import 'package:starwears/Screens/ProfileScreen.dart';
-import 'package:starwears/Screens/PurchasesScreen.dart';
+import 'package:starwears/Screens/connected_account/BidsScreen.dart';
+import 'package:starwears/Screens/connected_account/ProfileScreen.dart';
+
+import 'PurchasesScreen.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({Key? key}) : super(key: key);

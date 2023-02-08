@@ -10,14 +10,18 @@ part 'authentication_state.dart';
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthService authService = AuthService();
+  int? userId;
+  String? email;
   AuthenticationBloc() : super(AuthenticationInitial()) {
     print(state);
     on<InitAuth>((event, emit) async {
       emit(AuthenticationInitial());
     });
     on<CreateUser>((event, emit) async {
-     try {
-        await authService.signUp(event.user);
+      try {
+        Map<String, dynamic> data = await authService.signUp(event.user);
+        userId = data["id"];
+        email = data["email"];
         emit(AuthSuccess());
       } catch (e) {
         emit(CreationFailed(e.toString().substring(10)));
@@ -25,11 +29,13 @@ class AuthenticationBloc
     });
     on<LoginUser>((event, emit) async {
       try {
-        await authService.login(event.user);
+        Map<String, dynamic> data = await authService.login(event.user);
+        userId = data["id"];
+        email = data["email"];
         emit(AuthSuccess());
       } catch (e) {
         emit(LoginFailed(e.toString().substring(10)));
-     }
+      }
     });
   }
 }

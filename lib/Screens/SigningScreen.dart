@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:starwears/Screens/AccountScreen.dart';
+import 'package:starwears/Screens/connected_account/AccountScreen.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/Screens/SignUpScreen.dart';
 
@@ -21,7 +21,8 @@ class _SigningScreenState extends State<SigningScreen> {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
       if (state is AuthSuccess) {
-        return Center(
+        return AccountScreen();
+        /*return Center(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 50),
             width: double.infinity,
@@ -45,7 +46,7 @@ class _SigningScreenState extends State<SigningScreen> {
               ),
             ),
           ),
-        );
+        );*/
       } else {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -93,8 +94,8 @@ class _SigningScreenState extends State<SigningScreen> {
                 SizedBox(height: 24),
                 // Text
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 80),
-                  child: Text(
+                  margin: const EdgeInsets.symmetric(horizontal: 80),
+                  child: const Text(
                     'Login or sign up to bid, manage your portfolio or personalise your account',
                     // style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
@@ -116,7 +117,8 @@ class _SigningScreenState extends State<SigningScreen> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (BuildContext context) => SignUpScreen()),
+                            builder: (BuildContext context) =>
+                                const SignUpScreen()),
                       );
                     },
                     child: Text(
@@ -141,7 +143,8 @@ class _SigningScreenState extends State<SigningScreen> {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (BuildContext context) => LoginScreen()),
+                            builder: (BuildContext context) =>
+                                const LoginScreen()),
                       );
                     },
                     child: Text(
@@ -150,7 +153,7 @@ class _SigningScreenState extends State<SigningScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                /*  SizedBox(
                   height: 20,
                 ),
                 Container(
@@ -174,7 +177,7 @@ class _SigningScreenState extends State<SigningScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),

@@ -1,17 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:starwears/Screens/CancelBidScreen.dart';
 import 'package:starwears/Screens/PlaceBidScreen.dart';
 import 'package:starwears/Screens/ProductDetailsScreen.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
-
+import 'package:http/http.dart' as http;
+import '../bloc/products_bloc.dart';
+import '../models/product.dart';
 import '../widgets/AboutItemCard.dart';
 import '../widgets/CelebritiesCard.dart';
 
 class WonBidScreen extends StatefulWidget {
-  const WonBidScreen({Key? key}) : super(key: key);
+  final Product product;
+  const WonBidScreen({Key? key, required this.product}) : super(key: key);
 
   @override
   State<WonBidScreen> createState() => _WonBidScreenState();
@@ -19,6 +26,7 @@ class WonBidScreen extends StatefulWidget {
 
 class _WonBidScreenState extends State<WonBidScreen> {
   int _currentIndex = 0;
+  Map<String, dynamic>? paymentIntent;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,21 +104,21 @@ class _WonBidScreenState extends State<WonBidScreen> {
               ],
             ),
             SizedBox(
-                height: 20,
-              ),
+              height: 20,
+            ),
             Container(
               width: double.infinity,
               height: 250,
               child: PageView.builder(
-                itemCount: 3,
+                itemCount: widget.product.images.length,
                 onPageChanged: (index) {
                   setState(() {
                     _currentIndex = index;
                   });
                 },
                 itemBuilder: (context, index) {
-                  return Image.asset(
-                      fit: BoxFit.cover, 'assets/images/imagecarousel.png');
+                  return Image.network(
+                      fit: BoxFit.cover, widget.product.images[index]);
                 },
               ),
             ),
@@ -120,7 +128,7 @@ class _WonBidScreenState extends State<WonBidScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  3,
+                  widget.product.images.length,
                   (index) => Container(
                     margin: EdgeInsets.symmetric(horizontal: 4),
                     width: 8,
@@ -143,7 +151,7 @@ class _WonBidScreenState extends State<WonBidScreen> {
               padding: const EdgeInsets.only(left: 10.0, top: 10),
               width: MediaQuery.of(context).size.width - 10,
               child: Text(
-                "Black Channel dress worn by beyonce at the25th BET Awards ",
+                widget.product.name,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.clip,
@@ -155,7 +163,7 @@ class _WonBidScreenState extends State<WonBidScreen> {
             Container(
               margin: EdgeInsets.only(left: 30),
               child: Text(
-                "\$12,600",
+                "\$${widget.product.lastPrice}",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
               ),
             ),
@@ -215,15 +223,13 @@ class _WonBidScreenState extends State<WonBidScreen> {
                   'Payment',
                   style: TextStyle(color: Colors.white),
                 ),
-                onPressed: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //       builder: (BuildContext context) => PlaceBidScreen()),
+                onPressed: () async {
+                  await makePayment("50");
+                  // 
                   // );
                 },
               ),
             ),
-            
             SizedBox(
               height: 10,
             ),
@@ -231,26 +237,35 @@ class _WonBidScreenState extends State<WonBidScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton(
-                  
-                  onPressed: (){
-                     Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => CancelBidScreen()),
-                  );
-                  },
-                  child: Text("Cancel",style: TextStyle(color: Color.fromARGB(255, 201, 198, 198)),)),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                CancelBidScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Cancel",
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 201, 198, 198)),
+                    )),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             InkWell(
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            ProductDetailsScreen()),
+                        builder: (BuildContext context) => ProductDetailsScreen(
+                              product: widget.product,
+                            )),
                   );
                 },
-                child: AboutItemCard()),
+                child: AboutItemCard(
+                  product: widget.product,
+                )),
             SizedBox(
               height: 15,
             ),
@@ -269,8 +284,7 @@ class _WonBidScreenState extends State<WonBidScreen> {
               // padding: const EdgeInsets.only(left: 10.0, top: 10),
               width: MediaQuery.of(context).size.width - 10,
               child: Text(
-                ''' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim.
-                ''',
+                widget.product.description,
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   fontSize: 15,
@@ -288,20 +302,126 @@ class _WonBidScreenState extends State<WonBidScreen> {
             SizedBox(
               height: 8,
             ),
-            Container(
-              height: 340,
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Container(width: 180, child: BidCard());
-                },
-              ),
-            ),
+            BlocBuilder<ProductsBloc, ProductsState>(builder: (context, state) {
+              if (state is ProductsReady) {
+                return Container(
+                  height: 340,
+                  // width: 300,
+                  child: ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    scrollDirection: Axis.horizontal,
+                    itemCount:
+                        state.products.length > 4 ? 4 : state.products.length,
+                    itemBuilder: (context, index) {
+                      return BidCard(
+                        product: state.products[index],
+                        description: state.products[index].description,
+                        imagePath: state.products[index].images[0],
+                        lastBidUser: state.products[index].lastBidder,
+                        lastPrice: state.products[index].lastPrice,
+                        name: state.products[index].name,
+                        owner: state.products[index].ownerName,
+                        state: state.products[index].state,
+                      );
+                    },
+                  ),
+                );
+              } else {
+                return Center(child: Text("No trending"));
+              }
+            }),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> makePayment(String amount) async {
+    try {
+      paymentIntent = await createPaymentIntent(amount.toString(), 'USD');
+      //Payment Sheet
+      await Stripe.instance
+          .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                  paymentIntentClientSecret: paymentIntent!['client_secret'],
+                  style: ThemeMode.dark,
+                  merchantDisplayName: 'Adnan'))
+          .then((value) {});
+
+      ///now finally display payment sheeet
+      displayPaymentSheet();
+    } catch (e, s) {
+      print('exception:$e$s');
+    }
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet().then((value) {
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                          ),
+                          Text("Payment Successfull"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ));
+        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("paid successfully")));
+
+        paymentIntent = null;
+      }).onError((error, stackTrace) {
+        print('Error is:--->$error $stackTrace');
+      });
+    } on StripeException catch (e) {
+      print('Error is:---> $e');
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+                content: Text("Cancelled "),
+              ));
+    } catch (e) {
+      print('$e');
+    }
+  }
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount(amount),
+        'currency': currency,
+        'payment_method_types[]': 'card'
+      };
+
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        headers: {
+          'Authorization':
+              'Bearer sk_test_51MYvFJHU6zFyNPkf2IlvvSSTXCKE9lBP4f4i6LpxcrWUmqPB7mVloGOMqfDP46fcRk8UWVjkhhA49GngcgVC1vBU00k8tejYZK',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body,
+      );
+      // ignore: avoid_print
+      print('Payment Intent Body->>> ${response.body.toString()}');
+      return jsonDecode(response.body);
+    } catch (err) {
+      // ignore: avoid_print
+      print('err charging user: ${err.toString()}');
+    }
+  }
+
+  calculateAmount(String amount) {
+    final calculatedAmout = (int.parse(amount)) * 10;
+    return calculatedAmout.toString();
   }
 }

@@ -1,42 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:starwears/Screens/connected_account/ProfileScreen.dart';
+import 'package:starwears/Screens/SignUpScreen.dart';
 import 'package:starwears/Screens/SplashScreen.dart';
 import 'package:starwears/bloc/authentication_bloc.dart';
 import 'package:starwears/bloc/banner_bloc.dart';
+import 'package:starwears/bloc/bid_bloc.dart';
 import 'package:starwears/bloc/brand_bloc.dart';
 import 'package:starwears/bloc/category_bloc.dart';
 import 'package:starwears/bloc/celebrity_bloc.dart';
 import 'package:starwears/bloc/products_bloc.dart';
+import 'package:starwears/stripe_page.dart';
 
 import 'Providers/IndexProvider.dart';
 import 'Screens/HomeScreen.dart';
-import 'Screens/IntroScreen.dart';
-import 'Screens/SignUpScreen.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey =
+      "pk_test_51MYvFJHU6zFyNPkfy9hGbi6zJKlQe7OP14DcRYL5xwcK3iqaVLaoeJdvpaiIVS5aUC0HXrMyVNmae2L2K98j5sNG00x7LP5aRf";
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+  MyApp({Key? key}) : super(key: key);
+  final AuthenticationBloc authenticationBloc = AuthenticationBloc();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => IndexProvider()),
-        BlocProvider(create: (_) => AuthenticationBloc()),
+        BlocProvider(create: (_) => authenticationBloc),
         BlocProvider(create: (_) => BrandBloc()),
         BlocProvider(
           create: (_) => BannerBloc(),
         ),
-        BlocProvider(create: (_)=>CelebrityBloc()
-        ,),
-        BlocProvider(create: (_)=>CategoryBloc()),
-        BlocProvider(create: (_)=>ProductsBloc())
+        BlocProvider(
+          create: (_) => CelebrityBloc(),
+        ),
+        BlocProvider(create: (_) => CategoryBloc()),
+        BlocProvider(
+            create: (_) =>
+                ProductsBloc(authenticationBloc: authenticationBloc)),
+        BlocProvider(
+            create: (_) => BidBloc(authenticationBloc: authenticationBloc))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -59,7 +71,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: HomeScreen(),
+        home:const SplashScreen(),
       ),
     );
   }

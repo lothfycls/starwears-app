@@ -8,7 +8,8 @@ import 'package:starwears/widgets/CategoryCard.dart';
 import '../widgets/BrandCard.dart';
 
 class PlaceBidScreen extends StatefulWidget {
-  const PlaceBidScreen({Key? key}) : super(key: key);
+  final int productId;
+  const PlaceBidScreen({Key? key, required this.productId}) : super(key: key);
 
   @override
   State<PlaceBidScreen> createState() => _PlaceBidScreenState();
@@ -64,7 +65,6 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
           ),
         ),
         body: ListView(
-
           children: [
             Container(
               height: 300,
@@ -91,11 +91,20 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                   SizedBox(
                     height: 40,
                   ),
-                  Container(
-                    child: Text(
-                      "\$" + _bid.toString(),
+                  Expanded(
+                    child: TextField(
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+
+                      controller: _controller,
+                      textAlign: TextAlign.center,
+                      keyboardType: TextInputType.number,
+                      // focusNode: _focusNode,
+                      // controller: _controller,
+                      decoration: InputDecoration(
+                        hintText: 'Type your bid...',
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -112,49 +121,6 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
             ),
             SizedBox(
               height: 40,
-            ),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  top: BorderSide(color: Colors.grey, width: 1),
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        onSubmitted: (value) {
-                          setState(() {
-                            _bid = double.parse(value);
-                          });
-                          _controller.clear();
-                        },
-                        keyboardType: TextInputType.number,
-                        // focusNode: _focusNode,
-                        // controller: _controller,
-                        decoration: InputDecoration(
-                          hintText: 'Type your bid...',
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.check_circle_sharp,
-                        size: 35,
-                      ),
-                      onPressed: () {
-                        // Send message logic
-                      },
-                    ),
-                  ],
-                ),
-              ),
             ),
             SizedBox(
               height: 10,
@@ -174,7 +140,10 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (BuildContext context) => ReviewBidScreen()),
+                        builder: (BuildContext context) => ReviewBidScreen(
+                              bidAmount: double.parse(_controller.text),
+                              productId: widget.productId,
+                            )),
                   );
                 },
               ),

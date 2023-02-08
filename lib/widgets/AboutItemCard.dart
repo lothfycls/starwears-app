@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:starwears/models/product.dart';
 
 class AboutItemCard extends StatelessWidget {
+  final Product product;
   const AboutItemCard({
     Key? key,
+    required this.product,
   }) : super(key: key);
 
   @override
@@ -11,7 +14,7 @@ class AboutItemCard extends StatelessWidget {
       // height: 100,
       width: double.infinity,
       decoration: BoxDecoration(
-         color: Color.fromARGB(255, 236, 233, 233),
+        color: Color.fromARGB(255, 236, 233, 233),
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       margin: EdgeInsets.symmetric(horizontal: 30),
@@ -35,12 +38,14 @@ class AboutItemCard extends StatelessWidget {
                   Text(
                     "Brand",
                     style: TextStyle(color: Color(0xff53565A)),
-                  
                   ),
                   SizedBox(
                     width: 62,
                   ),
-                  Text("Chanel", style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(
+                    product.brandName,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               SizedBox(
@@ -50,13 +55,15 @@ class AboutItemCard extends StatelessWidget {
                 children: [
                   Text(
                     "Condition",
-                     style: TextStyle(color: Color(0xff53565A)),
-                   
+                    style: TextStyle(color: Color(0xff53565A)),
                   ),
                   SizedBox(
                     width: 40,
                   ),
-                  Text("Used", style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(
+                    product.condition,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               SizedBox(
@@ -66,13 +73,15 @@ class AboutItemCard extends StatelessWidget {
                 children: [
                   Text(
                     "Category",
-                     style: TextStyle(color: Color(0xff53565A)),
-                   
+                    style: TextStyle(color: Color(0xff53565A)),
                   ),
-                   SizedBox(
+                  SizedBox(
                     width: 44,
                   ),
-                  Text("Bags",  style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(
+                    "Bags",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               SizedBox(
@@ -82,16 +91,17 @@ class AboutItemCard extends StatelessWidget {
                 children: [
                   Text(
                     "Quantity",
-                     style: TextStyle(color: Color(0xff53565A)),
-                  
+                    style: TextStyle(color: Color(0xff53565A)),
                   ),
-                   SizedBox(
+                  SizedBox(
                     width: 46,
                   ),
-                  Text("1", style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(
+                    "1",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
-              
             ],
           ),
           Align(

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:starwears/widgets/BidCard.dart';
-import 'package:starwears/widgets/CategoryCard.dart';
 
-import '../widgets/AboutItemCard.dart';
-import '../widgets/CelebritiesCard.dart';
+import '../models/product.dart';
+
 
 class ProductDetailsScreen extends StatefulWidget {
-  const ProductDetailsScreen({Key? key}) : super(key: key);
+  final Product product;
+  const ProductDetailsScreen({Key? key,required this.product}) : super(key: key);
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -85,8 +82,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Container(
                 width: double.infinity,
                 height: 250,
-                child: Image.asset(
-                    fit: BoxFit.cover, 'assets/images/imagecarousel.png')),
+                child: Image.network(
+                    fit: BoxFit.cover, widget.product.images[0])),
 
             SizedBox(
               height: 10,
@@ -97,7 +94,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               padding: const EdgeInsets.only(left: 10.0, top: 10),
               width: MediaQuery.of(context).size.width - 10,
               child: Text(
-                "Black Channel dress worn by beyonce at the25th BET Awards ",
+                widget.product.name,
                 textAlign: TextAlign.left,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 overflow: TextOverflow.clip,
@@ -224,14 +221,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Chanel",
+                        widget.product.brandName,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "Used",
+                        widget.product.condition,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -252,14 +249,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         height: 10,
                       ),
                       Text(
-                        "Women",
+                      widget.product.department,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "Zip",
+                        widget.product.closure,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -280,28 +277,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         height: 10,
                       ),
                       Text(
-                        "Wool",
+                      widget.product.material,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "Black",
+                        widget.product.color,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "Cotton",
+                        widget.product.interior_material,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
                       ),
                       Text(
-                        "Black",
+                        widget.product.interior_color,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -321,8 +318,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       SizedBox(
                         height: 10,
                       ),
-                       Text(
-                        "8 days",
+                      Text(
+                        widget.product.auctionEnd,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:starwears/Screens/MainScreen.dart';
 
 import '../Providers/IndexProvider.dart';
-import 'AccountScreen.dart';
+import 'connected_account/AccountScreen.dart';
 import 'AuctionScreen.dart';
 import 'SearchScreen.dart';
 import 'SigningScreen.dart';
@@ -52,13 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
       // appBar: AppBar(
       //   title: Text('Bottom Navigation Bar'),
       // ),
-      body: Navigator(
-        onGenerateRoute: (settings) {
-          return MaterialPageRoute(
-            builder: (context) => _children[indexProvider.currentIndex],
-          );
-        },
-      ),
+      body: _children[indexProvider.currentIndex],
+          
+        
+    
       
       
       bottomNavigationBar: BottomNavigationBar(
