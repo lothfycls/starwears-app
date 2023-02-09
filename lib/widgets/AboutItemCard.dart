@@ -72,24 +72,6 @@ class AboutItemCard extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    "Category",
-                    style: TextStyle(color: Color(0xff53565A)),
-                  ),
-                  SizedBox(
-                    width: 44,
-                  ),
-                  Text(
-                    "Bags",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Text(
                     "Quantity",
                     style: TextStyle(color: Color(0xff53565A)),
                   ),

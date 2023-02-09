@@ -1,11 +1,7 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
-import 'package:starwears/models/bid.dart';
-import 'package:starwears/models/celebrity.dart';
 import 'package:http/http.dart' as http;
-import 'package:starwears/services/bids_service.dart';
-import 'package:starwears/services/celebrities_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:starwears/models/relationship.dart';
 
 import '../models/product.dart';
 
@@ -19,6 +15,55 @@ class ProductsService {
   final String userBids = "/users/productBids/";
   final String endedEndpoint = "/product/end/findall";
   final String activeEndpoint = "/product/active/findall";
+  final String singleProduct = "/product/find/";
+  final String relationShip = "/users/state/product/";
+  final String activeBids = "/users/bids/active/";
+  final String wonBids = "/users/bids/wins/";
+  final String lostBids = "/users/bids/failed/";
+
+
+  Future getRelationShip(int productId, int clientId) async {
+    final String uri =
+        url + relationShip + productId.toString() + "/" + clientId.toString();
+    print(uri);
+    final response = await http.get(Uri.parse(uri));
+    final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return Relationship.fromJson(json);
+    } else {
+      throw Exception(json["message"]);
+    }
+  }
+
+  Future addToWatchList(Product product) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String? watchlist = _prefs.getString("watchlist");
+    List<dynamic> decodedList = watchlist != null ? json.decode(watchlist) : [];
+    decodedList.add({
+      "name": product.name,
+      "productId": product.id,
+      "price": product.lastPrice,
+      "state": product.state,
+      "bidCount": product.bidsCount,
+      "date": product.auctionEnd,
+      "description": product.description,
+      "url": product.images[0],
+    });
+    _prefs.setString("watchlist", json.encode(decodedList));
+  }
+
+  Future getWatchListItems() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String? watchlistString = _prefs.getString("watchlist");
+    List<Product> prods = [];
+    if (watchlistString != null) {
+      List<dynamic> products = json.decode(watchlistString);
+      prods = Product.fromShared(products);
+      //return Product.fromJson(products);
+    }
+    return prods;
+  }
+
   Future getCategoryProduct(int id) async {
     final String uri = url + categoryEndpoint + id.toString();
     print(uri);
@@ -26,6 +71,18 @@ class ProductsService {
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       return Product.fromJson(json);
+    } else {
+      throw Exception(json["message"]);
+    }
+  }
+
+  Future getSingleProduct(int productId) async {
+    final String uri = url + singleProduct + productId.toString();
+    print(uri);
+    final response = await http.get(Uri.parse(uri));
+    final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return Product.fromjJson(json);
     } else {
       throw Exception(json["message"]);
     }
@@ -59,7 +116,7 @@ class ProductsService {
     final response = await http.get(Uri.parse(url + trending));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
+      print("rani f trending");
 
       return Product.fromJson(json);
     } else {
@@ -83,15 +140,6 @@ class ProductsService {
     if (response.statusCode == 200) {
       int i = 0;
       for (Map<String, dynamic> jsonObject in json) {
-     /*   int ownerId = jsonObject["ownerId"];
-        CelebritiesService celebritiesService = CelebritiesService();
-        List<Celebrity> celebs = await celebritiesService.getCelebrities();
-        Celebrity celeb = celebs.firstWhere((element) => element.id == ownerId);
-        final ownerEntry = <String, Map<String, String>>{
-          "owner": {
-            "name": celeb.name,
-          }
-        };*/
         final imageEntry = <String, dynamic>{
           "productImages": [
             {
@@ -113,6 +161,36 @@ class ProductsService {
 
   Future getUserBidProducts(int id) async {
     final response = await http.get(Uri.parse(url + userBids + id.toString()));
+    final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      print("worked");
+      return Product.fromJson(json);
+    } else {
+      throw Exception(json["message"]);
+    }
+  }
+  Future getActiveBids(int id) async {
+    final response = await http.get(Uri.parse(url + activeBids + id.toString()));
+    final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      print("worked");
+      return Product.fromJson(json);
+    } else {
+      throw Exception(json["message"]);
+    }
+  }
+  Future getWonBids(int id) async {
+    final response = await http.get(Uri.parse(url + wonBids + id.toString()));
+    final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      print("worked");
+      return Product.fromJson(json);
+    } else {
+      throw Exception(json["message"]);
+    }
+  }
+  Future getLostBids(int id) async {
+    final response = await http.get(Uri.parse(url + lostBids + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       print("worked");

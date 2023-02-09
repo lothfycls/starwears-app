@@ -7,6 +7,7 @@ import 'package:starwears/Screens/SignUpScreen.dart';
 
 import '../bloc/authentication_bloc.dart';
 import '../models/user.dart';
+import '../services/shared_preferences_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -62,15 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -201,7 +194,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: TextFormField(
                   controller: passwordController,
+                  obscureText: true,
                   decoration: InputDecoration(
+                    
                     hintText: "password",
                   ),
                 ),
@@ -226,6 +221,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
 
                 if (state is AuthSuccess) {
+                   SharedPreferencesService shared = SharedPreferencesService();
+                  shared.upDateSharedPreferences(state.email, state.id);
                   _onWidgetDidBuild(()=>Navigator.pushAndRemoveUntil(
                       context, MaterialPageRoute(builder: (context)=>HomeScreen()), (route) => false));
                 }

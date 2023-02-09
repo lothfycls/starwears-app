@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/Screens/connected_account/BidsScreen.dart';
 import 'package:starwears/Screens/connected_account/ProfileScreen.dart';
 
@@ -22,29 +22,6 @@ class _AccountScreenState extends State<AccountScreen> {
         backgroundColor: Colors.white,
         toolbarHeight: 40,
         centerTitle: true,
-         leading: Container(
-            // color: Colors.red,
-            padding: EdgeInsets.only(left: 10),
-            // width: 100,
-            // width: 200,
-            child: InkWell(
-              onTap: (() {
-                Navigator.of(context).pop();
-              }),
-              child: Row(
-                // mainAxisAlignment: M,
-                children: <Widget>[
-                  // SizedBox(width: 5,),
-                  Icon(
-                    Icons.arrow_back_ios,
-                    color: Colors.black,
-                    size: 15,
-                  ),
-                  
-                ],
-              ),
-            ),
-          ),
         title: Text(
           'Account',
           style: TextStyle(
@@ -57,11 +34,18 @@ class _AccountScreenState extends State<AccountScreen> {
           IconButton(
             padding: EdgeInsets.only(right: 15),
             icon: Icon(
-              Icons.notifications,
+              Icons.logout,
               color: Colors.black,
               size: 22,
             ),
-            onPressed: () {
+            onPressed: () async {
+              SharedPreferences _prefs = await SharedPreferences.getInstance();
+              _prefs.remove('id');
+              _prefs.remove('email');
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => LoginScreen()),
+                  (route) => false);
               // Perform some action when the button is pressed
             },
           ),
@@ -70,13 +54,12 @@ class _AccountScreenState extends State<AccountScreen> {
       body: ListView(
         children: <Widget>[
           InkWell(
-            onTap: (){
-               Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => ProfileScreen()),
-                  );
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (BuildContext context) => ProfileScreen()),
+              );
             },
-
             child: AccountCard(
               title: "Profile",
               subtitle:
@@ -85,11 +68,11 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ),
           InkWell(
-            onTap: (){
-               Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => PurchasesScreen()),
-                  );
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (BuildContext context) => PurchasesScreen()),
+              );
             },
             child: AccountCard(
               title: "Purchases",
@@ -99,11 +82,11 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ),
           InkWell(
-            onTap: (){
+            onTap: () {
               Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => BidsScreen()),
-                  );
+                MaterialPageRoute(
+                    builder: (BuildContext context) => BidsScreen()),
+              );
             },
             child: AccountCard(
               title: "Bids",
@@ -113,18 +96,15 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
           ),
           AccountCard(
-            title: "Payments",
-            subtitle:
-                "Edit your passsword, Name, Bid preference, Email, Username",
-            icon: Icons.credit_card
-          ),
-           AccountCard(
-            title: "Help",
-            subtitle:
-                "Edit your passsword, Name, Bid preference, Email, Username",
-            icon: Icons.help
-          ),
-          
+              title: "Payments",
+              subtitle:
+                  "Edit your passsword, Name, Bid preference, Email, Username",
+              icon: Icons.credit_card),
+          AccountCard(
+              title: "Help",
+              subtitle:
+                  "Edit your passsword, Name, Bid preference, Email, Username",
+              icon: Icons.help),
         ],
       ),
     );
@@ -145,7 +125,7 @@ class AccountCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical:10,horizontal: 15),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         decoration: BoxDecoration(

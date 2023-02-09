@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/bloc/banner_bloc.dart';
+import 'package:starwears/bloc/newlistings_bloc.dart';
 
 class HomeCarousel extends StatefulWidget {
   @override
@@ -14,9 +15,10 @@ class _HomeCarouselState extends State<HomeCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BannerBloc, BannerState>(builder: (context, state) {
+    return BlocBuilder<NewlistingsBloc, NewlistingsState>(
+        builder: (context, state) {
       print(state);
-      if (state is BannerReady) {
+      if (state is ListingsReady) {
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 20),
           child: Stack(
@@ -26,7 +28,8 @@ class _HomeCarouselState extends State<HomeCarousel> {
                 // color: Color.fromARGB(107, 255, 255, 255),
                 child: PageView.builder(
                   controller: PageController(initialPage: 0),
-                  itemCount: 3,
+                  itemCount:
+                      state.listings.length > 3 ? 3 : state.listings.length,
                   onPageChanged: (index) {
                     setState(() {
                       _currentIndex = index;
@@ -49,7 +52,7 @@ class _HomeCarouselState extends State<HomeCarousel> {
                         ).createShader(bounds);
                       },
                       child: Image.network(
-                        state.banners[index].image,
+                        state.listings[index].image,
                         fit: BoxFit.cover,
                         height: 300,
                       ),
@@ -148,7 +151,7 @@ class _HomeCarouselState extends State<HomeCarousel> {
                         width: 200,
                         height: 30,
                         child: Text(
-                          state.banners[_currentIndex].description,
+                          state.listings[_currentIndex].description,
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               fontSize: 13, overflow: TextOverflow.clip),

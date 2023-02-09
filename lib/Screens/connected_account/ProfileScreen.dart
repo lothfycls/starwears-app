@@ -48,6 +48,7 @@ London''';
         backgroundColor: Colors.white,
         toolbarHeight: 40,
         centerTitle: true,
+        
         leading: Container(
           // color: Colors.red,
           padding: EdgeInsets.only(left: 10),
@@ -301,6 +302,17 @@ London''';
                   onPressed: () {},
                   child: Text(
                     "Change Password",
+                    style: TextStyle(
+                        color: _isEditMode ? Colors.blue : Colors.black,
+                        fontWeight: FontWeight.bold),
+                  )),
+                   SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Change Email",
                     style: TextStyle(
                         color: _isEditMode ? Colors.blue : Colors.black,
                         fontWeight: FontWeight.bold),

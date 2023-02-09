@@ -8,7 +8,7 @@ class GetUserRelationShip extends BidEvent {
 
   GetUserRelationShip({required this.productId});
 }
-
+class GetHighestBid extends BidEvent{}
 class AddBid extends BidEvent {
   final int amount;
   final int productId;

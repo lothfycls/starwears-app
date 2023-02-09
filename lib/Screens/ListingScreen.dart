@@ -77,15 +77,18 @@ class _ListingScreenState extends State<ListingScreen> {
           scrollDirection: Axis.vertical,
           itemCount: widget.banners.length,
           itemBuilder: (BuildContext context, int index) {
-            return ListingCard(creationDate: widget.banners[index].creationDate,
-            title: widget.banners[index].title,
-            description: widget.banners[index].description,
-            imagePath: widget.banners[index].image,);
+            return ListingCard(
+              auctionEnd: widget.banners[index].auctionEnd,
+              ownerName: widget.banners[index].ownerName,
+              title: widget.banners[index].title,
+              description: widget.banners[index].description,
+              imagePath: widget.banners[index].image[0],
+            );
           },
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount:
                 (MediaQuery.of(context).size.width / 220).truncate(),
-            childAspectRatio: 0.7,
+            childAspectRatio: 0.6,
             mainAxisSpacing: 10.0,
             crossAxisSpacing: 10.0,
           ),

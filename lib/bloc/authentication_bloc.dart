@@ -22,7 +22,7 @@ class AuthenticationBloc
         Map<String, dynamic> data = await authService.signUp(event.user);
         userId = data["id"];
         email = data["email"];
-        emit(AuthSuccess());
+        emit(AuthSuccess(email: email!, id: userId!));
       } catch (e) {
         emit(CreationFailed(e.toString().substring(10)));
       }
@@ -32,7 +32,18 @@ class AuthenticationBloc
         Map<String, dynamic> data = await authService.login(event.user);
         userId = data["id"];
         email = data["email"];
-        emit(AuthSuccess());
+        print(userId);
+        emit(AuthSuccess(email: email!, id: userId!));
+      } catch (e) {
+        emit(LoginFailed(e.toString().substring(10)));
+      }
+    });
+    on<LocalAuth>((event, emit) async {
+      try {
+        userId = event.id;
+        email = event.email;
+        print(userId);
+        emit(AuthSuccess(email: email!, id: userId!));
       } catch (e) {
         emit(LoginFailed(e.toString().substring(10)));
       }

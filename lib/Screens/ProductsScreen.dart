@@ -101,7 +101,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  ProductScreen(product: state.products[index])),
+                                  ProductScreen(productId :state.products[index].id)),
                         );
                       }),
                       child: BidCard(

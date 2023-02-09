@@ -12,6 +12,7 @@ class ProductsReady extends ProductsState {
   });
 }
 
+
 class ProductsFailed extends ProductsState {
   final String error;
   ProductsFailed({

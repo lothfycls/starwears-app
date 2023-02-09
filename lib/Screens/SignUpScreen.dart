@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/bloc/authentication_bloc.dart';
 import 'package:starwears/models/user.dart';
+import 'package:starwears/services/shared_preferences_service.dart';
 
 import 'HomeScreen.dart';
 
@@ -40,34 +41,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   _showAlertDialog(errorMsg) {
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text(
-              'Sign Up Failed',
-              style: TextStyle(color: Colors.black),
-            ),
-            content: Text(errorMsg),
-          );
-        })  .then((val) =>
-    BlocProvider.of<AuthenticationBloc>(context).add(InitAuth()));
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text(
+                  'Sign Up Failed',
+                  style: TextStyle(color: Colors.black),
+                ),
+                content: Text(errorMsg),
+              );
+            })
+        .then((val) =>
+            BlocProvider.of<AuthenticationBloc>(context).add(InitAuth()));
   }
-
+bool? _value = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+    
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -86,7 +80,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: 24),
             // Text
             Text(
-              'Welcome back',
+              'Welcome to our bidding wears',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
             ),
             SizedBox(height: 24),
@@ -199,6 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 child: TextFormField(
                   controller: passwordController,
+                  obscureText: true,
                   decoration: InputDecoration(
                     hintText: "password",
                   ),
@@ -220,8 +215,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ],
                 ),
               ),
-              value: false,
-              onChanged: (bool? value) {},
+              value: _value,
+              onChanged: (bool? value) {
+                setState(() {
+                  _value = value;
+                });
+              },
             ),
             // FlatButton(
             //   child: Text(
@@ -239,6 +238,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _onWidgetDidBuild(_showAlertDialog(state.message));
                 }
                 if (state is AuthSuccess) {
+                  SharedPreferencesService shared = SharedPreferencesService();
+                  shared.upDateSharedPreferences(state.email, state.id);
                   _onWidgetDidBuild(() => Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -259,7 +260,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             passwordController.text)));
                   },
                   child: Text(
-                    "Login",
+                    "Sign Up",
                     textAlign: TextAlign.center,
                   ),
                 );

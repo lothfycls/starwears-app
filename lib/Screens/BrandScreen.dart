@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/bloc/products_bloc.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
@@ -22,7 +23,7 @@ class _BrandScreenState extends State<BrandScreen> {
   void initState() {
     // TODO: implement initState
     BlocProvider.of<ProductsBloc>(context)
-        .add(GetBrandProducts(brandId: widget.currentBrand+1));
+        .add(GetBrandProducts(brandId: widget.currentBrand + 1));
     _value = widget.currentBrand;
     super.initState();
   }
@@ -152,8 +153,17 @@ class _BrandScreenState extends State<BrandScreen> {
                       scrollDirection: Axis.vertical,
                       itemCount: state.products.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return BrandCard(
-                          product: state.products[index],
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => ProductScreen(
+                                        productId: state.products[index].id)));
+                          },
+                          child: BrandCard(
+                            product: state.products[index],
+                          ),
                         );
                       },
                     );

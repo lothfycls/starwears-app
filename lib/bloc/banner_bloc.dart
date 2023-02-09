@@ -14,9 +14,8 @@ class BannerBloc extends Bloc<BannerEvent, BannerState> {
     on<GetBanner>((event, emit) async {
       try {
         final List<Banner> _banners = await bannersService.getBanners();
-        print('wooo');
+        print("alolslsls");
         banners = _banners;
-        print(banners.length);
         emit(BannerReady(banners: _banners));
       } catch (e) {
         emit(BannerFailed(error: e.toString()));

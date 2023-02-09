@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:starwears/Screens/PlaceBidScreen.dart';
+import 'package:starwears/Screens/ProductDetailsScreen.dart';
 import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/bloc/bid_bloc.dart';
 
@@ -44,7 +45,7 @@ class _BidCardState extends State<BidCard> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (_) => ProductScreen(product: widget.product)));
+                builder: (_) => ProductScreen(productId: widget.product.id)));
       },
       child: Container(
         width: 200,
@@ -71,7 +72,7 @@ class _BidCardState extends State<BidCard> {
             Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 10),
               child: Text(widget.name,
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+                  style:const TextStyle(fontWeight: FontWeight.bold)),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
@@ -116,7 +117,7 @@ class _BidCardState extends State<BidCard> {
                         context,
                         MaterialPageRoute(
                             builder: (_) =>
-                                PlaceBidScreen(productId: widget.product.id)));
+                                ProductScreen(productId: widget.product.id,)));
                   },
                   child: Container(
                     width: 55,
@@ -133,7 +134,7 @@ class _BidCardState extends State<BidCard> {
                           style: TextStyle(color: Colors.black, fontSize: 10)),
                       onPressed: () async {
                         MaterialPageRoute(
-                            builder: ((context) => PlaceBidScreen(
+                            builder: ((context) => ProductScreen(
                                   productId: widget.product.id,
                                 )));
                       },

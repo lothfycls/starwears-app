@@ -1,0 +1,5 @@
+first dialog dyel order
+id costumer
+creer ordre(pending), update order to paid only for now.
+shipping cost : 25
+

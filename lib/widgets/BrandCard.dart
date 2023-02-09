@@ -44,7 +44,7 @@ class BrandCard extends StatelessWidget {
             SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
-              child: Text('Owner: Beyonce'),
+              child: Text('Owner: ${product.ownerName}'),
             ),
             SizedBox(height: 10),
             Padding(
@@ -61,7 +61,7 @@ class BrandCard extends StatelessWidget {
                   ),
                   SizedBox(width: 70),
                   Text(
-                    "17  Bids",
+                    "${product.bidsCount} Bids",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 10,

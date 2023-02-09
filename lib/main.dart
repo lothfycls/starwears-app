@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starwears/Screens/connected_account/ProfileScreen.dart';
 import 'package:starwears/Screens/SignUpScreen.dart';
 import 'package:starwears/Screens/SplashScreen.dart';
@@ -12,7 +13,11 @@ import 'package:starwears/bloc/bid_bloc.dart';
 import 'package:starwears/bloc/brand_bloc.dart';
 import 'package:starwears/bloc/category_bloc.dart';
 import 'package:starwears/bloc/celebrity_bloc.dart';
+import 'package:starwears/bloc/newlistings_bloc.dart';
+import 'package:starwears/bloc/orders_bloc.dart';
 import 'package:starwears/bloc/products_bloc.dart';
+import 'package:starwears/bloc/relationship_bloc.dart';
+import 'package:starwears/bloc/singleproduct_bloc.dart';
 import 'package:starwears/stripe_page.dart';
 
 import 'Providers/IndexProvider.dart';
@@ -29,6 +34,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
   final AuthenticationBloc authenticationBloc = AuthenticationBloc();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -48,7 +54,15 @@ class MyApp extends StatelessWidget {
             create: (_) =>
                 ProductsBloc(authenticationBloc: authenticationBloc)),
         BlocProvider(
-            create: (_) => BidBloc(authenticationBloc: authenticationBloc))
+            create: (_) => BidBloc(authenticationBloc: authenticationBloc)),
+        BlocProvider(create: (_) => NewlistingsBloc()),
+        BlocProvider(create: (_) => SingleproductBloc()),
+        BlocProvider(
+            create: (_) =>
+                RelationshipBloc(authenticationBloc: authenticationBloc)),
+                BlocProvider(
+            create: (_) =>
+                OrdersBloc(authenticationBloc: authenticationBloc)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -71,8 +85,53 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home:const SplashScreen(),
+        home: Choose(),
       ),
+    );
+  }
+}
+
+class Choose extends StatefulWidget {
+  const Choose({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<Choose> createState() => _ChooseState();
+}
+
+class _ChooseState extends State<Choose> {
+  checkPrefsForUser(context) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var email = _prefs.getString('email');
+    var id = _prefs.getInt('id');
+    if (email != null && id != null) {
+      print("wa");
+      BlocProvider.of<AuthenticationBloc>(context)
+          .add(LocalAuth(email: email, id: id));
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+    checkPrefsForUser(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            buildWhen: (previous, current) => previous != current,
+
+      builder: (context, state) 
+      {
+        print(state);
+        if (state is AuthSuccess) {
+          return HomeScreen();
+        } else {
+          return SplashScreen();
+        }
+      },
     );
   }
 }

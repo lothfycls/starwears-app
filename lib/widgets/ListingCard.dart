@@ -4,13 +4,15 @@ class ListingCard extends StatelessWidget {
   const ListingCard({
     Key? key,
     required this.title,
+    required this.ownerName,
     required this.description,
-    required this.creationDate,
+    required this.auctionEnd,
     required this.imagePath,
   }) : super(key: key);
   final String title;
   final String description;
-  final String creationDate;
+  final String auctionEnd;
+  final String ownerName;
   final String imagePath;
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class ListingCard extends StatelessWidget {
                 child: Image.network(fit: BoxFit.cover, imagePath)),
             Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 10),
-              child: Text(creationDate),
+              child: Text(auctionEnd),
             ),
             SizedBox(height: 10),
             Padding(
@@ -44,7 +46,12 @@ class ListingCard extends StatelessWidget {
                 style: TextStyle(fontSize: 11),
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.only(left: 10.0),
+              child: Text("Owner: $ownerName"),
+            ),
+            const Spacer(),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 7),
               height: 20,
@@ -60,7 +67,10 @@ class ListingCard extends StatelessWidget {
                 ),
                 child: const Text('Place Bid'),
               ),
-            )
+            ),
+            const SizedBox(
+              height: 5,
+            ),
           ],
         ),
       ),

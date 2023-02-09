@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../models/product.dart';
 
-
 class ProductDetailsScreen extends StatefulWidget {
   final Product product;
-  const ProductDetailsScreen({Key? key,required this.product}) : super(key: key);
+  const ProductDetailsScreen({Key? key, required this.product})
+      : super(key: key);
 
   @override
   State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
@@ -82,8 +82,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Container(
                 width: double.infinity,
                 height: 250,
-                child: Image.network(
-                    fit: BoxFit.cover, widget.product.images[0])),
+                child:
+                    Image.network(fit: BoxFit.cover, widget.product.images[0])),
 
             SizedBox(
               height: 10,
@@ -125,13 +125,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         height: 10,
                       ),
                       Text(
-                        "Category",
-                        style: TextStyle(color: Color(0xff53565A)),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
                         "Quantity",
                         style: TextStyle(color: Color(0xff53565A)),
                       ),
@@ -147,20 +140,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                       Text(
                         "Closure",
-                        style: TextStyle(color: Color(0xff53565A)),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Handle/Strap Color",
-                        style: TextStyle(color: Color(0xff53565A)),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Occassion",
                         style: TextStyle(color: Color(0xff53565A)),
                       ),
                       SizedBox(
@@ -195,20 +174,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         height: 10,
                       ),
                       Text(
-                        "Style",
-                        style: TextStyle(color: Color(0xff53565A)),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Finish",
-                        style: TextStyle(color: Color(0xff53565A)),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
                         "Auction End",
                         style: TextStyle(color: Color(0xff53565A)),
                       ),
@@ -235,13 +200,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         height: 10,
                       ),
                       Text(
-                        "Dress",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
                         "1",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -249,7 +207,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         height: 10,
                       ),
                       Text(
-                      widget.product.department,
+                        widget.product.department,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -263,21 +221,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         height: 10,
                       ),
                       Text(
-                        "Strapless",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Formal and Casual",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                      widget.product.material,
+                        widget.product.material,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
@@ -299,20 +243,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                       Text(
                         widget.product.interior_color,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Classy",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Quilted",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(

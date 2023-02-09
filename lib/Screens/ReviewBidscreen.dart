@@ -2,17 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/Screens/HomeScreen.dart';
+import 'package:starwears/Screens/PlaceBidScreen.dart';
+import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/bloc/bid_bloc.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
+import '../bloc/relationship_bloc.dart';
 import '../widgets/BrandCard.dart';
 
 class ReviewBidScreen extends StatefulWidget {
   final double bidAmount;
   final int productId;
+  final int maxBid;
+  final String date;
   const ReviewBidScreen(
-      {Key? key, required this.bidAmount, required this.productId})
+      {Key? key,
+      required this.bidAmount,
+      required this.productId,
+      required this.date,
+      required this.maxBid})
       : super(key: key);
 
   @override
@@ -37,7 +47,16 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
             ),
             content: Text(errorMsg),
           );
-        }).then((val) => BlocProvider.of<BidBloc>(context).add(InitBid()));
+        }).then((val) {
+      BlocProvider.of<BidBloc>(context).add(InitBid());
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (_) => PlaceBidScreen(date: widget.date,
+              maxBid: widget.maxBid,
+                    productId: widget.productId,
+                  )),(route)=>false);
+    });
   }
 
   _showSuccesDialog() {
@@ -45,18 +64,27 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
         context: context,
         builder: (context) {
           return const AlertDialog(
-            title: const Text(
+            title: Text(
               'Bid added successfully',
               style: TextStyle(color: Colors.black),
             ),
           );
-        }).then((val) => BlocProvider.of<BidBloc>(context).add(InitBid()));
+        }).then((val) {
+      BlocProvider.of<BidBloc>(context).add(InitBid());
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (_) => ProductScreen(
+                    productId: widget.productId,
+                  )),((route) => false));
+    });
   }
 
   double? _bid = 0;
   final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final int total = widget.maxBid + 25;
     print(_bid);
     return Scaffold(
         resizeToAvoidBottomInset: true,
@@ -85,7 +113,7 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
                     size: 15,
                   ),
                   Text(
-                    "Submit bid",
+                    "Submit",
                     style: TextStyle(color: Colors.black, fontSize: 15),
                   ),
                 ],
@@ -161,28 +189,28 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "\$${widget.bidAmount}",
+                                "\$${widget.maxBid}",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 height: 10,
                               ),
                               Text(
-                                "9d 22h",
+                                widget.date,
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 height: 10,
                               ),
                               Text(
-                                "\$25",
+                                "\$ 25",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 height: 10,
                               ),
                               Text(
-                                "\$ 16,024",
+                                "\$ $total",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -199,10 +227,11 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
                     BlocListener<BidBloc, BidState>(
                       listener: (context, state) {
                         if (state is BidsFailed) {
-                          _onWidgetDidBuild(()=>_showAlertDialog(state.error));
+                          _onWidgetDidBuild(
+                              () => _showAlertDialog(state.error));
                         }
                         if (state is BidAdded) {
-                          _onWidgetDidBuild(()=>_showSuccesDialog());
+                          _onWidgetDidBuild(() => _showSuccesDialog());
                         }
                       },
                       child: Container(

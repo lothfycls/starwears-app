@@ -53,7 +53,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
             ),
           ),
           title: Text(
-            'Purchases',
+            'Orders',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,

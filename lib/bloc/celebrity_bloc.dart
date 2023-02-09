@@ -7,7 +7,7 @@ part 'celebrity_event.dart';
 part 'celebrity_state.dart';
 
 class CelebrityBloc extends Bloc<CelebrityEvent, CelebrityState> {
-    CelebritiesService celebrityService = CelebritiesService();
+  CelebritiesService celebrityService = CelebritiesService();
   CelebrityBloc() : super(CelebrityInitial()) {
     on<GetCelebrities>((event, emit) async {
       try {
@@ -15,6 +15,7 @@ class CelebrityBloc extends Bloc<CelebrityEvent, CelebrityState> {
         emit(CelebritiesReady(celebrities: celebrities));
       } catch (e) {
         emit(CelebritiesFailed(error: e.toString()));
+        print(e.toString());
       }
     });
   }
