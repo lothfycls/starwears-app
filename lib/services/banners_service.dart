@@ -7,10 +7,10 @@ import '../models/listing.dart';
 
 class BannersService {
   final String url = "https://lobster-app-vpw8u.ondigitalocean.app";
-  final String getAllBrandsEndpoint = "/product/upcoming/findall";
-  final String getListings = "/banner/findall";
+  final String upcoming = "/product/upcoming/findall";
+  final String banners = "/banner/findall";
   Future getBanners() async {
-    final response = await http.get(Uri.parse(url + getAllBrandsEndpoint));
+    final response = await http.get(Uri.parse(url + upcoming));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       return Banner.fromJson(json);
@@ -20,7 +20,7 @@ class BannersService {
   }
 
   Future getNewListings() async {
-    final response = await http.get(Uri.parse(url + getListings));
+    final response = await http.get(Uri.parse(url + banners));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       return Listing.fromJson(json);

@@ -238,8 +238,7 @@ bool? _value = false;
                   _onWidgetDidBuild(_showAlertDialog(state.message));
                 }
                 if (state is AuthSuccess) {
-                  SharedPreferencesService shared = SharedPreferencesService();
-                  shared.upDateSharedPreferences(state.email, state.id);
+                
                   _onWidgetDidBuild(() => Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),

@@ -1,3 +1,5 @@
+import 'package:starwears/models/product.dart';
+
 class Order {
   final String state;
   final int productId;
@@ -9,12 +11,14 @@ class Order {
   final String paymentWay;
   final int shippingCost;
   final int total;
-   set ow(int owner) => ownerId = owner;
+  Product? product;
+  set ow(int owner) => ownerId = owner;
   Order(
       {required this.state,
       required this.productId,
       required this.clientComment,
       required this.paymentWay,
+      this.product,
       required this.name,
       required this.phone,
       required this.shippingAdress,
@@ -26,7 +30,7 @@ class Order {
     List<Order> orders = [];
     for (var element in json) {
       orders.add(Order(
-          state: element["state"],
+          state: element.containsKey("state")? element["state"]:"",
           productId: element["productId"],
           ownerId: element["ownerId"],
           name: element["receiver_name"],
@@ -35,6 +39,11 @@ class Order {
           clientComment: element["client_comment"],
           paymentWay: element["payment_way"],
           total: element["total"],
+          product: element.containsKey("product")
+              ? element["product"] != null
+                  ? Product.fromjJson(element["product"])
+                  : null
+              : null,
           shippingCost: element["shipping_cost"]));
     }
     return orders;

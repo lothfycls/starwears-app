@@ -3,9 +3,7 @@ import 'package:starwears/models/product.dart';
 
 class BrandCard extends StatelessWidget {
   final Product product;
-  const BrandCard({
-    Key? key,required this.product
-  }) : super(key: key);
+  const BrandCard({Key? key, required this.product}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +25,7 @@ class BrandCard extends StatelessWidget {
                 height: 200,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                      fit: BoxFit.cover, product.images[0]),
+                  child: Image.network(fit: BoxFit.contain, product.images[0]),
                 )),
             Container(
               height: 60,
@@ -48,15 +45,17 @@ class BrandCard extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.only(left: 10.0, bottom: 10),
+              padding: const EdgeInsets.only(left: 10.0, bottom: 10, right: 10),
               child: Row(
                 children: [
-                  Text(
-                    "\$${product.lastPrice}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      // color: Color(0xffEB9B00),
+                  Flexible(
+                    child: Text(
+                      "\$${product.lastPrice}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        // color: Color(0xffEB9B00),
+                      ),
                     ),
                   ),
                   SizedBox(width: 70),
@@ -71,7 +70,7 @@ class BrandCard extends StatelessWidget {
                   SizedBox(width: 18),
                   Text(
                     product.auctionEnd,
-                    style:const TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 10,
                       // color: Color(0xffEB9B00),

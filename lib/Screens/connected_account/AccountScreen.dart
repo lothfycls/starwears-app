@@ -42,6 +42,7 @@ class _AccountScreenState extends State<AccountScreen> {
               SharedPreferences _prefs = await SharedPreferences.getInstance();
               _prefs.remove('id');
               _prefs.remove('email');
+              
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (_) => LoginScreen()),
@@ -71,7 +72,7 @@ class _AccountScreenState extends State<AccountScreen> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                    builder: (BuildContext context) => PurchasesScreen()),
+                    builder: (BuildContext context) =>const PurchasesScreen()),
               );
             },
             child: AccountCard(

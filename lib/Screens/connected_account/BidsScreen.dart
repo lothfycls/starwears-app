@@ -219,8 +219,7 @@ class _BidsScreenState extends State<BidsScreen> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                      "${state.products[index].bidsCount}"),
-                                                  Text("Bids"),
+                                                      "${state.products[index].bidsCount} Bids"),
                                                 ],
                                               ),
                                               SizedBox(width: 15),

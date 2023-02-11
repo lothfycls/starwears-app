@@ -5,7 +5,6 @@ import 'package:starwears/Screens/BrandScreen.dart';
 import 'package:starwears/Screens/CategoriesScreen.dart';
 import 'package:starwears/Screens/CelebritiesScreen.dart';
 import 'package:starwears/Screens/ListingScreen.dart';
-import 'package:starwears/Screens/PlaceBidScreen.dart';
 import 'package:starwears/Screens/ProductsScreen.dart';
 import 'package:starwears/bloc/newlistings_bloc.dart';
 import 'package:starwears/bloc/products_bloc.dart';
@@ -151,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
                           child: ImageCard(
                             title: state.categories[index].name,
                             image:
-                                "https://images.unsplash.com/photo-1675241816662-faab5f4c3f88?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1964&q=80",
+                               state.categories[index].image,
                           ));
                     }),
               );
@@ -260,8 +259,8 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               );
             } else if (state is BannerFailed) {
-              return const Center(
-                child: Text("Error"),
+              return Center(
+                child: Text(state.error),
               );
             } else {
               return const Center(
@@ -525,7 +524,11 @@ class ImageCard extends StatelessWidget {
             width: 100,
             height: 100,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-            child: Image.network(fit: BoxFit.cover, image)),
+            child:  FadeInImage.assetNetwork(imageErrorBuilder:((context, error, stackTrace) => 
+            Image.asset("assets/images/imagecarousel.png")),
+          placeholder: "assets/images/imagecarousel.png",
+          image:image,
+      )),
         const SizedBox(
           height: 10,
         ),

@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/Screens/OrderScreen.dart';
 import 'package:starwears/Screens/PlaceBidScreen.dart';
 import 'package:starwears/Screens/ProductDetailsScreen.dart';
@@ -12,6 +14,7 @@ import 'package:starwears/widgets/BidCard.dart';
 import 'package:http/http.dart' as http;
 import '../bloc/products_bloc.dart';
 import '../bloc/relationship_bloc.dart';
+import '../bloc/watchlist_bloc.dart';
 import '../widgets/AboutItemCard.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -31,6 +34,8 @@ class _ProductScreenState extends State<ProductScreen> {
         .add(GetSingleProduct(productId: widget.productId));
     BlocProvider.of<RelationshipBloc>(context)
         .add(GetRelationShip(productId: widget.productId));
+    BlocProvider.of<WatchlistBloc>(context)
+        .add(CheckExist(productId: widget.productId));
   }
 
   int _currentIndex = 0;
@@ -136,8 +141,12 @@ class _ProductScreenState extends State<ProductScreen> {
                           });
                         },
                         itemBuilder: (context, index) {
-                          return Image.network(
-                              fit: BoxFit.cover, state.product.images[index]);
+                          return FadeInImage.assetNetwork(
+                            imageErrorBuilder: ((context, error, stackTrace) =>
+                                Image.asset("assets/images/imagecarousel.png")),
+                            placeholder: "assets/images/imagecarousel.png",
+                            image: state.product.images[index],
+                          );
                         },
                       ),
                     ),
@@ -238,32 +247,51 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                     BlocBuilder<RelationshipBloc, RelationshipState>(
                       builder: (context, state) {
-                        if (state is NeverState) {
+                        print(state);
+                        if (state is NeverState ||
+                            state is RelationshipFailed) {
                           return Container(
-                            height: 45,
-                            width: double.infinity,
-                            margin: EdgeInsets.symmetric(horizontal: 30),
-                            child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50.0)),
-                              color: Colors.black,
-                              child: Text(
-                                'Submit Bid',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          PlaceBidScreen(
-                                              productId: prod.id,
-                                              date: prod.auctionEnd,
-                                              maxBid: state
-                                                  .relationship.bidAmount)),
-                                );
-                              },
-                            ),
-                          );
+                              height: 45,
+                              width: double.infinity,
+                              margin: EdgeInsets.symmetric(horizontal: 30),
+                              child: RaisedButton(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(50.0)),
+                                  color: Colors.black,
+                                  child: Text(
+                                    'Submit Bid',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onPressed: () {
+                                    if (state is NeverState) {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  PlaceBidScreen(
+                                                      productId: prod.id,
+                                                      date: prod.auctionEnd,
+                                                      maxBid: state.relationship
+                                                          .bidAmount)));
+                                    } else if (state is RelationshipFailed) {
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.warning,
+                                        animType: AnimType.rightSlide,
+                                        btnOkColor: Colors.black,
+                                        title: 'Sign in Required',
+                                        desc: 'This action required to Sign in',
+                                        btnCancelOnPress: () {},
+                                        btnOkOnPress: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const LoginScreen()));
+                                        },
+                                      ).show();
+                                    }
+                                  }));
                         } else if (state is WonState) {
                           return Container(
                             height: 45,
@@ -286,15 +314,6 @@ class _ProductScreenState extends State<ProductScreen> {
                                             ownerId: prod.ownerId,
                                             shippingCost: 25,
                                             total: prod.lastPrice)));
-
-                                //await makePayment(prod.lastPrice.toString());
-                                /*showBottomSheet(
-                                    context: context,
-                                    builder: (context) {
-                                      return Column(
-                                        children: [],
-                                      );
-                                    });*/
                               },
                             ),
                           );
@@ -306,14 +325,13 @@ class _ProductScreenState extends State<ProductScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    BlocBuilder<RelationshipBloc, RelationshipState>(
-                      builder: (context, state) {
-                        if (state is AlreadyState ||
-                            state is OutbiddedState ||
-                            state is NeverState) {
-                          return GestureDetector(
+                    BlocBuilder<WatchlistBloc, WatchlistState>(
+                        builder: (context, state) {
+                      print(state);
+                      if (state is WatchListAbsent) {
+                        return GestureDetector(
                             onTap: () {
-                              BlocProvider.of<ProductsBloc>(context)
+                              BlocProvider.of<WatchlistBloc>(context)
                                   .add(AddWatchList(product: prod));
                             },
                             child: Container(
@@ -332,13 +350,31 @@ class _ProductScreenState extends State<ProductScreen> {
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
-                            ),
-                          );
-                        } else {
-                          return const SizedBox();
-                        }
-                      },
-                    ),
+                            ));
+                      } else {
+                        return GestureDetector(
+                            onTap: () {
+                              BlocProvider.of<WatchlistBloc>(context)
+                                  .add(RemoveWatchList(productId: prod.id));
+                            },
+                            child: Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                width: double.infinity,
+                                height: 45,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(color: Colors.black)),
+                                child: Center(
+                                  child: Text(
+                                    "Remove from Watchlist",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                )));
+                      }
+                    }),
                     SizedBox(
                       height: 10,
                     ),

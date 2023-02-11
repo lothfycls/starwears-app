@@ -222,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 if (state is AuthSuccess) {
                    SharedPreferencesService shared = SharedPreferencesService();
-                  shared.upDateSharedPreferences(state.email, state.id);
+                  shared.upDateSharedPreferences(state.email, state.id,"","","","","");
                   _onWidgetDidBuild(()=>Navigator.pushAndRemoveUntil(
                       context, MaterialPageRoute(builder: (context)=>HomeScreen()), (route) => false));
                 }

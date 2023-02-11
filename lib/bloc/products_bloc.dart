@@ -66,21 +66,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       }
     });
     
-    on<AddWatchList>((event, emit) async {
-      await productsService.addToWatchList(event.product);
-    });
-    on<GetActiveWatchList>((event, emit) async {
-      List<Product> products = await productsService.getWatchListItems();
-      emit(ProductsReady(
-          products:
-              products.where((element) => element.state == "Active").toList()));
-    });
-    on<GetEndedWatchList>((event, emit) async {
-      List<Product> products = await productsService.getWatchListItems();
-      emit(ProductsReady(
-          products:
-              products.where((element) => element.state == "Ended").toList()));
-    });
+   
     on<GetUserBidProducts>((event, emit) async {
      try {
       final currentId = authenticationBloc.userId;

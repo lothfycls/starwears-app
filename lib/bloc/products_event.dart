@@ -29,12 +29,4 @@ class GetUserActiveBids extends ProductsEvent{}
 class GetUserWonBids extends ProductsEvent{}
 class GetUserLostBids extends ProductsEvent{}
 
-class GetActiveWatchList extends ProductsEvent {}
 
-class GetEndedWatchList extends ProductsEvent {}
-
-class AddWatchList extends ProductsEvent {
-  final Product product;
-
-  AddWatchList({required this.product});
-}

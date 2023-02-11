@@ -1,0 +1,1 @@
+submit bid : on click : go to auth

@@ -16,9 +16,20 @@ class OrderUpdated extends OrdersState {
 
   OrderUpdated({required this.trackingOrder});
 }
-
+class OrdersReady extends OrdersState {
+  final List<Order> orders;
+  OrdersReady({
+    required this.orders,
+  });
+}
 class OrderFailed extends OrdersState {
   final String error;
 
   OrderFailed({required this.error});
+}
+
+class OrdersFailed extends OrdersState {
+  final String error;
+
+  OrdersFailed({required this.error});
 }

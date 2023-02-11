@@ -12,6 +12,11 @@ class AuthenticationBloc
   final AuthService authService = AuthService();
   int? userId;
   String? email;
+  String firstName = "";
+  String lastName = "";
+  String phoneNumber = "";
+  String homeAdress = "";
+  String username = "";
   AuthenticationBloc() : super(AuthenticationInitial()) {
     print(state);
     on<InitAuth>((event, emit) async {
@@ -42,10 +47,29 @@ class AuthenticationBloc
       try {
         userId = event.id;
         email = event.email;
+        firstName = event.firstName;
+        lastName = event.lastName;
+        phoneNumber = event.phone;
+        homeAdress = event.address;
+        username = event.username;
         print(userId);
         emit(AuthSuccess(email: email!, id: userId!));
       } catch (e) {
         emit(LoginFailed(e.toString().substring(10)));
+      }
+    });
+    on<UpdateProfile>((event, emit) async {
+      try {
+        await authService.updateProfile(event.firstName, event.lastName,
+            event.address, event.phone, event.username, userId!);
+        firstName = event.firstName;
+        lastName = event.lastName;
+        homeAdress = event.address;
+        phoneNumber = event.phone;
+        username = event.username;
+        emit(AuthSuccess(email: email!, id: userId!));
+      } catch (e) {
+        emit(CreationFailed(e.toString().substring(10)));
       }
     });
   }

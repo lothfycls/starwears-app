@@ -16,8 +16,10 @@ import 'package:starwears/bloc/celebrity_bloc.dart';
 import 'package:starwears/bloc/newlistings_bloc.dart';
 import 'package:starwears/bloc/orders_bloc.dart';
 import 'package:starwears/bloc/products_bloc.dart';
+import 'package:starwears/bloc/profile_bloc.dart';
 import 'package:starwears/bloc/relationship_bloc.dart';
 import 'package:starwears/bloc/singleproduct_bloc.dart';
+import 'package:starwears/bloc/watchlist_bloc.dart';
 import 'package:starwears/stripe_page.dart';
 
 import 'Providers/IndexProvider.dart';
@@ -57,12 +59,14 @@ class MyApp extends StatelessWidget {
             create: (_) => BidBloc(authenticationBloc: authenticationBloc)),
         BlocProvider(create: (_) => NewlistingsBloc()),
         BlocProvider(create: (_) => SingleproductBloc()),
+        BlocProvider(create: (_) => WatchlistBloc()),
         BlocProvider(
             create: (_) =>
                 RelationshipBloc(authenticationBloc: authenticationBloc)),
-                BlocProvider(
-            create: (_) =>
-                OrdersBloc(authenticationBloc: authenticationBloc)),
+        BlocProvider(
+            create: (_) => OrdersBloc(authenticationBloc: authenticationBloc)),
+        BlocProvider(
+            create: (_) => ProfileBloc(authenticationBloc: authenticationBloc)),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -105,10 +109,21 @@ class _ChooseState extends State<Choose> {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var email = _prefs.getString('email');
     var id = _prefs.getInt('id');
+    var firstName = _prefs.getString("first_name") ?? "";
+    var lastName = _prefs.getString("last_name") ?? "";
+    var address = _prefs.getString("address") ?? "";
+    var phone = _prefs.getString("phone_number") ?? "";
+    var username = _prefs.getString("username") ?? "";
     if (email != null && id != null) {
       print("wa");
-      BlocProvider.of<AuthenticationBloc>(context)
-          .add(LocalAuth(email: email, id: id));
+      BlocProvider.of<AuthenticationBloc>(context).add(LocalAuth(
+          email: email,
+          id: id,
+          firstName: firstName,
+          lastName: lastName,
+          address: address,
+          phone: phone,
+          username: username));
     }
   }
 
@@ -121,10 +136,8 @@ class _ChooseState extends State<Choose> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            buildWhen: (previous, current) => previous != current,
-
-      builder: (context, state) 
-      {
+      buildWhen: (previous, current) => previous != current,
+      builder: (context, state) {
         print(state);
         if (state is AuthSuccess) {
           return HomeScreen();

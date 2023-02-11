@@ -25,7 +25,7 @@ class Banner {
      DateTime parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
           .parse(element["auctionEnd"]);
       var outDate = parseDate.difference(Moment.now());
-      String outputDate = //outputFormat.format(inputDate);
+      String outputDate = 
           outDate.inDays.toString() + "d";
         for (var picture in element["productImages"]) {
         images.add(picture["url"]);

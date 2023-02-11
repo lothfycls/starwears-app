@@ -7,6 +7,8 @@ class OrderService {
   final String url = "https://lobster-app-vpw8u.ondigitalocean.app";
   final String addUrl = "/order/create";
   final String updateUrl = "/order/update/state";
+  final String successUrl = "/order/purchases/success";
+  final String pendingUrl = "/order/purchases/pending";
 
   Future addOrder(Order order) async {
     var data = {
@@ -36,15 +38,39 @@ class OrderService {
 
   Future updateOrder(int orderId) async {
     var data = {
-      "order_status":"PAID",
+      "order_status": "PAID",
     };
-    final response = await http.post(Uri.parse(url + updateUrl+"/"+orderId.toString()),
-        body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
+    final response = await http.post(
+        Uri.parse(url + updateUrl + "/" + orderId.toString()),
+        body: jsonEncode(data),
+        headers: {'Content-Type': 'application/json'});
 
     final json = jsonDecode(response.body);
 
     if (response.statusCode == 201) {
       return json;
+    } else {
+      throw Exception(json["message"]);
+    }
+  }
+
+  Future getPendingOrders(int clientId) async {
+    final response =
+        await http.get(Uri.parse(url + pendingUrl + "/" +clientId.toString()));
+    final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return Order.fromJson(json);
+    } else {
+      throw Exception(json["message"]);
+    }
+  }
+
+  Future getSuccessOrders(int clientId) async {
+    final response =
+        await http.get(Uri.parse(url + successUrl + "/" + clientId.toString()));
+    final json = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      return Order.fromJson(json);
     } else {
       throw Exception(json["message"]);
     }

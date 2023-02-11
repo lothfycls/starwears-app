@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'authentication_bloc.dart';
 
 @immutable
@@ -19,6 +20,32 @@ class LoginUser extends AuthenticationEvent {
 class LocalAuth extends AuthenticationEvent {
   final String email;
   final int id;
+  final String firstName;
+  final String lastName;
+  final String address;
+  final String username;
+  final String phone;
 
-  LocalAuth({required this.email, required this.id});
+  LocalAuth(
+      {required this.email,
+      required this.id,
+      required this.username,
+      required this.firstName,
+      required this.lastName,
+      required this.address,
+      required this.phone});
+}
+
+class UpdateProfile extends AuthenticationEvent {
+  final String firstName;
+  final String lastName;
+  final String address;
+  final String phone;
+  final String username;
+  UpdateProfile(
+      {required this.firstName,
+      required this.lastName,
+      required this.address,
+      required this.phone,
+      required this.username});
 }

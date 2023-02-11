@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/bloc/banner_bloc.dart';
@@ -26,39 +27,43 @@ class _HomeCarouselState extends State<HomeCarousel> {
               Container(
                 height: 300,
                 // color: Color.fromARGB(107, 255, 255, 255),
-                child: PageView.builder(
-                  controller: PageController(initialPage: 0),
-                  itemCount:
-                      state.listings.length > 3 ? 3 : state.listings.length,
-                  onPageChanged: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    // return Image.network(
-                    //   'https://picsum.photos/id/${index + 1}/300/300',
-                    //   fit: BoxFit.cover,
-                    // );
-                    return ShaderMask(
-                      blendMode: BlendMode.srcOver,
-                      shaderCallback: (Rect bounds) {
-                        return LinearGradient(
-                          colors: [
-                            Color.fromARGB(150, 255, 255, 255),
-                            Color.fromARGB(106, 255, 255, 255)
-                          ],
-                          stops: [0.0, 1.0],
-                        ).createShader(bounds);
+                child: CarouselSlider(
+                    options: CarouselOptions(
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
                       },
-                      child: Image.network(
-                        state.listings[index].image,
-                        fit: BoxFit.cover,
-                        height: 300,
-                      ),
-                    );
-                  },
-                ),
+                      enableInfiniteScroll: true,
+                      initialPage: 0,
+                      viewportFraction: 1,
+                      autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 2),
+                      autoPlayAnimationDuration:
+                          const Duration(milliseconds: 800),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                    ),
+                    items: List.generate(
+                        state.listings.length > 3 ? 3 : state.listings.length,
+                        (index) {
+                      return ShaderMask(
+                        blendMode: BlendMode.srcOver,
+                        shaderCallback: (Rect bounds) {
+                          return LinearGradient(
+                            colors: [
+                              Color.fromARGB(150, 255, 255, 255),
+                              Color.fromARGB(106, 255, 255, 255)
+                            ],
+                            stops: [0.0, 1.0],
+                          ).createShader(bounds);
+                        },
+                        child: Image.network(
+                          state.listings[index].image,
+                          fit: BoxFit.cover,
+                          height: 300,
+                        ),
+                      );
+                    })),
               ),
               Positioned(
                 top: 0,
@@ -74,56 +79,28 @@ class _HomeCarouselState extends State<HomeCarousel> {
                       bottomRight: Radius.circular(20),
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 30,
-                        width: 30,
-                        margin: EdgeInsets.only(left: 10),
-                        padding: EdgeInsets.only(left: 7),
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: FractionallySizedBox(
-                            heightFactor: 1.0,
-                            widthFactor: 1.0,
-                            child: Transform.scale(
-                              scale: 1,
-                              child: Icon(Icons.arrow_back_ios),
-                            ),
+                  child: Expanded(
+                    child: Container(
+                      height: 40,
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(color: Color(0xffBEBEBE)),
+                          alignLabelWithHint: true,
+                          hintText: 'Search',
+                          border: InputBorder.none,
+                          suffixIcon: Icon(
+                            Icons.search,
+                            color: Color(0xffBEBEBE),
                           ),
                         ),
                       ),
-                      SizedBox(width: 20),
-                      Expanded(
-                        child: Container(
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(color: Color(0xffBEBEBE)),
-                              alignLabelWithHint: true,
-                              hintText: 'Search',
-                              border: InputBorder.none,
-                              suffixIcon: Icon(
-                                Icons.search,
-                                color: Color(0xffBEBEBE),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 40,
-                      )
-                      // Icon(Icons.search),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -188,7 +165,7 @@ class _HomeCarouselState extends State<HomeCarousel> {
         );
       } else {
         return const Center(
-          child: Text("Not Ready yet"),
+          child: Text("No new listings yet"),
         );
       }
     });

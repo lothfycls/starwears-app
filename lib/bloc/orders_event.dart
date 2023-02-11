@@ -16,3 +16,5 @@ class UpdateOrder extends OrdersEvent {
 }
 
 class InitOrder extends OrdersEvent{}
+class GetPendingOrders extends OrdersEvent{}
+class GetSuccessOrders extends OrdersEvent{}

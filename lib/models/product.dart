@@ -56,13 +56,18 @@ class Product {
       for (var picture in element["productImages"]) {
         images.add(picture["url"]);
       }
-      DateTime parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-          .parse(element["auctionEnd"]);
-      var outDate = parseDate.difference(Moment.now());
-      String outputDate = //outputFormat.format(inputDate);
-          outDate.inDays.toString() + "d";
+       Duration parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        .parse(element["auctionEnd"])
+        .difference(DateTime.now());
+    int hours = parseDate.inHours - parseDate.inDays * 24;
+    String outputDate = "";
+    if (parseDate.inHours == 0) {
+      outputDate = "${hours}h";
+    } else {
+      outputDate = "${parseDate.inDays}d ${hours}h";
+    }
       products.add(Product(
-        ownerId: element["ownerId"],
+          ownerId: element["ownerId"],
           bidsCount: element.containsKey("_count")
               ? element["_count"] != null
                   ? element["_count"]["bids"]
@@ -90,10 +95,12 @@ class Product {
               : "none",
           id: element["id"],
           lastBidder: element.containsKey("LastBidder")
-            ? element["LastBidder"] != null
-                ? element["LastBidder"]["last_name"] != null? element["LastBidder"]["last_name"]:"No bidder yet"
-                : "No Bidder yet"
-            : "No Bidder yet",
+              ? element["LastBidder"] != null
+                  ? element["LastBidder"]["last_name"] != null
+                      ? element["LastBidder"]["last_name"]
+                      : "No bidder yet"
+                  : "No Bidder yet"
+              : "No Bidder yet",
           name: element["name"],
           closure: element.containsKey("closure")
               ? element["closure"] != null
@@ -133,14 +140,19 @@ class Product {
     for (var picture in element["productImages"]) {
       images.add(picture["url"]);
     }
-    DateTime parseDate =
-        DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(element["auctionEnd"]);
-    var inputDate = DateTime.parse(parseDate.toString());
-    var outputFormat = DateFormat('MM/dd/yyyy hh:mm a');
-    String outputDate = outputFormat.format(inputDate);
 
+    Duration parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        .parse(element["auctionEnd"])
+        .difference(DateTime.now());
+    int hours = parseDate.inHours - parseDate.inDays * 24;
+    String outputDate = "";
+    if (parseDate.inHours == 0) {
+      outputDate = "${hours}h";
+    } else {
+      outputDate = "${parseDate.inDays}d ${hours}h";
+    }
     return Product(
-      ownerId: element["ownerId"],
+        ownerId: element["ownerId"],
         bidsCount: element["_count"]["bids"],
         color: element.containsKey("Color")
             ? element["Color"] != null
@@ -165,7 +177,9 @@ class Product {
         id: element["id"],
         lastBidder: element.containsKey("LastBidder")
             ? element["LastBidder"] != null
-                ? element["LastBidder"]["last_name"] != null? element["LastBidder"]["last_name"]:"No bidder yet"
+                ? element["LastBidder"]["last_name"] != null
+                    ? element["LastBidder"]["last_name"]
+                    : "No bidder yet"
                 : "No Bidder yet"
             : "No Bidder yet",
         name: element["name"],
@@ -200,7 +214,7 @@ class Product {
 
     for (Map<String, dynamic> element in json) {
       products.add(Product(
-        ownerId: -50,
+          ownerId: -50,
           bidsCount: element["bidCount"],
           color: "",
           interior_color: "",
@@ -224,4 +238,5 @@ class Product {
     }
     return products;
   }
+   
 }

@@ -49,13 +49,8 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
           );
         }).then((val) {
       BlocProvider.of<BidBloc>(context).add(InitBid());
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (_) => PlaceBidScreen(date: widget.date,
-              maxBid: widget.maxBid,
-                    productId: widget.productId,
-                  )),(route)=>false);
+    
+      Navigator.pop(context);
     });
   }
 
@@ -76,7 +71,8 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
           MaterialPageRoute(
               builder: (_) => ProductScreen(
                     productId: widget.productId,
-                  )),((route) => false));
+                  )),
+          ((route) => false));
     });
   }
 

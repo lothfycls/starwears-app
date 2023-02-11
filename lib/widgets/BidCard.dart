@@ -67,22 +67,27 @@ class _BidCardState extends State<BidCard> {
             Image.network(
                 height: 150,
                 width: double.infinity,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 widget.imagePath),
             Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 10),
               child: Text(widget.name,
-                  style:const TextStyle(fontWeight: FontWeight.bold)),
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text(widget.description),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  widget.description,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: Text("\$ ${widget.lastPrice}",
-                  style: TextStyle(color: Colors.orange)),
+                  style: const TextStyle(color: Colors.orange)),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 10.0),
@@ -92,56 +97,60 @@ class _BidCardState extends State<BidCard> {
               padding: const EdgeInsets.only(left: 10.0),
               child: Text('Bid:${widget.lastBidUser}'),
             ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                RaisedButton.icon(
-                  elevation: 0,
-                  color: Color.fromARGB(255, 255, 255, 255),
-                  padding: EdgeInsets.zero,
-                  icon: Icon(
-                    Icons.brightness_1,
-                    color: Colors.green,
-                    size: 10,
+            const SizedBox(height: 10),
+            Flexible(
+              child: Row(
+                children: [
+                  RaisedButton.icon(
+                    elevation: 0,
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                      Icons.brightness_1,
+                      color: Colors.green,
+                      size: 10,
+                    ),
+                    label: Text(
+                      'Active',
+                      style: TextStyle(fontSize: 10),
+                    ),
+                    onPressed: () {},
                   ),
-                  label: Text(
-                    'Active',
-                    style: TextStyle(fontSize: 10),
-                  ),
-                  onPressed: () {},
-                ),
-                SizedBox(width: 5),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) =>
-                                ProductScreen(productId: widget.product.id,)));
-                  },
-                  child: Container(
-                    width: 55,
-                    child: FlatButton(
-                      height: 15,
-                      padding: EdgeInsets.all(0),
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: Colors.green,
-                              width: 1,
-                              style: BorderStyle.solid),
-                          borderRadius: BorderRadius.circular(1)),
-                      child: Text('Place bid',
-                          style: TextStyle(color: Colors.black, fontSize: 10)),
-                      onPressed: () async {
-                        MaterialPageRoute(
-                            builder: ((context) => ProductScreen(
-                                  productId: widget.product.id,
-                                )));
-                      },
+                  SizedBox(width: 5),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ProductScreen(
+                                    productId: widget.product.id,
+                                  )));
+                    },
+                    child: Container(
+                      width: 55,
+                      child: FlatButton(
+                        height: 15,
+                        padding: EdgeInsets.all(0),
+                        shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: Colors.green,
+                                width: 1,
+                                style: BorderStyle.solid),
+                            borderRadius: BorderRadius.circular(1)),
+                        child: Text('Place bid',
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 10)),
+                        onPressed: () async {
+                          MaterialPageRoute(
+                              builder: ((context) => ProductScreen(
+                                    productId: widget.product.id,
+                                  )));
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

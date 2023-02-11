@@ -21,7 +21,6 @@ class ProductsService {
   final String wonBids = "/users/bids/wins/";
   final String lostBids = "/users/bids/failed/";
 
-
   Future getRelationShip(int productId, int clientId) async {
     final String uri =
         url + relationShip + productId.toString() + "/" + clientId.toString();
@@ -58,10 +57,43 @@ class ProductsService {
     List<Product> prods = [];
     if (watchlistString != null) {
       List<dynamic> products = json.decode(watchlistString);
+     
       prods = Product.fromShared(products);
-      //return Product.fromJson(products);
     }
     return prods;
+  }
+
+  Future removeFromWatchList(int productId) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String? watchlistString = _prefs.getString("watchlist");
+    List<Product> prods = [];
+    if (watchlistString != null) {
+      List<dynamic> products = json.decode(watchlistString);
+      products
+          .removeWhere((element) => element["productId"] as int == productId);
+      _prefs.setString("watchlist", json.encode(products));
+    }
+  }
+
+  Future watchListExist(int productId) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    String? watchlistString = _prefs.getString("watchlist");
+    List<Product> prods = [];
+    if (watchlistString != null) {
+      List<dynamic> products = json.decode(watchlistString);
+      bool existe = false;
+      print("okeeyey");
+      for (var element in products) {
+        print(element["productId"]);
+        print(productId);
+        if (element["productId"] as int == productId) {
+          print(element["productId"]);
+          print("helelelele");
+          existe = true;
+        }
+      }
+      return existe;
+    }
   }
 
   Future getCategoryProduct(int id) async {
@@ -169,8 +201,10 @@ class ProductsService {
       throw Exception(json["message"]);
     }
   }
+
   Future getActiveBids(int id) async {
-    final response = await http.get(Uri.parse(url + activeBids + id.toString()));
+    final response =
+        await http.get(Uri.parse(url + activeBids + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       print("worked");
@@ -179,6 +213,7 @@ class ProductsService {
       throw Exception(json["message"]);
     }
   }
+
   Future getWonBids(int id) async {
     final response = await http.get(Uri.parse(url + wonBids + id.toString()));
     final json = jsonDecode(response.body);
@@ -189,6 +224,7 @@ class ProductsService {
       throw Exception(json["message"]);
     }
   }
+
   Future getLostBids(int id) async {
     final response = await http.get(Uri.parse(url + lostBids + id.toString()));
     final json = jsonDecode(response.body);
