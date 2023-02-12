@@ -15,6 +15,7 @@ class Order {
   final String clientComment;
   final String paymentWay;
   final int shippingCost;
+  String? deliveryDate;
   final int total;
   Product? product;
   set ow(int owner) => ownerId = owner;
@@ -35,6 +36,7 @@ class Order {
       {required this.state,
       required this.id,
       required this.orderNumber,
+      required this.deliveryDate,
       required this.productId,
       required this.clientComment,
       required this.paymentWay,
@@ -78,13 +80,23 @@ class Order {
 
     String outputDate = "";
     outputDate = DateFormat("d MMMM y").format(parseDate);
-   
+    DateTime parseDate1;
+    String outputDate1 = "";
+    if (element.containsKey("delivery_date")) {
+      parseDate1 = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+          .parse(element["delivery_date"]);
+      outputDate1 = DateFormat("d MMMM y").format(parseDate);
+    } else {
+      outputDate1 = "Not yet";
+    }
+
     return Order.detail(
         orderNumber: element.containsKey("orderNumber")
             ? element["orderNumber"] != null
                 ? element["orderNumber"]
                 : -1
             : -1,
+        deliveryDate: outputDate1,
         id: element.containsKey("id") ? element["id"] : -20,
         state: element.containsKey("state") ? element["state"] : "",
         productId: element["productId"],

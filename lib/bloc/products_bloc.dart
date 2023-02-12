@@ -42,12 +42,15 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       }
     });
     on<GetTrendingProducts>((event, emit) async {
-      //try {
-      List<Product> products = await productsService.getTrendingProducts();
-      emit(ProductsReady(products: products));
-      //} catch (e) {
-      //emit(ProductsFailed(error: e.toString()));
-      //}
+      try {
+        List<Product> products = await productsService.getTrendingProducts();
+        if (products.isEmpty) {
+          throw Exception("No trending products yet");
+        }
+        emit(ProductsReady(products: products));
+      } catch (e) {
+        emit(ProductsFailed(error: e.toString()));
+      }
     });
     on<GetEndedProducts>((event, emit) async {
       try {
@@ -65,63 +68,60 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         emit(ProductsFailed(error: e.toString()));
       }
     });
-    
-   
+
     on<GetUserBidProducts>((event, emit) async {
-     try {
-      final currentId = authenticationBloc.userId;
-      if (currentId != null) {
-        List<Product> products =
-            await productsService.getUserBidProducts(currentId);
-        print(products.length.toString() + "is.lengt");
-        emit(ProductsReady(products: products));
-      } else {
-        throw Exception("You're not logged in");
-      }
-       } catch (e) {
-       emit(ProductsFailed(error: e.toString()));
+      try {
+        final currentId = authenticationBloc.userId;
+        if (currentId != null) {
+          List<Product> products =
+              await productsService.getUserBidProducts(currentId);
+          print(products.length.toString() + "is.lengt");
+          emit(ProductsReady(products: products));
+        } else {
+          throw Exception("You're not logged in");
+        }
+      } catch (e) {
+        emit(ProductsFailed(error: e.toString()));
       }
     });
     on<GetUserActiveBids>((event, emit) async {
-     try {
-      final currentId = authenticationBloc.userId;
-      if (currentId != null) {
-        List<Product> products =
-            await productsService.getActiveBids(currentId);
-        emit(ProductsReady(products: products));
-      } else {
-        throw Exception("You're not logged in");
-      }
-       } catch (e) {
-       emit(ProductsFailed(error: e.toString()));
+      try {
+        final currentId = authenticationBloc.userId;
+        if (currentId != null) {
+          List<Product> products =
+              await productsService.getActiveBids(currentId);
+          emit(ProductsReady(products: products));
+        } else {
+          throw Exception("You're not logged in");
+        }
+      } catch (e) {
+        emit(ProductsFailed(error: e.toString()));
       }
     });
-      on<GetUserLostBids>((event, emit) async {
-     try {
-      final currentId = authenticationBloc.userId;
-      if (currentId != null) {
-        List<Product> products =
-            await productsService.getLostBids(currentId);
-        emit(ProductsReady(products: products));
-      } else {
-        throw Exception("You're not logged in");
-      }
-       } catch (e) {
-      emit(ProductsFailed(error: e.toString()));
+    on<GetUserLostBids>((event, emit) async {
+      try {
+        final currentId = authenticationBloc.userId;
+        if (currentId != null) {
+          List<Product> products = await productsService.getLostBids(currentId);
+          emit(ProductsReady(products: products));
+        } else {
+          throw Exception("You're not logged in");
+        }
+      } catch (e) {
+        emit(ProductsFailed(error: e.toString()));
       }
     });
     on<GetUserWonBids>((event, emit) async {
-     try {
-      final currentId = authenticationBloc.userId;
-      if (currentId != null) {
-        List<Product> products =
-            await productsService.getWonBids(currentId);
-        emit(ProductsReady(products: products));
-      } else {
-        throw Exception("You're not logged in");
-      }
-       } catch (e) {
-       emit(ProductsFailed(error: e.toString()));
+      try {
+        final currentId = authenticationBloc.userId;
+        if (currentId != null) {
+          List<Product> products = await productsService.getWonBids(currentId);
+          emit(ProductsReady(products: products));
+        } else {
+          throw Exception("You're not logged in");
+        }
+      } catch (e) {
+        emit(ProductsFailed(error: e.toString()));
       }
     });
   }

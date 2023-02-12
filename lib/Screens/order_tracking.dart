@@ -120,8 +120,8 @@ class _OrderTrackingState extends State<OrderTracking> {
                                         fontWeight: FontWeight.bold),
                                     overflow: TextOverflow.clip,
                                   ),
-                                  const Text(
-                                      "Excpected delivery date:17 august"),
+                                  Text(
+                                      "Excpected delivery date:${state.order.deliveryDate}"),
                                   TextButton(
                                       onPressed: () {},
                                       style: TextButton.styleFrom(
