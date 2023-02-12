@@ -9,6 +9,7 @@ class OrderService {
   final String updateUrl = "/order/update/state";
   final String successUrl = "/order/purchases/success";
   final String pendingUrl = "/order/purchases/pending";
+  final String detailUrl = "/order/find";
 
   Future addOrder(Order order) async {
     var data = {
@@ -56,10 +57,22 @@ class OrderService {
 
   Future getPendingOrders(int clientId) async {
     final response =
-        await http.get(Uri.parse(url + pendingUrl + "/" +clientId.toString()));
+        await http.get(Uri.parse(url + pendingUrl + "/" + clientId.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       return Order.fromJson(json);
+    } else {
+      throw Exception(json["message"]);
+    }
+  }
+
+  Future getOrderDetail(int clientId) async {
+    final response =
+        await http.get(Uri.parse(url + detailUrl + "/" + clientId.toString()));
+    final json = jsonDecode(response.body);
+    print(json);
+    if (response.statusCode == 200) {
+      return Order.fromDetail(json[0]);
     } else {
       throw Exception(json["message"]);
     }

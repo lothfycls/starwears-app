@@ -441,7 +441,7 @@ class _ProductScreenState extends State<ProductScreen> {
                               return BidCard(
                                 description: state.products[index].description,
                                 imagePath: state.products[index].images[0],
-                                lastBidUser: '',
+                                lastBidUser: state.products[index].lastBidder,
                                 lastPrice: state.products[index].lastPrice,
                                 name: state.products[index].name,
                                 owner: state.products[index].ownerName,

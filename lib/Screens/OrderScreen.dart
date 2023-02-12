@@ -145,6 +145,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                 BlocProvider.of<OrdersBloc>(context).add(
                                     AddOrder(
                                         order: Order(
+                                          id: -20,
                                             clientComment:
                                                 commentController.text == ""
                                                     ? "No comments"
@@ -186,6 +187,7 @@ class _OrderScreenState extends State<OrderScreen> {
       displayPaymentSheet();
       BlocProvider.of<OrdersBloc>(context).add(UpdateOrder(
           order: Order(
+            id:-20,
               clientComment: commentController.text == ""
                   ? "No comments"
                   : commentController.text,

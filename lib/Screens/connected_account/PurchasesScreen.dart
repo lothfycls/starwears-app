@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:starwears/Screens/WonBidScreen.dart';
+import 'package:starwears/Screens/order_tracking.dart';
 import 'package:starwears/bloc/orders_bloc.dart';
-import 'package:starwears/widgets/BidCard.dart';
-import 'package:starwears/widgets/CategoryCard.dart';
 
 import '../../bloc/authentication_bloc.dart';
 import '../LoginScreen.dart';
@@ -154,71 +150,89 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                           child: ListView.builder(
                             itemCount: state.orders.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Card(
-                                color: Color(0xffF6F6F6),
-                                margin: EdgeInsets.all(10),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 100,
-                                      height: 100,
-                                      margin: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(15),
-                                        image: DecorationImage(
-                                            image: NetworkImage(state
-                                                .orders[index]
-                                                .product!
-                                                .images[0]),
-                                            fit: BoxFit.cover),
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => OrderTracking(orderId: state.orders[index].id,))).then((value) {
+                                            if (value == true) {
+      print("value1");
+      BlocProvider.of<OrdersBloc>(context).add(GetSuccessOrders());
+    }
+    if (value == false) {
+      print("value0");
+      BlocProvider.of<OrdersBloc>(context).add(GetPendingOrders());
+    }
+                                          });
+                                },
+                                child: Card(
+                                  color:const Color(0xffF6F6F6),
+                                  margin:const EdgeInsets.all(10),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 100,
+                                        height: 100,
+                                        margin: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          image: DecorationImage(
+                                              image: NetworkImage(state
+                                                  .orders[index]
+                                                  .product!
+                                                  .images[0]),
+                                              fit: BoxFit.cover),
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          height: 60,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2,
-                                          child: Text(
-                                            state.orders[index].product!
-                                                .description,
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                            overflow: TextOverflow.clip,
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              "\$${state.orders[index].product!.lastPrice}",
+                                      const SizedBox(width: 10),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            height: 60,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2,
+                                            child: Text(
+                                              state.orders[index].product!
+                                                  .description,
+                                              textAlign: TextAlign.left,
                                               style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 23,
-                                                color: Color(0xffEB9B00),
-                                              ),
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold),
+                                              overflow: TextOverflow.clip,
                                             ),
-                                            SizedBox(width: 40),
-                                            Text(state.orders[index].product!
-                                                    .bidsCount
-                                                    .toString() +
-                                                " Bids"),
-                                            SizedBox(width: 15),
-                                            Text(state.orders[index].product!
-                                                .auctionEnd),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                          ),
+                                          SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "\$${state.orders[index].product!.lastPrice}",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 23,
+                                                  color: Color(0xffEB9B00),
+                                                ),
+                                              ),
+                                              SizedBox(width: 40),
+                                              Text(state.orders[index].product!
+                                                      .bidsCount
+                                                      .toString() +
+                                                  " Bids"),
+                                              SizedBox(width: 15),
+                                              Text(state.orders[index].product!
+                                                  .auctionEnd),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },

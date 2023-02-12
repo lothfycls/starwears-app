@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starwears/Screens/connected_account/ProfileScreen.dart';
 import 'package:starwears/Screens/SignUpScreen.dart';
 import 'package:starwears/Screens/SplashScreen.dart';
+import 'package:starwears/Screens/order_tracking.dart';
 import 'package:starwears/bloc/authentication_bloc.dart';
 import 'package:starwears/bloc/banner_bloc.dart';
 import 'package:starwears/bloc/bid_bloc.dart';

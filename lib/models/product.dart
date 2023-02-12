@@ -56,16 +56,16 @@ class Product {
       for (var picture in element["productImages"]) {
         images.add(picture["url"]);
       }
-       Duration parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-        .parse(element["auctionEnd"])
-        .difference(DateTime.now());
-    int hours = parseDate.inHours - parseDate.inDays * 24;
-    String outputDate = "";
-    if (parseDate.inHours == 0) {
-      outputDate = "${hours}h";
-    } else {
-      outputDate = "${parseDate.inDays}d ${hours}h";
-    }
+      Duration parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+          .parse(element["auctionEnd"])
+          .difference(DateTime.now());
+      int hours = parseDate.inHours - parseDate.inDays * 24;
+      String outputDate = "";
+      if (parseDate.inHours == 0) {
+        outputDate = "${hours}h";
+      } else {
+        outputDate = "${parseDate.inDays}d ${hours}h";
+      }
       products.add(Product(
           ownerId: element["ownerId"],
           bidsCount: element.containsKey("_count")
@@ -96,8 +96,8 @@ class Product {
           id: element["id"],
           lastBidder: element.containsKey("LastBidder")
               ? element["LastBidder"] != null
-                  ? element["LastBidder"]["last_name"] != null
-                      ? element["LastBidder"]["last_name"]
+                  ? element["LastBidder"]["username"] != null
+                      ? element["LastBidder"]["username"]
                       : "No bidder yet"
                   : "No Bidder yet"
               : "No Bidder yet",
@@ -177,8 +177,8 @@ class Product {
         id: element["id"],
         lastBidder: element.containsKey("LastBidder")
             ? element["LastBidder"] != null
-                ? element["LastBidder"]["last_name"] != null
-                    ? element["LastBidder"]["last_name"]
+                ? element["LastBidder"]["username"] != null
+                    ? element["LastBidder"]["username"]
                     : "No bidder yet"
                 : "No Bidder yet"
             : "No Bidder yet",
@@ -238,5 +238,4 @@ class Product {
     }
     return products;
   }
-   
 }

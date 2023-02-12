@@ -47,33 +47,42 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     });
     on<InitOrder>(((event, emit) => emit(OrdersInitial())));
     on<GetPendingOrders>((event, emit) async {
-      //try {
-      final currentId = authenticationBloc.userId;
-      if (currentId != null) {
-        List<Order> orders = await orderService.getPendingOrders(currentId);
-        debugPrint(orders.length.toString() + "is.lengt");
-        emit(OrdersReady(orders: orders));
-      } else {
-        throw Exception("You're not logged in");
+      try {
+        final currentId = authenticationBloc.userId;
+        if (currentId != null) {
+          List<Order> orders = await orderService.getPendingOrders(currentId);
+          emit(OrdersReady(orders: orders));
+        } else {
+          throw Exception("You're not logged in");
+        }
+      } catch (e) {
+        emit(OrdersFailed(error: e.toString()));
       }
-      // } catch (e) {
-      //  emit(OrdersFailed(error: e.toString()));
-      // }
+    });
+    on<GetOrder>((event, emit) async {
+     // try {
+        final currentId = authenticationBloc.userId;
+        if (currentId != null) {
+          Order order = await orderService.getOrderDetail(1);
+          emit(OrderDetail(order: order));
+        } else {
+          throw Exception("You're not logged in");
+        }
+      //} catch (e) {
+       // emit(OrdersFailed(error: e.toString()));
+      //}
     });
     on<GetSuccessOrders>((event, emit) async {
-      //try {
-      final currentId = authenticationBloc.userId;
-      if (currentId != null) {
-        print("rani f success");
-        List<Order> orders = await orderService.getSuccessOrders(currentId);
-        debugPrint("order user id:$currentId");
-        debugPrint(orders.length.toString() + "is.lengt");
-        emit(OrdersReady(orders: orders));
-      } else {
-        throw Exception("You're not logged in");
-        //}
-        // } catch (e) {
-        //  emit(OrdersFailed(error: e.toString()));
+      try {
+        final currentId = authenticationBloc.userId;
+        if (currentId != null) {
+          List<Order> orders = await orderService.getSuccessOrders(currentId);
+          emit(OrdersReady(orders: orders));
+        } else {
+          throw Exception("You're not logged in");
+        }
+      } catch (e) {
+        emit(OrdersFailed(error: e.toString()));
       }
     });
   }

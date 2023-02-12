@@ -79,25 +79,23 @@ class _HomeCarouselState extends State<HomeCarousel> {
                       bottomRight: Radius.circular(20),
                     ),
                   ),
-                  child: Expanded(
-                    child: Container(
-                      height: 40,
-                      margin: const EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: TextField(
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          hintStyle: TextStyle(color: Color(0xffBEBEBE)),
-                          alignLabelWithHint: true,
-                          hintText: 'Search',
-                          border: InputBorder.none,
-                          suffixIcon: Icon(
-                            Icons.search,
-                            color: Color(0xffBEBEBE),
-                          ),
+                  child: Container(
+                    height: 40,
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        hintStyle: TextStyle(color: Color(0xffBEBEBE)),
+                        alignLabelWithHint: true,
+                        hintText: 'Search',
+                        border: InputBorder.none,
+                        suffixIcon: Icon(
+                          Icons.search,
+                          color: Color(0xffBEBEBE),
                         ),
                       ),
                     ),

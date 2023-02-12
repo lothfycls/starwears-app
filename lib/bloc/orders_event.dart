@@ -15,6 +15,13 @@ class UpdateOrder extends OrdersEvent {
   UpdateOrder({required this.order});
 }
 
-class InitOrder extends OrdersEvent{}
-class GetPendingOrders extends OrdersEvent{}
-class GetSuccessOrders extends OrdersEvent{}
+class GetOrder extends OrdersEvent {
+  final int id;
+  GetOrder({required this.id});
+}
+
+class InitOrder extends OrdersEvent {}
+
+class GetPendingOrders extends OrdersEvent {}
+
+class GetSuccessOrders extends OrdersEvent {}
