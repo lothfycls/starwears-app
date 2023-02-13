@@ -15,6 +15,7 @@ import 'package:starwears/bloc/brand_bloc.dart';
 import 'package:starwears/bloc/category_bloc.dart';
 import 'package:starwears/bloc/celebrity_bloc.dart';
 import 'package:starwears/bloc/newlistings_bloc.dart';
+import 'package:starwears/bloc/notifications_bloc.dart';
 import 'package:starwears/bloc/orders_bloc.dart';
 import 'package:starwears/bloc/products_bloc.dart';
 import 'package:starwears/bloc/profile_bloc.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
             create: (_) => OrdersBloc(authenticationBloc: authenticationBloc)),
         BlocProvider(
             create: (_) => ProfileBloc(authenticationBloc: authenticationBloc)),
+            BlocProvider(create: (_)=>NotificationsBloc(authenticationBloc: authenticationBloc))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

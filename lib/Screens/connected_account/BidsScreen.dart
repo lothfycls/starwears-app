@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
+import 'package:starwears/Screens/Notifications.dart';
 import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/bloc/authentication_bloc.dart';
 
@@ -99,6 +100,10 @@ class _BidsScreenState extends State<BidsScreen> {
                       size: 25,
                     ),
                     onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const NotificationsScreen()));
                       // Perform some action when the button is pressed
                     },
                   ),

@@ -7,6 +7,7 @@ import 'package:starwears/bloc/watchlist_bloc.dart';
 
 import '../bloc/authentication_bloc.dart';
 import 'LoginScreen.dart';
+import 'Notifications.dart';
 import 'ProductScreen.dart';
 
 class WatchListScreen extends StatefulWidget {
@@ -61,6 +62,10 @@ class _WatchListScreenState extends State<WatchListScreen> {
                 size: 25,
               ),
               onPressed: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const NotificationsScreen()));
                 // Perform some action when the button is pressed
               },
             ),

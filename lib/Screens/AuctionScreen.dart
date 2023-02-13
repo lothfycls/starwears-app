@@ -6,6 +6,7 @@ import 'package:starwears/widgets/BidCard.dart';
 import '../bloc/authentication_bloc.dart';
 import '../bloc/products_bloc.dart';
 import 'LoginScreen.dart';
+import 'Notifications.dart';
 
 class AuctionScreen extends StatefulWidget {
   const AuctionScreen({Key? key}) : super(key: key);
@@ -78,6 +79,10 @@ class _AuctionScreenState extends State<AuctionScreen> {
                 size: 25,
               ),
               onPressed: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const NotificationsScreen()));
                 // Perform some action when the button is pressed
               },
             ),

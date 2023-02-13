@@ -3,6 +3,8 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:starwears/widgets/BidCard.dart';
 
+import 'Notifications.dart';
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
 
@@ -61,6 +63,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 size: 27,
               ),
               onPressed: () {
+                  Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const NotificationsScreen()));
                 // Perform some action when the button is pressed
               },
             ),

@@ -5,6 +5,7 @@ import 'package:starwears/bloc/orders_bloc.dart';
 
 import '../../bloc/authentication_bloc.dart';
 import '../LoginScreen.dart';
+import '../Notifications.dart';
 
 class PurchasesScreen extends StatefulWidget {
   const PurchasesScreen({Key? key}) : super(key: key);
@@ -78,6 +79,10 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                       size: 25,
                     ),
                     onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const NotificationsScreen()));
                       // Perform some action when the button is pressed
                     },
                   ),
