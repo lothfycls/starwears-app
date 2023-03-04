@@ -10,6 +10,7 @@ import 'package:starwears/Screens/ProductDetailsScreen.dart';
 import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/bloc/bid_bloc.dart';
 import 'package:starwears/utils/utils.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../models/bid.dart';
 import '../models/product.dart';
@@ -66,11 +67,27 @@ class _BidCardState extends State<BidCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-                height: 150,
-                width: double.infinity,
-                fit: BoxFit.contain,
-                widget.imagePath),
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+              child: Stack(
+                children: <Widget>[
+                  const Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.black,
+                  )),
+                  Center(
+                    child: FadeInImage.memoryNetwork(
+                      fit: BoxFit.cover,
+                      height: 150,
+                      width: 200,
+                      placeholder: kTransparentImage,
+                      image: widget.imagePath,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 10.0, top: 10),
               child: ReadMoreText(widget.name,
@@ -137,12 +154,12 @@ class _BidCardState extends State<BidCard> {
                       size: 10,
                     ),
                     label: Text(
-                      widget.state,
-                      style: TextStyle(fontSize: 10),
+                      widget.state == "Active" ? "Active" : "Closed",
+                      style: const TextStyle(fontSize: 10),
                     ),
                     onPressed: () {},
                   ),
-                  SizedBox(width: 5),
+                  const SizedBox(width: 5),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -152,7 +169,7 @@ class _BidCardState extends State<BidCard> {
                                     productId: widget.product.id,
                                   )));
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 55,
                       child: FlatButton(
                         height: 15,
@@ -166,9 +183,9 @@ class _BidCardState extends State<BidCard> {
                                 style: BorderStyle.solid),
                             borderRadius: BorderRadius.circular(1)),
                         child: Text(
-                            widget.state == "Active" ? 'Place bid' : 'Sold out',
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 10)),
+                            widget.state == "Active" ? 'Place bid' : 'Sold',
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 10)),
                         onPressed: () {
                           MaterialPageRoute(
                               builder: ((context) => ProductScreen(

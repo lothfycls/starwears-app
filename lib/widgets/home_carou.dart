@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/bloc/newlistings_bloc.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class HomeCarou extends StatefulWidget {
   final bool showCarousel;
@@ -68,7 +69,8 @@ class _HomeCarouState extends State<HomeCarou> {
                       left: 0,
                       bottom: 0,
                       child: SizedBox(
-                        height: 300,
+                        height: 500,
+                        width: MediaQuery.of(context).size.width,
                         child: CarouselSlider(
                             options: CarouselOptions(
                               onPageChanged: (index, reason) {
@@ -78,6 +80,7 @@ class _HomeCarouState extends State<HomeCarou> {
                               },
                               enableInfiniteScroll: true,
                               initialPage: 0,
+                              aspectRatio: 0.5,
                               viewportFraction: 1,
                               autoPlay: true,
                               autoPlayInterval: const Duration(seconds: 2),
@@ -90,20 +93,30 @@ class _HomeCarouState extends State<HomeCarou> {
                                     ? 3
                                     : state.listings.length, (index) {
                               return ShaderMask(
-                                blendMode: BlendMode.srcOver,
                                 shaderCallback: (Rect bounds) {
                                   return const LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(150, 255, 255, 255),
-                                      Color.fromARGB(106, 255, 255, 255)
-                                    ],
-                                    stops: [0.0, 1.0],
-                                  ).createShader(bounds);
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [Colors.transparent, Colors.black],
+                                  ).createShader(Rect.fromLTRB(
+                                      0, 0, bounds.width, bounds.height));
                                 },
-                                child: Image.network(
-                                  state.listings[index].image,
-                                  fit: BoxFit.cover,
-                                  height: 300,
+                                blendMode: BlendMode.dstIn,
+                                child: Stack(
+                                  children: <Widget>[
+                                    const Center(
+                                        child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                    )),
+                                    Center(
+                                      child: FadeInImage.memoryNetwork(
+                                        fit: BoxFit.cover,
+                                        height: 300,
+                                        placeholder: kTransparentImage,
+                                        image: state.listings[index].image,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               );
                             })),

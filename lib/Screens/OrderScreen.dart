@@ -123,8 +123,6 @@ class _OrderScreenState extends State<OrderScreen> {
                         BlocProvider.of<OrdersBloc>(context).add(InitOrder());
                         ////order has been placed
                         _onWidgetDidBuild(() async {
-                          print("our product id is:${widget.productId}");
-                          print("our owner id is :${widget.ownerId}");
                           Navigator.push(
                             context,
                             MaterialPageRoute(

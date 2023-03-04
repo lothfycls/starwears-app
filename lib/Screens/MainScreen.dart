@@ -199,7 +199,7 @@ class _MainScreenState extends State<MainScreen> {
         SliverToBoxAdapter(
           child: Stack(
             children: [
-              Container(
+              SizedBox(
                   height: 140,
                   width: MediaQuery.of(context).size.width,
                   child: Image.asset(
