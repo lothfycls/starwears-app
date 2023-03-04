@@ -130,11 +130,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           BlocConsumer<ProfileBloc, ProfileState>(
             listener: (context, state) {
               if (state is UpdateFailed) {
-                _onWidgetDidBuild(_showAlertDialog(state.message));
+                _onWidgetDidBuild(() => _showAlertDialog(state.message));
               }
 
               if (state is UpdateSuccess) {
-                _onWidgetDidBuild(_showSuccessDialog());
+                _onWidgetDidBuild(() => _showSuccessDialog());
               }
             },
             builder: (context, state) => TextButton(

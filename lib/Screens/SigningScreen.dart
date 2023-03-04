@@ -92,9 +92,8 @@ class _SigningScreenState extends State<SigningScreen> {
                       borderRadius: BorderRadius.circular(18.0),
                     ),
                     onPressed: () {
-                      outerNavigator.currentState!.pushAndRemoveUntil(
+                      outerNavigator.currentState!.push(
                   MaterialPageRoute(builder: (_) => SignUpScreen()),
-                  (route) => false
                       );
                     },
                     child: Text(
@@ -117,9 +116,8 @@ class _SigningScreenState extends State<SigningScreen> {
                       borderRadius: BorderRadius.circular(18.0),
                     ),
                     onPressed: () {
-                       outerNavigator.currentState!.pushAndRemoveUntil(
+                       outerNavigator.currentState!.push(
                   MaterialPageRoute(builder: (_) => LoginScreen()),
-                  (route) => false
                       );
                       
                     },
@@ -129,31 +127,7 @@ class _SigningScreenState extends State<SigningScreen> {
                     ),
                   ),
                 ),
-                /*  SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 50),
-                  width: double.infinity,
-                  child: FlatButton(
-                    // padding: EdgeInsets.symmetric(horizontal: 120),
-                    color: Colors.black,
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => AccountScreen()),
-                      );
-                    },
-                    child: Text(
-                      "Profile",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),*/
+              
               ],
             ),
           ),

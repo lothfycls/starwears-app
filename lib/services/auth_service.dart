@@ -73,7 +73,7 @@ class AuthService {
     var json;
     if (response.statusCode == 201) {
       SharedPreferencesService shared = SharedPreferencesService();
-      shared.updateInfos(firstName, lastName, homeAdress, phoneNumber,username);
+      shared.updateInfos(id,firstName, lastName, homeAdress, phoneNumber,username);
       return json;
     } else {
       json = jsonDecode(response.body);

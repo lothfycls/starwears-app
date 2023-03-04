@@ -38,7 +38,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
@@ -222,11 +221,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                       ))),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               CheckboxListTile(
                 controlAffinity: ListTileControlAffinity.leading,
                 title: RichText(
-                  text: TextSpan(
+                  text: const TextSpan(
                     children: [
                       TextSpan(
                           text: 'I agree to the Starwears ',
@@ -245,7 +244,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 },
               ),
               showError
-                  ? Padding(
+                  ? const Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
                         "Cannot proceeed without accepting our terms",
@@ -253,15 +252,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     )
                   : const SizedBox(),
-              // FlatButton(
-              //   child: Text(
-              //     'Forgot password?',
-              //     style: TextStyle(color: Colors.blue),
-              //   ),
-              //   onPressed: () {
-              //     // Code to handle password reset goes here
-              //   },
-              // ),
 
               BlocConsumer<AuthenticationBloc, AuthenticationState>(
                 listener: (context, state) {
@@ -269,6 +259,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     _onWidgetDidBuild(_showAlertDialog(state.message));
                   }
                   if (state is AuthSuccess) {
+                    SharedPreferencesService shared =
+                        SharedPreferencesService();
+                    shared.upDateSharedPreferences(
+                        state.email, state.id, "", "", "", "", "");
                     _onWidgetDidBuild(() => Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => HomeScreen()),

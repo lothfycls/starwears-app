@@ -46,7 +46,7 @@ class _AuctionScreenState extends State<AuctionScreen> {
       children: [
         Container(
           height: 40,
-          margin: EdgeInsets.only(left: 10, top: 30 ),
+          margin: EdgeInsets.only(left: 10, top: 30),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -133,9 +133,8 @@ class _AuctionScreenState extends State<AuctionScreen> {
                   desc: 'This action required to Sign in',
                   btnCancelOnPress: () {},
                   btnOkOnPress: () {
-                    outerNavigator.currentState!.pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                        (route) => false);
+                    outerNavigator.currentState!.push(
+                        MaterialPageRoute(builder: (_) => const LoginScreen()));
                   },
                 ).show();
               });

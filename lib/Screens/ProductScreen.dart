@@ -310,12 +310,11 @@ class _ProductScreenState extends State<ProductScreen> {
                                                 'This action required to Sign in',
                                             btnCancelOnPress: () {},
                                             btnOkOnPress: () {
-                                              outerNavigator.currentState!
-                                                  .pushAndRemoveUntil(
-                                                      MaterialPageRoute(
-                                                          builder: (_) =>
-                                                              const LoginScreen()),
-                                                      (route) => false);
+                                              outerNavigator.currentState!.push(
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        const LoginScreen()),
+                                              );
                                             },
                                           ).show();
                                         }

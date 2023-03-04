@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/Screens/connected_account/BidsScreen.dart';
 import 'package:starwears/Screens/connected_account/ProfileScreen.dart';
+import 'package:starwears/bloc/authentication_bloc.dart';
 import 'package:starwears/main.dart';
 
+import '../../services/shared_preferences_service.dart';
 import 'PurchasesScreen.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -41,11 +44,14 @@ class _AccountScreenState extends State<AccountScreen> {
             ),
             onPressed: () async {
               SharedPreferences _prefs = await SharedPreferences.getInstance();
-              _prefs.remove('id');
-              _prefs.remove('email');
+              SharedPreferencesService sharedPreferencesService =
+                  SharedPreferencesService();
+            await  sharedPreferencesService.removeUser();
+            //  _prefs.remove('id');
+              //_prefs.remove('email');
 
               outerNavigator.currentState!.pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) =>const LoginScreen()),
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
                   (route) => false);
               // Perform some action when the button is pressed
             },

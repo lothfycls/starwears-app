@@ -20,14 +20,18 @@ import 'package:starwears/bloc/profile_bloc.dart';
 import 'package:starwears/bloc/relationship_bloc.dart';
 import 'package:starwears/bloc/singleproduct_bloc.dart';
 import 'package:starwears/bloc/watchlist_bloc.dart';
+import 'package:starwears/models/user.dart';
+import 'package:starwears/services/shared_preferences_service.dart';
 import 'package:starwears/stripe_page.dart';
 
 import 'Providers/IndexProvider.dart';
 import 'Screens/HomeScreen.dart';
-  final outerNavigator = GlobalKey<NavigatorState>();
+
+final outerNavigator = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferencesService().initDb();
   Stripe.publishableKey =
       "pk_test_51MYvFJHU6zFyNPkfy9hGbi6zJKlQe7OP14DcRYL5xwcK3iqaVLaoeJdvpaiIVS5aUC0HXrMyVNmae2L2K98j5sNG00x7LP5aRf";
 
@@ -91,10 +95,14 @@ class MyApp extends StatelessWidget {
         title: 'starwears',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          appBarTheme:
+              const AppBarTheme(
+                iconTheme: IconThemeData(
+                  color: Colors.black,)),
           fontFamily: 'Inter',
         ),
         navigatorKey: outerNavigator,
-        home: Choose(),
+        home: const Choose(),
       ),
     );
   }
@@ -111,24 +119,18 @@ class Choose extends StatefulWidget {
 
 class _ChooseState extends State<Choose> {
   checkPrefsForUser(context) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    var email = _prefs.getString('email');
-    var id = _prefs.getInt('id');
-    var firstName = _prefs.getString("first_name") ?? "";
-    var lastName = _prefs.getString("last_name") ?? "";
-    var address = _prefs.getString("address") ?? "";
-    var phone = _prefs.getString("phone_number") ?? "";
-    var username = _prefs.getString("username") ?? "";
-    if (email != null && id != null) {
-      print("wa");
+    SharedPreferencesService sharedPreferencesService =
+        SharedPreferencesService();
+    User? user = await sharedPreferencesService.getUser();
+    if (user != null) {
       BlocProvider.of<AuthenticationBloc>(context).add(LocalAuth(
-          email: email,
-          id: id,
-          firstName: firstName,
-          lastName: lastName,
-          address: address,
-          phone: phone,
-          username: username));
+          email: user.email,
+          id: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          address: user.address,
+          phone: user.phone,
+          username: user.username));
     }
   }
 
