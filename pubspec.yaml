@@ -49,6 +49,9 @@ dependencies:
   carousel_slider: ^4.2.1
   status_change: ^2.0.0
   flutter_launcher_icons: ^0.11.0
+  cached_network_image: ^3.2.1
+  transparent_image: ^2.0.1
+  readmore: ^2.2.0
 flutter_icons:
   android: "launcher_icon"
   ios: true
@@ -67,7 +70,6 @@ flutter_icons:
     generate: true
     image_path: "assets/images/logo.png"
 
-    
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -107,10 +109,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: fonts/Inter.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

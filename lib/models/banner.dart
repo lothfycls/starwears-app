@@ -19,9 +19,10 @@ class Banner {
   });
   static List<Banner> fromJson(dynamic json) {
     List<Banner> brands = [];
-    List<String> images = [];
 
     for (var element in json) {
+          List<String> images = [];
+
      DateTime parseDate = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
           .parse(element["auctionEnd"]);
       var outDate = parseDate.difference(Moment.now());
@@ -30,7 +31,6 @@ class Banner {
         for (var picture in element["productImages"]) {
         images.add(picture["url"]);
       }
-      print("yadra hna");
       brands.add(Banner(
         id: element["id"],
         title: element["name"],

@@ -9,7 +9,7 @@ class Product {
   final String state;
   final int views;
   final String condition;
-  final int lastPrice;
+  final double lastPrice;
   final String lastBidder;
   final String closure;
   final String department;
@@ -50,9 +50,9 @@ class Product {
   });
   static List<Product> fromJson(dynamic json) {
     List<Product> products = [];
-    List<String> images = [];
 
     for (Map<String, dynamic> element in json) {
+      List<String> images = [];
       for (var picture in element["productImages"]) {
         images.add(picture["url"]);
       }
@@ -63,6 +63,12 @@ class Product {
       String outputDate = "";
       if (parseDate.inHours == 0) {
         outputDate = "${hours}h";
+      } else if (parseDate.inHours < 0) {
+        if (parseDate.inDays != 0) {
+          outputDate = "${-parseDate.inDays} days ago";
+        } else {
+          outputDate = "${-hours} hours ago";
+        }
       } else {
         outputDate = "${parseDate.inDays}d ${hours}h";
       }
@@ -125,7 +131,7 @@ class Product {
           auctionEnd: outputDate,
           state: element["state"],
           views: element["views"],
-          lastPrice: element["lastPrice"].toInt(),
+          lastPrice: element["lastPrice"].toDouble(),
           condition: element["condition"]));
     }
     print("single");
@@ -148,11 +154,17 @@ class Product {
     String outputDate = "";
     if (parseDate.inHours == 0) {
       outputDate = "${hours}h";
+    } else if (parseDate.inHours < 0) {
+      if (parseDate.inDays != 0) {
+        outputDate = "${-parseDate.inDays} days ago";
+      } else {
+        outputDate = "${-hours} hours ago";
+      }
     } else {
       outputDate = "${parseDate.inDays}d ${hours}h";
     }
     return Product(
-        ownerId: element["ownerId"],
+        ownerId: element["ownerId"] != null ? element["ownerId"] : -1,
         bidsCount: element["_count"]["bids"],
         color: element.containsKey("Color")
             ? element["Color"] != null
@@ -205,7 +217,7 @@ class Product {
         auctionEnd: outputDate,
         state: element["state"],
         views: element["views"],
-        lastPrice: element["lastPrice"].toInt(),
+        lastPrice: element["lastPrice"].toDouble(),
         condition: element["condition"]);
   }
 
@@ -233,7 +245,7 @@ class Product {
           auctionEnd: element["date"],
           state: element["state"],
           views: 0,
-          lastPrice: element["price"].toInt(),
+          lastPrice: element["price"].toDouble(),
           condition: ""));
     }
     return products;

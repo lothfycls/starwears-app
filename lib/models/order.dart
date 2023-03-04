@@ -16,7 +16,7 @@ class Order {
   final String paymentWay;
   final int shippingCost;
   String? deliveryDate;
-  final int total;
+  final double total;
   Product? product;
   set ow(int owner) => ownerId = owner;
   Order(
@@ -54,7 +54,7 @@ class Order {
     for (var element in json) {
       orders.add(Order(
           id: element.containsKey("id") ? element["id"] : -20,
-          state: element.containsKey("state") ? element["state"] : "",
+          state: element.containsKey("order_status") ? element["order_status"] : "",
           productId: element["productId"],
           ownerId: element["ownerId"],
           name: element["receiver_name"],
@@ -62,7 +62,7 @@ class Order {
           shippingAdress: element["shipping_address"],
           clientComment: element["client_comment"],
           paymentWay: element["payment_way"],
-          total: element["total"],
+          total: element["total"].toDouble(),
           product: element.containsKey("product")
               ? element["product"] != null
                   ? Product.fromjJson(element["product"])
@@ -110,7 +110,7 @@ class Order {
         shippingAdress: element["shipping_address"],
         clientComment: element["client_comment"],
         paymentWay: element["payment_way"],
-        total: element["total"],
+        total: element["total"].toDouble(),
         product: element.containsKey("product")
             ? element["product"] != null
                 ? Product.fromjJson(element["product"])

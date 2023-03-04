@@ -5,6 +5,7 @@ import 'package:starwears/bloc/authentication_bloc.dart';
 import 'package:starwears/models/user.dart';
 import 'package:starwears/services/shared_preferences_service.dart';
 
+import '../utils/utils.dart';
 import 'HomeScreen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -23,6 +24,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.initState();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+  }
+
+  GlobalKey<FormState> formKey = GlobalKey();
+  bool _isObscured = true;
+
+// Toggle the visibility of the password
+  void _toggleObscure() {
+    setState(() {
+      _isObscured = !_isObscured;
+    });
   }
 
   @override
@@ -54,256 +65,286 @@ class _SignUpScreenState extends State<SignUpScreen> {
         .then((val) =>
             BlocProvider.of<AuthenticationBloc>(context).add(InitAuth()));
   }
-bool? _value = false;
+
+  bool? _value = false;
+  bool showError = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-    
         backgroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Logo
-            Image.asset('assets/images/logo.png'),
-            SizedBox(
-              height: 5,
-            ),
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              // Logo
+              Image.asset('assets/images/logo.png'),
+              SizedBox(
+                height: 5,
+              ),
 
-            Text(
-              "STARWEARS",
-              style: TextStyle(fontSize: 10),
-            ),
-            SizedBox(height: 24),
-            // Text
-            Text(
-              'Welcome to our bidding wears',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-            ),
-            SizedBox(height: 24),
-            // Sign in with Google button
-            FlatButton(
-              padding: EdgeInsets.symmetric(horizontal: 30),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
+              Text(
+                "STARWEARS",
+                style: TextStyle(fontSize: 10),
               ),
-              color: Colors.red,
-              onPressed: () {
-                // Perform some action
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                      height: 15,
-                      child: Image.asset('assets/images/google.png')),
-                  SizedBox(width: 8.0),
-                  Text(
-                    "continue with google",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
+              SizedBox(height: 24),
+              // Text
+              Text(
+                'Welcome to our bidding wears',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
               ),
-            ),
-            SizedBox(height: 12),
-            // Sign in with Facebook button
-            FlatButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ),
-              color: Colors.blue,
-              onPressed: () {
-                // Perform some action
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.facebook),
-                  SizedBox(width: 8.0),
-                  Text(
-                    "Continue with facebook",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 24),
-            // Divider
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 40),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.black,
-                      thickness: 1,
-                    ),
-                  ),
-                  Container(
-                    width: 16.0,
-                  ),
-                  Text("or "),
-                  Container(
-                    width: 16.0,
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.black,
-                      thickness: 1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 24),
-            // Login with email and password
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 40),
-              child: Theme(
-                data: Theme.of(context).copyWith(
-                  // hintStyle: TextStyle(color: Colors.grey),
-                  inputDecorationTheme: InputDecorationTheme(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                  ),
+              SizedBox(height: 24),
+              // Sign in with Google button
+              FlatButton(
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
                 ),
-                child: TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    hintText: "email",
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 12),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 40),
-              child: Theme(
-                data: Theme.of(context).copyWith(
-                  // hintStyle: TextStyle(color: Colors.grey),
-                  inputDecorationTheme: InputDecorationTheme(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0),
-                    ),
-                  ),
-                ),
-                child: TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: "password",
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 12),
-            CheckboxListTile(
-              controlAffinity: ListTileControlAffinity.leading,
-              title: RichText(
-                text: TextSpan(
+                color: Colors.red,
+                onPressed: () {
+                  // Perform some action
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextSpan(
-                        text: 'I agree to the Starwears ',
-                        style: TextStyle(color: Colors.black)),
-                    TextSpan(
-                        text: 'User Agreement and Privacy Policy',
-                        style: TextStyle(color: Colors.blue)),
+                    SizedBox(
+                        height: 15,
+                        child: Image.asset('assets/images/google.png')),
+                    SizedBox(width: 8.0),
+                    Text(
+                      "continue with google",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
-              value: _value,
-              onChanged: (bool? value) {
-                setState(() {
-                  _value = value;
-                });
-              },
-            ),
-            // FlatButton(
-            //   child: Text(
-            //     'Forgot password?',
-            //     style: TextStyle(color: Colors.blue),
-            //   ),
-            //   onPressed: () {
-            //     // Code to handle password reset goes here
-            //   },
-            // ),
-
-            BlocConsumer<AuthenticationBloc, AuthenticationState>(
-              listener: (context, state) {
-                if (state is CreationFailed) {
-                  _onWidgetDidBuild(_showAlertDialog(state.message));
-                }
-                if (state is AuthSuccess) {
-                
-                  _onWidgetDidBuild(() => Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                      (route) => false));
-                }
-              },
-              builder: (context, state) {
-                return FlatButton(
-                  padding: const EdgeInsets.symmetric(horizontal: 100),
-                  color: Colors.black,
-                  textColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
-                  onPressed: () async {
-                    BlocProvider.of<AuthenticationBloc>(context).add(CreateUser(
-                        BidUser(emailController.text.trim(),
-                            passwordController.text)));
-                  },
-                  child: Text(
-                    "Sign Up",
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 20),
-            // Divider
-            Container(
-                margin: EdgeInsets.symmetric(horizontal: 50),
-                child: Divider(
-                  thickness: 1,
-                  color: Colors.black,
-                )),
-            SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Already have an account?'),
-                FlatButton(
-                  child: Text(
-                    'Login',
-                    style: TextStyle(color: Colors.blue),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
-                      ),
-                    );
-                    // handle button press
-                  },
+              SizedBox(height: 12),
+              // Sign in with Facebook button
+              FlatButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
                 ),
-              ],
-            ),
-            // Sign up option
-            // Text('Don\'t have an account? '),
-            // FlatButton(
-            //   child: Text('Sign up'),
-            //   onPressed: () {
-            //     // Code to handle sign up goes here
-            //   },
-            // ),
-          ],
+                color: Colors.blue,
+                onPressed: () {
+                  // Perform some action
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.facebook),
+                    SizedBox(width: 8.0),
+                    Text(
+                      "Continue with facebook",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 24),
+              // Divider
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 40),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                        thickness: 1,
+                      ),
+                    ),
+                    Container(
+                      width: 16.0,
+                    ),
+                    Text("or "),
+                    Container(
+                      width: 16.0,
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: Colors.black,
+                        thickness: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 24),
+              // Login with email and password
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 40),
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    // hintStyle: TextStyle(color: Colors.grey),
+                    inputDecorationTheme: InputDecorationTheme(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                      ),
+                    ),
+                  ),
+                  child: TextFormField(
+                    controller: emailController,
+                    validator: Utils.validateEmail,
+                    decoration: InputDecoration(
+                      hintText: "email",
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 12),
+              Container(
+                  margin: EdgeInsets.symmetric(horizontal: 40),
+                  child: Theme(
+                      data: Theme.of(context).copyWith(
+                        // hintStyle: TextStyle(color: Colors.grey),
+                        inputDecorationTheme: InputDecorationTheme(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                        ),
+                      ),
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: _isObscured,
+                        validator: Utils.validatePassword,
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          suffixIcon: GestureDetector(
+                            onTap: _toggleObscure,
+                            child: Icon(
+                              _isObscured
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                          ),
+                        ),
+                      ))),
+              SizedBox(height: 12),
+              CheckboxListTile(
+                controlAffinity: ListTileControlAffinity.leading,
+                title: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                          text: 'I agree to the Starwears ',
+                          style: TextStyle(color: Colors.black)),
+                      TextSpan(
+                          text: 'User Agreement and Privacy Policy',
+                          style: TextStyle(color: Colors.blue)),
+                    ],
+                  ),
+                ),
+                value: _value,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _value = value;
+                  });
+                },
+              ),
+              showError
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        "Cannot proceeed without accepting our terms",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    )
+                  : const SizedBox(),
+              // FlatButton(
+              //   child: Text(
+              //     'Forgot password?',
+              //     style: TextStyle(color: Colors.blue),
+              //   ),
+              //   onPressed: () {
+              //     // Code to handle password reset goes here
+              //   },
+              // ),
+
+              BlocConsumer<AuthenticationBloc, AuthenticationState>(
+                listener: (context, state) {
+                  if (state is CreationFailed) {
+                    _onWidgetDidBuild(_showAlertDialog(state.message));
+                  }
+                  if (state is AuthSuccess) {
+                    _onWidgetDidBuild(() => Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        (route) => false));
+                  }
+                },
+                builder: (context, state) {
+                  return FlatButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 100),
+                    color: Colors.black,
+                    textColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    onPressed: () async {
+                      if (formKey.currentState!.validate() && _value!) {
+                        setState(() {
+                          showError = false;
+                        });
+                        BlocProvider.of<AuthenticationBloc>(context).add(
+                            CreateUser(BidUser(emailController.text.trim(),
+                                passwordController.text)));
+                      }
+                      if (!_value!) {
+                        setState(() {
+                          showError = true;
+                        });
+                      }
+                    },
+                    child: Text(
+                      "Sign Up",
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 20),
+              // Divider
+              Container(
+                  margin: EdgeInsets.symmetric(horizontal: 50),
+                  child: Divider(
+                    thickness: 1,
+                    color: Colors.black,
+                  )),
+              SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Already have an account?'),
+                  FlatButton(
+                    child: Text(
+                      'Login',
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                        ),
+                      );
+                      // handle button press
+                    },
+                  ),
+                ],
+              ),
+              // Sign up option
+              // Text('Don\'t have an account? '),
+              // FlatButton(
+              //   child: Text('Sign up'),
+              //   onPressed: () {
+              //     // Code to handle sign up goes here
+              //   },
+              // ),
+            ],
+          ),
         ),
       ),
     );

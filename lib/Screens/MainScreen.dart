@@ -8,6 +8,8 @@ import 'package:starwears/Screens/ListingScreen.dart';
 import 'package:starwears/Screens/ProductsScreen.dart';
 import 'package:starwears/bloc/newlistings_bloc.dart';
 import 'package:starwears/bloc/products_bloc.dart';
+import 'package:starwears/widgets/home_carou.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../Providers/IndexProvider.dart';
 import '../bloc/banner_bloc.dart';
@@ -15,7 +17,6 @@ import '../bloc/brand_bloc.dart';
 import '../bloc/category_bloc.dart';
 import '../bloc/celebrity_bloc.dart';
 import '../widgets/BidCard.dart';
-import '../widgets/HomeCarousel.dart';
 import '../widgets/ListingCard.dart';
 
 class MainScreen extends StatefulWidget {
@@ -28,7 +29,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     BlocProvider.of<BrandBloc>(context).add(GetBrands());
     BlocProvider.of<BannerBloc>(context).add(GetBanner());
@@ -36,334 +36,396 @@ class _MainScreenState extends State<MainScreen> {
     BlocProvider.of<CategoryBloc>(context).add(GetCategories());
     BlocProvider.of<ProductsBloc>(context).add(GetTrendingProducts());
     BlocProvider.of<NewlistingsBloc>(context).add(GetListings());
+    _scrollController.addListener(() {
+      print(_scrollController.offset);
+      if (_scrollController.offset > 100) {
+        setState(() {
+          showCarousel = false;
+        });
+      } else {
+        setState(() {
+          showCarousel = true;
+        });
+      }
+    });
   }
 
+  ScrollController _scrollController = ScrollController();
+  bool showCarousel = true;
   @override
   Widget build(BuildContext context) {
     IndexProvider indexProvider = Provider.of<IndexProvider>(context);
 
-    return SafeArea(
-      child: ListView(padding: const EdgeInsets.only(bottom: 20), children: [
-        HomeCarousel(),
-        RowTabs(indexProvider: indexProvider),
-        SizedBox(
-          height: 10,
+    return CustomScrollView(
+      slivers: [
+        HomeCarou(showCarousel: showCarousel),
+        //HomeCarousel(showCarousel: showCarousel),
+        SliverToBoxAdapter(
+          child: RowTabs(indexProvider: indexProvider),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              margin: EdgeInsets.only(left: 20),
-              child: Text(
-                "Trending Products",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => ProductsScreen()),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.only(right: 20),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_right_alt,
-                        size: 30,
-                      ),
-                      onPressed: () {
-                        // Do something when the button is pressed
-                      },
-                    ),
-                    Text("See All", style: TextStyle(color: Colors.red)),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        BlocBuilder<ProductsBloc, ProductsState>(builder: (context, state) {
-          if (state is ProductsReady) {
-            return Container(
-              height: 340,
-              // width: 300,
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                scrollDirection: Axis.horizontal,
-                itemCount:
-                    state.products.length > 4 ? 4 : state.products.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {},
-                    child: BidCard(
-                      product: state.products[index],
-                      description: state.products[index].description,
-                      imagePath: state.products[index].images[0],
-                      lastBidUser: state.products[index].lastBidder,
-                      lastPrice: state.products[index].lastPrice,
-                      name: state.products[index].name,
-                      owner: state.products[index].ownerName,
-                      state: state.products[index].state,
-                    ),
-                  );
-                },
-              ),
-            );
-          } else {
-            return Center(child: Text("No trending"));
-          }
-        }),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Text(
-            "Products Categories",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 10,
           ),
         ),
-        BlocBuilder<CategoryBloc, CategoryState>(
-          builder: (context, state) {
-            if (state is CategoriesReady) {
-              return Container(
-                height: 200,
-                child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: state.categories.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                          onTap: (() {
-                            Navigator.of(context)
-                                .push(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          CategoriesScreen()),
-                                )
-                                .then((value) =>
-                                    BlocProvider.of<ProductsBloc>(context)
-                                        .add(GetTrendingProducts()));
-                            ;
-                          }),
-                          child: ImageCard(
-                            title: state.categories[index].name,
-                            image:
-                               state.categories[index].image,
-                          ));
-                    }),
-              );
-            } else {
-              return const Center(
-                child: Text("no categories"),
-              );
-            }
-          },
-        ),
-        Stack(
-          children: [
-            Container(
-                height: 140,
-                width: MediaQuery.of(context).size.width,
-                child: Image.asset(
-                    fit: BoxFit.cover, 'assets/images/imagecarousel.png')),
-            Positioned(
-              left: 20,
-              bottom: 20,
-              child: Text(
-                'An enticing Offer for users',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
+        SliverToBoxAdapter(
+          child: Container(
+            margin: const EdgeInsets.only(left: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Trending Products",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
-              ),
-            ),
-            Positioned(
-              left: 20,
-              bottom: 40,
-              child: Text(
-                'Offers',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              margin: EdgeInsets.only(left: 20),
-              child: Text(
-                "Upcoming Listings",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (BuildContext context) => ListingScreen(
-                            banners:
-                                BlocProvider.of<BannerBloc>(context).banners,
-                          )),
-                );
-              },
-              child: Container(
-                margin: EdgeInsets.only(right: 20),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.arrow_right_alt,
-                        size: 30,
-                      ),
-                      onPressed: () {
-                        // Do something when the button is pressed
-                      },
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => ProductsScreen()),
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: 20),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.arrow_right_alt,
+                            size: 30,
+                          ),
+                          onPressed: () {
+                            // Do something when the button is pressed
+                          },
+                        ),
+                        const Text("See All",
+                            style: TextStyle(color: Colors.red)),
+                      ],
                     ),
-                    Text("See All", style: TextStyle(color: Colors.red)),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
-        BlocBuilder<BannerBloc, BannerState>(
-          builder: (context, state) {
-            if (state is BannerReady) {
+        SliverToBoxAdapter(
+          child: BlocBuilder<ProductsBloc, ProductsState>(
+              builder: (context, state) {
+            if (state is ProductsReady) {
               return Container(
-                height: 320,
+                height: 340,
                 // width: 300,
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   scrollDirection: Axis.horizontal,
                   itemCount:
-                      state.banners.length > 4 ? 4 : state.banners.length,
+                      state.products.length > 4 ? 4 : state.products.length,
                   itemBuilder: (context, index) {
-                    return ListingCard(
-                      auctionEnd: state.banners[index].auctionEnd,
-                      ownerName: state.banners[index].ownerName,
-                      title: state.banners[index].title,
-                      description: state.banners[index].description,
-                      imagePath: state.banners[index].image[0],
+                    return GestureDetector(
+                      onTap: () {},
+                      child: BidCard(
+                        product: state.products[index],
+                        description: state.products[index].description,
+                        imagePath: state.products[index].images[0],
+                        lastBidUser: state.products[index].lastBidder,
+                        lastPrice: state.products[index].lastPrice,
+                        name: state.products[index].name,
+                        owner: state.products[index].ownerName,
+                        state: state.products[index].state,
+                      ),
                     );
                   },
                 ),
               );
-            } else if (state is BannerFailed) {
-              return Center(
-                child: Text(state.error),
-              );
             } else {
-              return const Center(
-                child: Text("No Upcoming products for now"),
-              );
+              return const Center(child: Text("No trending"));
             }
-          },
+          }),
         ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Text(
-            "Featured Celebrities",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        SliverToBoxAdapter(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            child: Text(
+              "Products Categories",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
           ),
         ),
-        BlocBuilder<CelebrityBloc, CelebrityState>(
-          builder: (context, state) {
-            if (state is CelebritiesReady) {
-              return Container(
-                height: 150,
-                child: ListView.builder(
+        SliverToBoxAdapter(
+          child: BlocBuilder<CategoryBloc, CategoryState>(
+            builder: (context, state) {
+              if (state is CategoriesReady) {
+                return SizedBox(
+                  height: 170,
+                  child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.categories.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                            onTap: (() {
+                              Navigator.of(context)
+                                  .push(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            CategoriesScreen(
+                                                initCategory: index)),
+                                  )
+                                  .then((value) =>
+                                      BlocProvider.of<ProductsBloc>(context)
+                                          .add(GetTrendingProducts()));
+                              ;
+                            }),
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 15.0),
+                              child: SizedBox(
+                                width: 100,
+                                child: ImageCard(
+                                  title: state.categories[index].name,
+                                  image: state.categories[index].image,
+                                ),
+                              ),
+                            ));
+                      }),
+                );
+              } else {
+                return const Center(
+                  child: Text("no categories"),
+                );
+              }
+            },
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Stack(
+            children: [
+              Container(
+                  height: 140,
+                  width: MediaQuery.of(context).size.width,
+                  child: Image.asset(
+                      fit: BoxFit.cover, 'assets/images/imagecarousel.png')),
+              Positioned(
+                left: 20,
+                bottom: 20,
+                child: Text(
+                  'An enticing Offer for users',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 20,
+                bottom: 40,
+                child: Text(
+                  'Offers',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SliverToBoxAdapter(
+          child: SizedBox(
+            height: 10,
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 20),
+                child: Text(
+                  "Upcoming Listings",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => ListingScreen(
+                              banners:
+                                  BlocProvider.of<BannerBloc>(context).banners,
+                            )),
+                  );
+                },
+                child: Container(
+                  margin: EdgeInsets.only(right: 20),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_right_alt,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          // Do something when the button is pressed
+                        },
+                      ),
+                      Text("See All", style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: BlocBuilder<BannerBloc, BannerState>(
+            builder: (context, state) {
+              if (state is BannerReady) {
+                return SizedBox(
+                  height: 320,
+                  child: ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-
-                    // padding: EdgeInsets.all(10),
                     scrollDirection: Axis.horizontal,
-                    itemCount: 4,
+                    itemCount:
+                        state.banners.length > 4 ? 4 : state.banners.length,
                     itemBuilder: (context, index) {
-                      return InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const CelebretiesScreen()),
-                            );
-                          },
-                          child: ImageCard(
-                            title: state.celebrities[index].name,
-                            image: state.celebrities[index].pictures[0],
-                          ));
-                    }),
-              );
-            }
-            if (state is CelebritiesFailed) {
-              return const Center(
-                child: Text("error"),
-              );
-            } else {
-              return const Center(
-                child: Text("no celebrtieis"),
-              );
-            }
-          },
-        ),
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-          child: Text(
-            "Featured Brands",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      return ListingCard(
+                        auctionEnd: state.banners[index].auctionEnd,
+                        ownerName: state.banners[index].ownerName,
+                        title: state.banners[index].title,
+                        description: state.banners[index].description,
+                        imagePath: state.banners[index].image[0],
+                      );
+                    },
+                  ),
+                );
+              } else if (state is BannerFailed) {
+                return Center(
+                  child: Text(state.error),
+                );
+              } else {
+                return const Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Center(
+                    child: Text("No Upcoming products for now"),
+                  ),
+                );
+              }
+            },
           ),
         ),
-        BlocBuilder<BrandBloc, BrandState>(
-          builder: (context, state) {
-            if (state is BrandsReady) {
-              return Container(
-                height: 150,
-                child: ListView.builder(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-
-                    // padding: EdgeInsets.all(10),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: state.brands.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                          onTap: (() {
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        BrandScreen(
-                                          currentBrand: index,
-                                        )))
-                                .then((value) =>
-                                    BlocProvider.of<ProductsBloc>(context)
-                                        .add(GetTrendingProducts()));
-                          }),
-                          child: ImageCard(
-                            title: state.brands[index].name,
-                            image: state.brands[index].image,
-                          ));
-                    }),
-              );
-            }
-            if (state is BrandsFailed) {
-              return Center(
-                child: Text("Brands error"),
-              );
-            } else {
-              return Center(
-                child: Text("No brands"),
-              );
-            }
-          },
+        SliverToBoxAdapter(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: const Text(
+              "Featured Celebrities",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+          ),
         ),
-      ]),
+        SliverToBoxAdapter(
+          child: BlocBuilder<CelebrityBloc, CelebrityState>(
+            builder: (context, state) {
+              if (state is CelebritiesReady) {
+                return SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.celebrities.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        const CelebretiesScreen()),
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: SizedBox(
+                                width: 100,
+                                child: ImageCard(
+                                  title: state.celebrities[index].name,
+                                  image: state.celebrities[index].pictures[0],
+                                ),
+                              ),
+                            ));
+                      }),
+                );
+              }
+              if (state is CelebritiesFailed) {
+                return const Center(
+                  child: Text("error"),
+                );
+              } else {
+                return const Center(
+                  child: Text("no celebrtieis"),
+                );
+              }
+            },
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Text(
+              "Featured Brands",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: BlocBuilder<BrandBloc, BrandState>(
+            builder: (context, state) {
+              if (state is BrandsReady) {
+                return SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.brands.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                            onTap: (() {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          BrandScreen(
+                                            currentBrand: index,
+                                          )))
+                                  .then((value) =>
+                                      BlocProvider.of<ProductsBloc>(context)
+                                          .add(GetTrendingProducts()));
+                            }),
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 15),
+                              child: SizedBox(
+                                width: 100,
+                                child: ImageCard(
+                                  title: state.brands[index].name,
+                                  image: state.brands[index].image,
+                                ),
+                              ),
+                            ));
+                      }),
+                );
+              }
+              if (state is BrandsFailed) {
+                return Center(
+                  child: Text("Brands error"),
+                );
+              } else {
+                return Center(
+                  child: Text("No brands"),
+                );
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -378,7 +440,7 @@ class RowTabs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 25,
       child: ListView(
         children: [
@@ -417,11 +479,9 @@ class RowTabs extends StatelessWidget {
               ),
               onPressed: () {
                 Navigator.of(context)
-                    .push(
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              CategoriesScreen()),
-                    )
+                    .push(MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            CategoriesScreen(initCategory: 0)))
                     .then((value) => BlocProvider.of<ProductsBloc>(context)
                         .add(GetTrendingProducts()));
                 ;
@@ -475,20 +535,11 @@ class RowTabs extends StatelessWidget {
               },
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: 15,
           ),
           SizedBox(
             child: RaisedButton(
-              child: Text(
-                'Celebrities',
-                style: TextStyle(color: Colors.white, fontSize: 12),
-                textAlign: TextAlign.center,
-              ),
-              color: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
               onPressed: () {
                 Navigator.of(context)
                     .push(
@@ -500,6 +551,15 @@ class RowTabs extends StatelessWidget {
                         .add(GetTrendingProducts()));
                 ;
               },
+              child: Text(
+                'Celebrities',
+                style: TextStyle(color: Colors.white, fontSize: 12),
+                textAlign: TextAlign.center,
+              ),
+              color: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
             ),
           ),
         ],
@@ -517,26 +577,36 @@ class ImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-            child:  FadeInImage.assetNetwork(imageErrorBuilder:((context, error, stackTrace) => 
-            Image.asset("assets/images/imagecarousel.png")),
-          placeholder: "assets/images/imagecarousel.png",
-          image:image,
-      )),
-        const SizedBox(
-          height: 10,
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Stack(
+          children: <Widget>[
+            const Positioned(
+                top: 30,
+                left: 30,
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                )),
+            Center(
+              child: FadeInImage.memoryNetwork(
+                fit: BoxFit.cover,
+                height: 100,
+                width: 100,
+                placeholder: kTransparentImage,
+                image: image,
+              ),
+            ),
+          ],
         ),
-        Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-        )
-      ]),
-    );
+      ),
+      const SizedBox(
+        height: 10,
+      ),
+      Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+      )
+    ]);
   }
 }

@@ -19,3 +19,19 @@ class ProductsFailed extends ProductsState {
     required this.error,
   });
 }
+class UploadState extends ProductsState{}
+class ActiveProductsFailed extends ProductsFailed{
+  ActiveProductsFailed({required super.error});
+}
+class EndedProductsFailed extends ProductsFailed{
+  EndedProductsFailed({required super.error});
+}
+class UserBidProductsFailed extends ProductsFailed{
+  UserBidProductsFailed({required super.error});
+}
+class UserNotAuthenticated extends ProductsFailed{
+  UserNotAuthenticated({required super.error});
+
+}
+
+

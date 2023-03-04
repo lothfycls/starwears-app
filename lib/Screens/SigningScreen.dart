@@ -7,6 +7,7 @@ import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/Screens/SignUpScreen.dart';
 
 import '../bloc/authentication_bloc.dart';
+import '../main.dart';
 
 class SigningScreen extends StatefulWidget {
   const SigningScreen({Key? key}) : super(key: key);
@@ -22,31 +23,7 @@ class _SigningScreenState extends State<SigningScreen> {
         builder: (context, state) {
       if (state is AuthSuccess) {
         return AccountScreen();
-        /*return Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 50),
-            width: double.infinity,
-            child: FlatButton(
-              // padding: EdgeInsets.symmetric(horizontal: 120),
-              color: Colors.black,
-              textColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-              ),
-              onPressed: () {
-                BlocProvider.of<AuthenticationBloc>(context).add(InitAuth());
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                    (route) => false);
-              },
-              child: Text(
-                "Logout",
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        );*/
+     
       } else {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -115,10 +92,9 @@ class _SigningScreenState extends State<SigningScreen> {
                       borderRadius: BorderRadius.circular(18.0),
                     ),
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const SignUpScreen()),
+                      outerNavigator.currentState!.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => SignUpScreen()),
+                  (route) => false
                       );
                     },
                     child: Text(
@@ -141,11 +117,11 @@ class _SigningScreenState extends State<SigningScreen> {
                       borderRadius: BorderRadius.circular(18.0),
                     ),
                     onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const LoginScreen()),
+                       outerNavigator.currentState!.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => LoginScreen()),
+                  (route) => false
                       );
+                      
                     },
                     child: Text(
                       "Login",

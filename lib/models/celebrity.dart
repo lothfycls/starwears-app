@@ -18,13 +18,12 @@ class Celebrity {
   });
   static List<Celebrity> fromJson(dynamic json) {
     List<Celebrity> celebrities = [];
-    List<String> pictureUrls = [];
     for (var element in json) {
+          List<String> pictureUrls = [];
       for (var picture in element["urlPictures"]) {
+        print(picture['url']);
         pictureUrls.add(picture["url"]);
       }
-      print("lhegt");
-
       var products = element["products"];
       celebrities.add(Celebrity(
           id: element["id"],

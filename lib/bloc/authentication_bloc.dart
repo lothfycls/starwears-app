@@ -20,10 +20,12 @@ class AuthenticationBloc
   AuthenticationBloc() : super(AuthenticationInitial()) {
     print(state);
     on<InitAuth>((event, emit) async {
+      emit(AuthLoading());
       emit(AuthenticationInitial());
     });
     on<CreateUser>((event, emit) async {
       try {
+        emit(AuthLoading());
         Map<String, dynamic> data = await authService.signUp(event.user);
         userId = data["id"];
         email = data["email"];
@@ -34,17 +36,23 @@ class AuthenticationBloc
     });
     on<LoginUser>((event, emit) async {
       try {
+        emit(AuthLoading());
         Map<String, dynamic> data = await authService.login(event.user);
         userId = data["id"];
         email = data["email"];
         print(userId);
         emit(AuthSuccess(email: email!, id: userId!));
       } catch (e) {
-        emit(LoginFailed(e.toString().substring(10)));
+        if (e.toString() == "user not found") {
+          emit(LoginFailed("User with this email doesn't exist yet"));
+        } else {
+          emit(LoginFailed("Your password is incorrect"));
+        }
       }
     });
     on<LocalAuth>((event, emit) async {
       try {
+        emit(AuthLoading());
         userId = event.id;
         email = event.email;
         firstName = event.firstName;
@@ -56,20 +64,6 @@ class AuthenticationBloc
         emit(AuthSuccess(email: email!, id: userId!));
       } catch (e) {
         emit(LoginFailed(e.toString().substring(10)));
-      }
-    });
-    on<UpdateProfile>((event, emit) async {
-      try {
-        await authService.updateProfile(event.firstName, event.lastName,
-            event.address, event.phone, event.username, userId!);
-        firstName = event.firstName;
-        lastName = event.lastName;
-        homeAdress = event.address;
-        phoneNumber = event.phone;
-        username = event.username;
-        emit(AuthSuccess(email: email!, id: userId!));
-      } catch (e) {
-        emit(CreationFailed(e.toString().substring(10)));
       }
     });
   }

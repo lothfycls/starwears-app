@@ -6,6 +6,8 @@ import 'package:starwears/Screens/HomeScreen.dart';
 import 'package:starwears/Screens/PlaceBidScreen.dart';
 import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/bloc/bid_bloc.dart';
+import 'package:starwears/bloc/products_bloc.dart';
+import 'package:starwears/bloc/singleproduct_bloc.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
@@ -36,10 +38,10 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
     });
   }
 
-  _showAlertDialog(errorMsg) {
+  _showAlertDialog(errorMsg, context) {
     return showDialog(
         context: context,
-        builder: (context) {
+        builder: (_) {
           return AlertDialog(
             title: const Text(
               'Bid adding Failed',
@@ -49,30 +51,32 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
           );
         }).then((val) {
       BlocProvider.of<BidBloc>(context).add(InitBid());
-    
+
       Navigator.pop(context);
     });
   }
 
-  _showSuccesDialog() {
-    return showDialog(
+  _showSuccesDialog(context) {
+    var ctx;
+    showDialog(
         context: context,
-        builder: (context) {
+        builder: (_) {
+          ctx = _;
           return const AlertDialog(
             title: Text(
               'Bid added successfully',
               style: TextStyle(color: Colors.black),
             ),
           );
-        }).then((val) {
+        });
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pop(ctx);
       BlocProvider.of<BidBloc>(context).add(InitBid());
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-              builder: (_) => ProductScreen(
-                    productId: widget.productId,
-                  )),
-          ((route) => false));
+      BlocProvider.of<SingleproductBloc>(context)
+          .add(GetSingleProduct(productId: widget.productId));
+      BlocProvider.of<RelationshipBloc>(context)
+          .add(GetRelationShip(productId: widget.productId));
+      Navigator.pop(context, true); // Pop third screen
     });
   }
 
@@ -80,8 +84,7 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
   final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final int total = widget.maxBid + 25;
-    print(_bid);
+    final double total = widget.bidAmount + 25;
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
@@ -101,7 +104,7 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
               }),
               child: Row(
                 // mainAxisAlignment: M,
-                children: <Widget>[
+                children: const <Widget>[
                   // SizedBox(width: 5,),
                   Icon(
                     Icons.arrow_back_ios,
@@ -116,7 +119,7 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
               ),
             ),
           ),
-          title: Text(
+          title: const Text(
             'Review your bid',
             style: TextStyle(
               color: Colors.black,
@@ -185,7 +188,7 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "\$${widget.maxBid}",
+                                "\$${widget.bidAmount}",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -224,10 +227,10 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
                       listener: (context, state) {
                         if (state is BidsFailed) {
                           _onWidgetDidBuild(
-                              () => _showAlertDialog(state.error));
+                              () => _showAlertDialog(state.error, context));
                         }
                         if (state is BidAdded) {
-                          _onWidgetDidBuild(() => _showSuccesDialog());
+                          _showSuccesDialog(context);
                         }
                       },
                       child: Container(

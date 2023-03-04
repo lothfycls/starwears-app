@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/bloc/products_bloc.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
 import '../bloc/category_bloc.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  const CategoriesScreen({Key? key}) : super(key: key);
+  int initCategory;
+  CategoriesScreen({Key? key, required this.initCategory}) : super(key: key);
 
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();
@@ -17,17 +19,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    BlocProvider.of<ProductsBloc>(context)
-        .add(GetProductsByCategory(categoryId: 2));
+    BlocProvider.of<ProductsBloc>(context).add(GetProductsByCategory(
+        categoryId: BlocProvider.of<CategoryBloc>(context)
+            .currentCategories[widget.initCategory]
+            .id));
   }
 
-  int _value = 0;
-
   void _onChanged(int value) {
-    BlocProvider.of<ProductsBloc>(context)
-        .add(GetProductsByCategory(categoryId: BlocProvider.of<CategoryBloc>(context).currentCategories[value].id));
+    BlocProvider.of<ProductsBloc>(context).add(GetProductsByCategory(
+        categoryId: BlocProvider.of<CategoryBloc>(context)
+            .currentCategories[value]
+            .id));
     setState(() {
-      _value = value;
+      widget.initCategory = value;
     });
   }
 
@@ -110,7 +114,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                 child: Text(state.categories[index].name),
                               ),
                             ),
-                            _value == index
+                            widget.initCategory == index
                                 ? Positioned(
                                     bottom: 0,
                                     left: 15,
@@ -149,22 +153,31 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       scrollDirection: Axis.vertical,
                       itemCount: state.products.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return CategoryCard(
-                          expirationDate: state.products[index].auctionEnd,
-                          image: state.products[index].images[0],
-                          name: state.products[index].name,
-                          price: state.products[index].lastPrice.toString(),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => ProductScreen(
+                                        productId: state.products[index].id)));
+                          },
+                          child: CategoryCard(
+                            expirationDate: state.products[index].auctionEnd,
+                            image: state.products[index].images[0],
+                            name: state.products[index].name,
+                            bids: state.products[index].bidsCount,
+                            price: state.products[index].lastPrice.toString(),
+                          ),
                         );
                       },
                     ),
                   );
-                } else if(state is ProductsFailed){
+                } else if (state is ProductsFailed) {
                   return Center(
                     child: Text("Error items"),
                   );
-                }
-                else{
-                    return Center(
+                } else {
+                  return Center(
                     child: Text("Nothing"),
                   );
                 }

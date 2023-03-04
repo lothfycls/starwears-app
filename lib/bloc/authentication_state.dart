@@ -13,7 +13,7 @@ class AuthSuccess extends AuthenticationState {
 
   AuthSuccess({required this.email, required this.id});
 }
-
+class AuthLoading extends AuthenticationState{}
 class LoginFailed extends AuthenticationState {
   final String message;
 

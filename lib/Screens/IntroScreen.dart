@@ -54,25 +54,10 @@ class _introScreenState extends State<introScreen> {
               top: 40,
               left: 0,
               right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Image.asset(
-                    color: Colors.white,
-                    'assets/images/logo.png',
-                    height: 50,
-                  ),
-                  SizedBox(width: 50),
-                ],
+              child: Image.asset(
+                color: Colors.white,
+                'assets/images/logo.png',
+                height: 50,
               ),
             ),
           ]),

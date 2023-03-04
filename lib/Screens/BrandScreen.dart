@@ -20,17 +20,16 @@ class BrandScreen extends StatefulWidget {
 class _BrandScreenState extends State<BrandScreen> {
   late int _value;
   @override
-  void initState() {
-    // TODO: implement initState
+  void initState(){
     BlocProvider.of<ProductsBloc>(context)
-        .add(GetBrandProducts(brandId: widget.currentBrand + 1));
+        .add(GetBrandProducts(brandId:BlocProvider.of<BrandBloc>(context).currentBrands[widget.currentBrand].id));
     _value = widget.currentBrand;
     super.initState();
   }
 
   void _onChanged(int value) {
     BlocProvider.of<ProductsBloc>(context)
-        .add(GetBrandProducts(brandId: value + 1));
+        .add(GetBrandProducts(brandId:BlocProvider.of<BrandBloc>(context).currentBrands[value].id));
     setState(() {
       _value = value;
     });

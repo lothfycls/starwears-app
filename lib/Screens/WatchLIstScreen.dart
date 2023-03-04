@@ -23,6 +23,7 @@ class _WatchListScreenState extends State<WatchListScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    watchlistBloc = BlocProvider.of<WatchlistBloc>(context);
     BlocProvider.of<WatchlistBloc>(context).add(GetActiveWatchList());
   }
 
@@ -37,6 +38,7 @@ class _WatchListScreenState extends State<WatchListScreen> {
     });
   }
 
+  late WatchlistBloc watchlistBloc;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,10 +64,10 @@ class _WatchListScreenState extends State<WatchListScreen> {
                 size: 25,
               ),
               onPressed: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const NotificationsScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const NotificationsScreen()));
                 // Perform some action when the button is pressed
               },
             ),
@@ -137,20 +139,20 @@ class _WatchListScreenState extends State<WatchListScreen> {
                     child: ListView.builder(
                       itemCount: state.products.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return   InkWell(
-                      onTap: (() {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  ProductScreen(productId :state.products[index].id))).then((value){
- if (value == true) {
-      BlocProvider.of<WatchlistBloc>(context).add(GetEndedWatchList());
-    } else {
-      BlocProvider.of<WatchlistBloc>(context).add(GetActiveWatchList());
-    }
-                                  });
-                        
-                      }),
+                        return InkWell(
+                          onTap: () {
+                            if (!_value) {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ProductScreen(
+                                              productId:
+                                                  state.products[index].id)))
+                                  .then((value) {
+                                watchlistBloc.add(GetActiveWatchList());
+                              });
+                            }
+                          },
                           child: Card(
                             color: Color(0xffF6F6F6),
                             margin: EdgeInsets.all(10),
@@ -172,12 +174,14 @@ class _WatchListScreenState extends State<WatchListScreen> {
                                 SizedBox(width: 10),
                                 Flexible(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         height: 60,
                                         width:
-                                            MediaQuery.of(context).size.width / 2,
+                                            MediaQuery.of(context).size.width /
+                                                2,
                                         child: Text(
                                           state.products[index].description,
                                           textAlign: TextAlign.left,
@@ -199,10 +203,12 @@ class _WatchListScreenState extends State<WatchListScreen> {
                                             ),
                                           ),
                                           SizedBox(width: 40),
-                                          Text(state.products[index].bidsCount
-                                              .toString()),
+                                          Text("Bids: " +
+                                              state.products[index].bidsCount
+                                                  .toString()),
                                           SizedBox(width: 15),
-                                          Text(state.products[index].auctionEnd),
+                                          Text(
+                                              state.products[index].auctionEnd),
                                         ],
                                       ),
                                     ],

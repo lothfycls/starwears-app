@@ -5,8 +5,14 @@ class CategoryCard extends StatelessWidget {
   final String name;
   final String price;
   final String expirationDate;
+  final int bids;
   const CategoryCard({
-    Key? key, required this.image, required this.name, required this.price, required this.expirationDate,
+    Key? key,
+    required this.image,
+    required this.name,
+    required this.price,
+    required this.expirationDate,
+    required this.bids,
   }) : super(key: key);
 
   @override
@@ -29,8 +35,7 @@ class CategoryCard extends StatelessWidget {
                 height: 200,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                      fit: BoxFit.cover,image),
+                  child: Image.network(fit: BoxFit.cover, image),
                 )),
             Container(
               height: 60,
@@ -54,7 +59,7 @@ class CategoryCard extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "\$"+price,
+                    "\$" + price,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -63,7 +68,7 @@ class CategoryCard extends StatelessWidget {
                   ),
                   SizedBox(width: 70),
                   Text(
-                    "17  Bids",
+                    "${bids} Bids",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 10,

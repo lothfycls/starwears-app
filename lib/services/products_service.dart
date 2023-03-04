@@ -57,7 +57,7 @@ class ProductsService {
     List<Product> prods = [];
     if (watchlistString != null) {
       List<dynamic> products = json.decode(watchlistString);
-     
+
       prods = Product.fromShared(products);
     }
     return prods;
@@ -97,6 +97,7 @@ class ProductsService {
   }
 
   Future getCategoryProduct(int id) async {
+    print(id);
     final String uri = url + categoryEndpoint + id.toString();
     print(uri);
     final response = await http.get(Uri.parse(uri));
@@ -171,7 +172,7 @@ class ProductsService {
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       int i = 0;
-      for (Map<String, dynamic> jsonObject in json) {
+      /*for (Map<String, dynamic> jsonObject in json) {
         final imageEntry = <String, dynamic>{
           "productImages": [
             {
@@ -180,11 +181,10 @@ class ProductsService {
             }
           ]
         };
-        //jsonObject.addEntries(ownerEntry.entries);
         jsonObject.addEntries(imageEntry.entries);
         json[i] = jsonObject;
         i++;
-      }
+      }*/
       return Product.fromJson(json);
     } else {
       throw Exception(json["message"]);

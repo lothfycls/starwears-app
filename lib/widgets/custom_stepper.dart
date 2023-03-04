@@ -48,7 +48,9 @@ class CustomStepper extends StatelessWidget {
                 Text(
                   "Arrived",
                   style: TextStyle(
-                      color: currentIndex == 0 ? Colors.green : Colors.grey,
+                      color: currentIndex == 0
+                          ? Color.fromARGB(255, 106, 208, 109)
+                          : Color.fromARGB(255, 212, 211, 211),
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),
@@ -57,7 +59,9 @@ class CustomStepper extends StatelessWidget {
                   child: Text(
                     "Shipped",
                     style: TextStyle(
-                        color: currentIndex == 1 ? Colors.green : Colors.grey,
+                        color: currentIndex == 1
+                            ? Color.fromARGB(255, 106, 208, 109)
+                            : Color.fromARGB(255, 212, 211, 211),
                         fontWeight: FontWeight.bold,
                         fontSize: 16),
                   ),
@@ -65,7 +69,9 @@ class CustomStepper extends StatelessWidget {
                 Text(
                   "Delivered",
                   style: TextStyle(
-                      color: currentIndex == 2 ? Colors.green : Colors.grey,
+                      color: currentIndex == 2
+                          ? Color.fromARGB(255, 106, 208, 109)
+                          : Color.fromARGB(255, 212, 211, 211),
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                 ),
@@ -82,7 +88,9 @@ class CustomStepper extends StatelessWidget {
       child: Hero(
         tag: index,
         child: Divider(
-          color: selected ? Colors.green : Colors.grey,
+          color: selected
+              ? Color.fromARGB(255, 106, 208, 109)
+              : Color.fromARGB(255, 212, 211, 211),
           thickness: 4,
         ),
       ),
@@ -102,7 +110,9 @@ class CircleStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
         radius: 15,
-        backgroundColor: currentIndex >= index ? Colors.green : Colors.grey,
+        backgroundColor: currentIndex >= index
+            ? Color.fromARGB(255, 106, 208, 109)
+            : Color.fromARGB(255, 212, 211, 211),
         child: buildResult());
   }
 
@@ -117,6 +127,7 @@ class CircleStep extends StatelessWidget {
     if (currentIndex == index) {
       return Icon(
         Icons.done,
+        color: Colors.white,
       );
     } else {
       return null;

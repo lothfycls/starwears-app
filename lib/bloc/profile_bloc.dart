@@ -10,6 +10,33 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   AuthService authService = AuthService();
   AuthenticationBloc authenticationBloc;
   ProfileBloc({required this.authenticationBloc}) : super(ProfileInitial()) {
+    on<UpdateProfile>((event, emit) async {
+      try {
+        bool first = event.firstName == authenticationBloc.firstName;
+        bool second = event.lastName == authenticationBloc.lastName;
+        bool third = event.address == authenticationBloc.homeAdress;
+        bool fourth = event.phone == authenticationBloc.phoneNumber;
+        bool fifth = event.username == authenticationBloc.username;
+        if(!first || !second || !third || !fourth || !fifth){
+        await authService.updateProfile(
+            event.firstName,
+            event.lastName,
+            event.address,
+            event.phone,
+            event.username,
+            authenticationBloc.userId!);
+        authenticationBloc.firstName = event.firstName;
+        authenticationBloc.lastName = event.lastName;
+        authenticationBloc.homeAdress = event.address;
+        authenticationBloc.phoneNumber = event.phone;
+        authenticationBloc.username = event.username;
+        emit(UpdateSuccess());
+        }
+        
+      } catch (e) {
+        emit(UpdateFailed(e.toString().substring(10)));
+      }
+    });
     on<UpdatePassword>((event, emit) async {
       try {
         await authService.updatePass(
@@ -29,6 +56,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         emit(UsernameFailed(e.toString().substring(10)));
       }
     });
+
     on<UpdateEmail>((event, emit) async {
       try {
         await authService.updateEmail(event.email, authenticationBloc.userId!);

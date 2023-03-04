@@ -242,7 +242,7 @@ class _OrderTrackingState extends State<OrderTracking> {
                         const SizedBox(height: 10),
                         Text(
                           state.order.paymentWay,
-                          style: TextStyle(color: Color(0xff53565A)),
+                          style: TextStyle(color: Color.fromARGB(255, 184, 187, 190)),
                         ),
                       ]));
             } else {
@@ -258,7 +258,7 @@ class _OrderTrackingState extends State<OrderTracking> {
 class OrderInfos extends StatelessWidget {
   final String creationDate;
   final int orderNumber;
-  final int total;
+  final double total;
   const OrderInfos({
     Key? key,
     required this.creationDate,

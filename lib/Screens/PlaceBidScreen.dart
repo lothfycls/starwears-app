@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:starwears/Screens/ReviewBidscreen.dart';
 import 'package:starwears/bloc/singleproduct_bloc.dart';
 import 'package:starwears/widgets/BidCard.dart';
@@ -26,6 +28,8 @@ class PlaceBidScreen extends StatefulWidget {
 
 class _PlaceBidScreenState extends State<PlaceBidScreen> {
   double? _bid = 0;
+  final currencyFormat = NumberFormat.simpleCurrency();
+
   GlobalKey<FormState> formKey = GlobalKey();
   final TextEditingController _controller = TextEditingController();
   @override
@@ -115,6 +119,10 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                               controller: _controller,
                               textAlign: TextAlign.center,
                               keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                CurrencyTextInputFormatter(
+                                    symbol: currencyFormat.currencySymbol),
+                              ],
                               decoration: InputDecoration(
                                 hintText: 'Type your bid...',
                                 border: InputBorder.none,
@@ -142,12 +150,12 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                     Container(
                       height: 45,
                       width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      margin:const EdgeInsets.symmetric(horizontal: 30),
                       child: RaisedButton(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50.0)),
                         color: Colors.black,
-                        child: Text(
+                        child:const Text(
                           'Review Your Bid',
                           style: TextStyle(color: Colors.white),
                         ),
@@ -157,13 +165,17 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ReviewBidScreen(
-                                        bidAmount:
-                                            double.parse(_controller.text),
+                                        bidAmount: double.parse(_controller.text
+                                            .replaceFirst("\$", "")),
                                         productId: widget.productId,
                                         maxBid: widget.maxBid,
                                         date: widget.date,
                                       )),
-                            );
+                            ).then((value) {
+                              if (value) {
+                                Navigator.pop(context);
+                              }
+                            });
                           }
                         },
                       ),
@@ -181,5 +193,30 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
         }
       },
     );
+  }
+}
+
+class CurrencyTextInputFormatter extends TextInputFormatter {
+  final String symbol;
+
+  CurrencyTextInputFormatter({required this.symbol});
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final double? value = double.tryParse(newValue.text);
+
+    if (value != null) {
+      final currencyFormat =
+          NumberFormat.currency(locale: 'en_US', symbol: symbol);
+      final formattedValue = currencyFormat.format(value);
+
+      return TextEditingValue(
+        text: formattedValue,
+        selection: TextSelection.collapsed(offset: formattedValue.length),
+      );
+    }
+
+    return newValue;
   }
 }

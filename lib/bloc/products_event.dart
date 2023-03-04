@@ -8,6 +8,11 @@ class GetProductsByCategory extends ProductsEvent {
   GetProductsByCategory({required this.categoryId});
 }
 
+class GetProductsOnSearch extends ProductsEvent {
+  final String input;
+  GetProductsOnSearch({required this.input});
+}
+
 class GetCelebrityProducts extends ProductsEvent {
   final int celebrityId;
   GetCelebrityProducts({required this.celebrityId});
@@ -25,8 +30,9 @@ class GetActiveProducts extends ProductsEvent {}
 class GetEndedProducts extends ProductsEvent {}
 
 class GetUserBidProducts extends ProductsEvent {}
-class GetUserActiveBids extends ProductsEvent{}
-class GetUserWonBids extends ProductsEvent{}
-class GetUserLostBids extends ProductsEvent{}
 
+class GetUserActiveBids extends ProductsEvent {}
 
+class GetUserWonBids extends ProductsEvent {}
+
+class GetUserLostBids extends ProductsEvent {}

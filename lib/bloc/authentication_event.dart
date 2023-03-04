@@ -36,16 +36,4 @@ class LocalAuth extends AuthenticationEvent {
       required this.phone});
 }
 
-class UpdateProfile extends AuthenticationEvent {
-  final String firstName;
-  final String lastName;
-  final String address;
-  final String phone;
-  final String username;
-  UpdateProfile(
-      {required this.firstName,
-      required this.lastName,
-      required this.address,
-      required this.phone,
-      required this.username});
-}
+

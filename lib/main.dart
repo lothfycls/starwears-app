@@ -4,10 +4,8 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:starwears/Screens/connected_account/ProfileScreen.dart';
-import 'package:starwears/Screens/SignUpScreen.dart';
+import 'package:starwears/Screens/IntroScreen.dart';
 import 'package:starwears/Screens/SplashScreen.dart';
-import 'package:starwears/Screens/order_tracking.dart';
 import 'package:starwears/bloc/authentication_bloc.dart';
 import 'package:starwears/bloc/banner_bloc.dart';
 import 'package:starwears/bloc/bid_bloc.dart';
@@ -26,9 +24,10 @@ import 'package:starwears/stripe_page.dart';
 
 import 'Providers/IndexProvider.dart';
 import 'Screens/HomeScreen.dart';
+  final outerNavigator = GlobalKey<NavigatorState>();
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey =
       "pk_test_51MYvFJHU6zFyNPkfy9hGbi6zJKlQe7OP14DcRYL5xwcK3iqaVLaoeJdvpaiIVS5aUC0HXrMyVNmae2L2K98j5sNG00x7LP5aRf";
 
@@ -38,7 +37,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
   final AuthenticationBloc authenticationBloc = AuthenticationBloc();
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -69,7 +67,9 @@ class MyApp extends StatelessWidget {
             create: (_) => OrdersBloc(authenticationBloc: authenticationBloc)),
         BlocProvider(
             create: (_) => ProfileBloc(authenticationBloc: authenticationBloc)),
-            BlocProvider(create: (_)=>NotificationsBloc(authenticationBloc: authenticationBloc))
+        BlocProvider(
+            create: (_) =>
+                NotificationsBloc(authenticationBloc: authenticationBloc))
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -91,7 +91,9 @@ class MyApp extends StatelessWidget {
         title: 'starwears',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          fontFamily: 'Inter',
         ),
+        navigatorKey: outerNavigator,
         home: Choose(),
       ),
     );
@@ -141,11 +143,14 @@ class _ChooseState extends State<Choose> {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
-        print(state);
         if (state is AuthSuccess) {
           return HomeScreen();
+        } else if (state is AuthLoading) {
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.black),
+          );
         } else {
-          return SplashScreen();
+          return const SplashScreen();
         }
       },
     );

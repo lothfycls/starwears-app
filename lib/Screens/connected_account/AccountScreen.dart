@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/Screens/connected_account/BidsScreen.dart';
 import 'package:starwears/Screens/connected_account/ProfileScreen.dart';
+import 'package:starwears/main.dart';
 
 import 'PurchasesScreen.dart';
 
@@ -42,10 +43,9 @@ class _AccountScreenState extends State<AccountScreen> {
               SharedPreferences _prefs = await SharedPreferences.getInstance();
               _prefs.remove('id');
               _prefs.remove('email');
-              
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
+
+              outerNavigator.currentState!.pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) =>const LoginScreen()),
                   (route) => false);
               // Perform some action when the button is pressed
             },
@@ -72,7 +72,7 @@ class _AccountScreenState extends State<AccountScreen> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                    builder: (BuildContext context) =>const PurchasesScreen()),
+                    builder: (BuildContext context) => const PurchasesScreen()),
               );
             },
             child: AccountCard(

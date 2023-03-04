@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/Screens/order_tracking.dart';
+import 'package:starwears/Screens/pending_order.dart';
 import 'package:starwears/bloc/orders_bloc.dart';
 
 import '../../bloc/authentication_bloc.dart';
@@ -19,6 +20,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
   @override
   void initState() {
     super.initState();
+    ordersBloc = BlocProvider.of<OrdersBloc>(context);
     BlocProvider.of<OrdersBloc>(context).add(GetPendingOrders());
   }
 
@@ -36,6 +38,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
     });
   }
 
+  late OrdersBloc ordersBloc;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -79,7 +82,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                       size: 25,
                     ),
                     onPressed: () {
-                        Navigator.push(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (_) => const NotificationsScreen()));
@@ -157,23 +160,34 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                             itemBuilder: (BuildContext context, int index) {
                               return InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => OrderTracking(orderId: state.orders[index].id,))).then((value) {
-                                            if (value == true) {
-      print("value1");
-      BlocProvider.of<OrdersBloc>(context).add(GetSuccessOrders());
-    }
-    if (value == false) {
-      print("value0");
-      BlocProvider.of<OrdersBloc>(context).add(GetPendingOrders());
-    }
-                                          });
+                                  print(state.orders[index].state);
+                                  if (state.orders[index].state != "PAID") {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => PendingOrder(
+                                                  orderId: state
+                                                      .orders[index].id,
+                                                ))).then((value) async {
+                                     ordersBloc
+                                          .add(GetPendingOrders());
+                                    });
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => OrderTracking(
+                                                  orderId: state
+                                                      .orders[index].id,
+                                                ))).then((value) {
+                                     ordersBloc
+                                          .add(GetSuccessOrders());
+                                    });
+                                  }
                                 },
                                 child: Card(
-                                  color:const Color(0xffF6F6F6),
-                                  margin:const EdgeInsets.all(10),
+                                  color: const Color(0xffF6F6F6),
+                                  margin: const EdgeInsets.all(10),
                                   child: Row(
                                     children: [
                                       Container(
@@ -244,7 +258,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                           ),
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: Text("No Orders items"),
                         );
                       }
@@ -258,7 +272,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("You have to login in order to see this page"),
+                    const Text("You have to login in order to see this page"),
                     const SizedBox(
                       height: 20,
                     ),
@@ -270,15 +284,16 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50.0)),
                             color: Colors.black,
-                            child: Text(
+                            child: const Text(
                               'Login',
                               style: TextStyle(color: Colors.white),
                             ),
                             onPressed: () async {
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) => LoginScreen()));
+                                      builder: (_) => const LoginScreen()),
+                                  (route) => false);
                               //await makePayment(prod.lastPrice.toString());
                             })),
                   ]),

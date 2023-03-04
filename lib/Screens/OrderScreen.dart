@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:starwears/Screens/HomeScreen.dart';
+import 'package:starwears/Screens/pending_order.dart';
 import 'package:starwears/bloc/orders_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:starwears/bloc/singleproduct_bloc.dart';
+import '../bloc/relationship_bloc.dart';
 import '../models/order.dart';
 
 class OrderScreen extends StatefulWidget {
   final int productId;
   final int ownerId;
   final int shippingCost;
-  final int total;
+  final double total;
   const OrderScreen(
       {Key? key,
       required this.productId,
@@ -30,8 +33,9 @@ class _OrderScreenState extends State<OrderScreen> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController commentController = TextEditingController();
   TextEditingController addresseController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+
   GlobalKey<FormState> formKey = GlobalKey();
-  Map<String, dynamic>? paymentIntent;
   void _onWidgetDidBuild(Function callback) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callback();
@@ -89,8 +93,18 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                   TextFormField(
                       controller: addresseController,
+                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
-                          hintText: "Your shipping address"),
+                        hintText: "Postal Code",
+                      ),
+                      validator: (value) =>
+                          value!.isEmpty ? "Please enter an address" : null),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  TextFormField(
+                      controller: cityController,
+                      decoration: const InputDecoration(hintText: "City"),
                       validator: (value) =>
                           value!.isEmpty ? "Please enter an address" : null),
                   const SizedBox(
@@ -106,24 +120,33 @@ class _OrderScreenState extends State<OrderScreen> {
                   BlocListener<OrdersBloc, OrdersState>(
                     listener: (context, state) {
                       if (state is OrderAdded) {
-                        print(widget.total);
-                        _onWidgetDidBuild(() async {
-                          try {
-                            await makePayment("${widget.total}");
-                          } catch (e) {
-                            print("Exception stripe");
-                          }
-                        });
                         BlocProvider.of<OrdersBloc>(context).add(InitOrder());
+                        ////order has been placed
+                        _onWidgetDidBuild(() async {
+                          print("our product id is:${widget.productId}");
+                          print("our owner id is :${widget.ownerId}");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    PendingOrder(orderId: state.trackingOrder)),
+                          ).then((value) {
+                            BlocProvider.of<SingleproductBloc>(context).add(
+                                GetSingleProduct(productId: widget.productId));
+
+                            BlocProvider.of<RelationshipBloc>(context).add(
+                                GetRelationShip(productId: widget.productId));
+                            Navigator.pop(context);
+                          });
+                        });
                       }
                       if (state is OrderFailed) {
                         showDialog(
                             context: context,
-                            builder: (_) => AlertDialog(
+                            builder: (_) => const AlertDialog(
                                   content: Text("Order already exists"),
                                 )).then((value) {
-                                                          BlocProvider.of<OrdersBloc>(context).add(InitOrder());
-
+                          BlocProvider.of<OrdersBloc>(context).add(InitOrder());
                           Navigator.pop(context);
                         });
                       }
@@ -131,21 +154,22 @@ class _OrderScreenState extends State<OrderScreen> {
                     child: Container(
                         height: 45,
                         width: double.infinity,
-                        margin: EdgeInsets.symmetric(horizontal: 30),
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
                         child: RaisedButton(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50.0)),
                             color: Colors.black,
-                            child: Text(
+                            child: const Text(
                               'Confirm order',
                               style: TextStyle(color: Colors.white),
                             ),
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
+                                ///id added doesn't matter, it will be created after
                                 BlocProvider.of<OrdersBloc>(context).add(
                                     AddOrder(
                                         order: Order(
-                                          id: -20,
+                                            id: -20,
                                             clientComment:
                                                 commentController.text == ""
                                                     ? "No comments"
@@ -156,7 +180,9 @@ class _OrderScreenState extends State<OrderScreen> {
                                             phone: phoneController.text,
                                             productId: widget.productId,
                                             shippingAdress:
-                                                addresseController.text,
+                                                addresseController.text +
+                                                    ' ' +
+                                                    cityController.text,
                                             shippingCost: widget.shippingCost,
                                             state: "PENDING",
                                             total: widget.total)));
@@ -169,116 +195,5 @@ class _OrderScreenState extends State<OrderScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> makePayment(String amount) async {
-    try {
-      paymentIntent = await createPaymentIntent(amount.toString(), 'USD');
-      //Payment Sheet
-      await Stripe.instance
-          .initPaymentSheet(
-              paymentSheetParameters: SetupPaymentSheetParameters(
-                  paymentIntentClientSecret: paymentIntent!['client_secret'],
-                  style: ThemeMode.dark,
-                  merchantDisplayName: 'Adnan'))
-          .then((value) {});
-
-      ///now finally display payment sheeet
-      displayPaymentSheet();
-      BlocProvider.of<OrdersBloc>(context).add(UpdateOrder(
-          order: Order(
-            id:-20,
-              clientComment: commentController.text == ""
-                  ? "No comments"
-                  : commentController.text,
-              name: nameController.text,
-              ownerId: widget.ownerId,
-              paymentWay: "CARD",
-              phone: phoneController.text,
-              productId: widget.productId,
-              shippingAdress: addresseController.text,
-              shippingCost: widget.shippingCost,
-              state: "PAID",
-              total: widget.total)));
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (_) => HomeScreen()), (route) => false);
-    } catch (e, s) {
-      print('exception:$e$s');
-    }
-  }
-
-  displayPaymentSheet() async {
-    try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
-        showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                          ),
-                          Text("Payment Successfull"),
-                        ],
-                      ),
-                    ],
-                  ),
-                ));
-        // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("paid successfully")));
-
-        paymentIntent = null;
-      }).onError((error, stackTrace) {
-        print('Error is:--->$error $stackTrace');
-      });
-    } on StripeException catch (e) {
-      print('Error is:---> $e');
-      showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-                content: Text("Cancelled "),
-              ));
-    } catch (e) {
-      print('$e');
-      showDialog(
-          context: context,
-          builder: (_) => const AlertDialog(
-                content: Text("Cancelled "),
-              ));
-    }
-  }
-
-  createPaymentIntent(String amount, String currency) async {
-    try {
-      Map<String, dynamic> body = {
-        'amount': calculateAmount(amount),
-        'currency': currency,
-        'payment_method_types[]': 'card'
-      };
-
-      var response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/payment_intents'),
-        headers: {
-          'Authorization':
-              'Bearer sk_test_51MYvFJHU6zFyNPkf2IlvvSSTXCKE9lBP4f4i6LpxcrWUmqPB7mVloGOMqfDP46fcRk8UWVjkhhA49GngcgVC1vBU00k8tejYZK',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: body,
-      );
-      // ignore: avoid_print
-      print('Payment Intent Body->>> ${response.body.toString()}');
-      return jsonDecode(response.body);
-    } catch (err) {
-      // ignore: avoid_print
-      print('err charging user: ${err.toString()}');
-    }
-  }
-
-  calculateAmount(String amount) {
-    final calculatedAmout = (int.parse(amount)) * 100;
-    return calculatedAmout.toString();
   }
 }

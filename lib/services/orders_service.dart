@@ -22,7 +22,6 @@ class OrderService {
       "payment_way": order.paymentWay,
       "shipping_cost": order.shippingCost,
       "total": order.total,
-      // "clien_id": order.id,
       "productId": order.productId,
     };
     final response = await http.post(Uri.parse(url + addUrl),
@@ -70,7 +69,6 @@ class OrderService {
     final response =
         await http.get(Uri.parse(url + detailUrl + "/" + clientId.toString()));
     final json = jsonDecode(response.body);
-    print(json);
     if (response.statusCode == 200) {
       return Order.fromDetail(json[0]);
     } else {

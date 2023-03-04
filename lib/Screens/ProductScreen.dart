@@ -10,11 +10,14 @@ import 'package:starwears/Screens/PlaceBidScreen.dart';
 import 'package:starwears/Screens/ProductDetailsScreen.dart';
 import 'package:starwears/bloc/singleproduct_bloc.dart';
 import 'package:starwears/models/product.dart';
+import 'package:starwears/utils/utils.dart';
 import 'package:starwears/widgets/BidCard.dart';
 import 'package:http/http.dart' as http;
+import 'package:transparent_image/transparent_image.dart';
 import '../bloc/products_bloc.dart';
 import '../bloc/relationship_bloc.dart';
 import '../bloc/watchlist_bloc.dart';
+import '../main.dart';
 import '../widgets/AboutItemCard.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -36,8 +39,10 @@ class _ProductScreenState extends State<ProductScreen> {
         .add(GetRelationShip(productId: widget.productId));
     BlocProvider.of<WatchlistBloc>(context)
         .add(CheckExist(productId: widget.productId));
+    relationshipBloc = BlocProvider.of<RelationshipBloc>(context);
   }
 
+  late RelationshipBloc relationshipBloc;
   int _currentIndex = 0;
   Map<String, dynamic>? paymentIntent;
 
@@ -132,7 +137,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                     Container(
                       width: double.infinity,
-                      height: 250,
+                      height: 350,
                       child: PageView.builder(
                         itemCount: state.product.images.length,
                         onPageChanged: (index) {
@@ -141,11 +146,29 @@ class _ProductScreenState extends State<ProductScreen> {
                           });
                         },
                         itemBuilder: (context, index) {
-                          return FadeInImage.assetNetwork(
-                            imageErrorBuilder: ((context, error, stackTrace) =>
-                                Image.asset("assets/images/imagecarousel.png")),
-                            placeholder: "assets/images/imagecarousel.png",
-                            image: state.product.images[index],
+                          return Stack(
+                            children: <Widget>[
+                              const Center(
+                                  child: CircularProgressIndicator(
+                                color: Colors.black,
+                              )),
+                              Center(
+                                child: FadeInImage.memoryNetwork(
+                                  fit: BoxFit.cover,
+                                  height: 350,
+                                  width: 200,
+                                  imageErrorBuilder:
+                                      ((context, error, stackTrace) =>
+                                          const Center(
+                                            child: CircularProgressIndicator(
+                                              color: Colors.black,
+                                            ),
+                                          )),
+                                  placeholder: kTransparentImage,
+                                  image: state.product.images[index],
+                                ),
+                              ),
+                            ],
                           );
                         },
                       ),
@@ -193,7 +216,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     Container(
                       margin: EdgeInsets.only(left: 30),
                       child: Text(
-                        "\$${state.product.lastPrice}",
+                        Utils.formatCurrency(state.product.lastPrice),
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 25),
                       ),
@@ -225,10 +248,10 @@ class _ProductScreenState extends State<ProductScreen> {
                       height: 8,
                     ),
                     Container(
-                      margin: EdgeInsets.only(left: 30),
+                      margin: const EdgeInsets.only(left: 30),
                       child: Text(
-                        "Last Bid:${state.product.lastBidder}",
-                        style: TextStyle(
+                        "Last Bid : ${state.product.lastBidder}",
+                        style: const TextStyle(
                             fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -236,7 +259,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       height: 10,
                     ),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      margin: const EdgeInsets.symmetric(horizontal: 30),
                       child: Divider(
                         thickness: 2,
                         color: Colors.grey,
@@ -247,56 +270,62 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                     BlocBuilder<RelationshipBloc, RelationshipState>(
                       builder: (context, state) {
-                        print(state);
                         if (state is NeverState ||
                             state is RelationshipFailed) {
-                          return Container(
-                              height: 45,
-                              width: double.infinity,
-                              margin: EdgeInsets.symmetric(horizontal: 30),
-                              child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(50.0)),
-                                  color: Colors.black,
-                                  child: Text(
-                                    'Submit Bid',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  onPressed: () {
-                                    if (state is NeverState) {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  PlaceBidScreen(
-                                                      productId: prod.id,
-                                                      date: prod.auctionEnd,
-                                                      maxBid: state.relationship
-                                                          .bidAmount)));
-                                    } else if (state is RelationshipFailed) {
-                                      AwesomeDialog(
-                                        context: context,
-                                        dialogType: DialogType.warning,
-                                        animType: AnimType.rightSlide,
-                                        btnOkColor: Colors.black,
-                                        title: 'Sign in Required',
-                                        desc: 'This action required to Sign in',
-                                        btnCancelOnPress: () {},
-                                        btnOkOnPress: () {
-                                          Navigator.push(
-                                              context,
+                          return prod.state == 'Active'
+                              ? Container(
+                                  height: 45,
+                                  width: double.infinity,
+                                  margin: EdgeInsets.symmetric(horizontal: 30),
+                                  child: RaisedButton(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(50.0)),
+                                      color: Colors.black,
+                                      child: Text(
+                                        'Submit Bid',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      onPressed: () {
+                                        if (state is NeverState) {
+                                          Navigator.of(context).push(
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginScreen()));
-                                        },
-                                      ).show();
-                                    }
-                                  }));
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      PlaceBidScreen(
+                                                          productId: prod.id,
+                                                          date: prod.auctionEnd,
+                                                          maxBid: state
+                                                              .relationship
+                                                              .bidAmount)));
+                                        } else if (state
+                                            is RelationshipFailed) {
+                                          AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.warning,
+                                            animType: AnimType.rightSlide,
+                                            btnOkColor: Colors.black,
+                                            title: 'Sign in Required',
+                                            desc:
+                                                'This action required to Sign in',
+                                            btnCancelOnPress: () {},
+                                            btnOkOnPress: () {
+                                              outerNavigator.currentState!
+                                                  .pushAndRemoveUntil(
+                                                      MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              const LoginScreen()),
+                                                      (route) => false);
+                                            },
+                                          ).show();
+                                        }
+                                      }))
+                              : const SizedBox();
                         } else if (state is WonState) {
                           return Container(
                             height: 45,
                             width: double.infinity,
-                            margin: EdgeInsets.symmetric(horizontal: 30),
+                            margin: const EdgeInsets.symmetric(horizontal: 30),
                             child: RaisedButton(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(50.0)),
@@ -307,13 +336,19 @@ class _ProductScreenState extends State<ProductScreen> {
                               ),
                               onPressed: () {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => OrderScreen(
-                                            productId: prod.id,
-                                            ownerId: prod.ownerId,
-                                            shippingCost: 25,
-                                            total: prod.lastPrice)));
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => OrderScreen(
+                                                productId: prod.id,
+                                                ownerId: prod.ownerId,
+                                                shippingCost: 25,
+                                                total: prod.lastPrice)))
+                                    .then((value) {
+                                  if (value) {
+                                    relationshipBloc.add(GetRelationShip(
+                                        productId: widget.productId));
+                                  }
+                                });
                               },
                             ),
                           );
@@ -322,7 +357,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         }
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     BlocBuilder<WatchlistBloc, WatchlistState>(
@@ -416,6 +451,9 @@ class _ProductScreenState extends State<ProductScreen> {
                         overflow: TextOverflow.clip,
                       ),
                     ),
+                    SizedBox(
+                      height: 15,
+                    ),
                     Container(
                       margin: EdgeInsets.only(left: 30),
                       child: Text(
@@ -425,7 +463,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 8,
+                      height: 10,
                     ),
                     BlocBuilder<ProductsBloc, ProductsState>(
                         builder: (context, state) {
@@ -434,7 +472,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           height: 380,
                           // width: 300,
                           child: ListView.builder(
-                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            padding: EdgeInsets.symmetric(horizontal: 30),
                             scrollDirection: Axis.horizontal,
                             itemCount: state.products.length,
                             itemBuilder: (context, index) {

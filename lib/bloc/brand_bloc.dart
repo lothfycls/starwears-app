@@ -9,10 +9,12 @@ part 'brand_state.dart';
 
 class BrandBloc extends Bloc<BrandEvent, BrandState> {
   BrandService brandService = BrandService();
+  List<Brand> currentBrands = [];
   BrandBloc() : super(BrandInitial()) {
     on<GetBrands>((event, emit) async {
       try {
         List<Brand> brands = await brandService.getBrands();
+        currentBrands = brands;
         emit(BrandsReady(brands: brands));
       } catch (e) {
         emit(BrandsFailed(error: e.toString()));

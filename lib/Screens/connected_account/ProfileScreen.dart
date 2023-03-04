@@ -25,6 +25,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  _showDialog(errorMsg) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.error,
+      animType: AnimType.rightSlide,
+      title: 'Changes were not saved',
+      desc: errorMsg,
+      btnOkColor: Colors.black,
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {},
+    );
+  }
+
   _showAlertDialog(errorMsg) {
     AwesomeDialog(
       context: context,
@@ -32,8 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       animType: AnimType.rightSlide,
       title: 'Changes were not saved',
       desc: errorMsg,
-                                              btnOkColor: Colors.black,
-
+      btnOkColor: Colors.black,
       btnCancelOnPress: () {},
       btnOkOnPress: () {},
     ).show().then(
@@ -46,12 +58,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       dialogType: DialogType.success,
       animType: AnimType.rightSlide,
       title: 'Changes were made with success',
-                                              btnOkColor: Colors.black,
-
+      btnOkColor: Colors.black,
       btnCancelOnPress: () {},
-      btnOkOnPress: () {
-        Navigator.pop(context);
-      },
+      btnOkOnPress: () {},
     ).show().then(
         (val) => BlocProvider.of<ProfileBloc>(context).add(InitProfile()));
   }
@@ -81,6 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leadingWidth: 100,
         elevation: 0,
@@ -88,18 +98,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         toolbarHeight: 40,
         centerTitle: true,
         leading: Container(
-          // color: Colors.red,
-          padding: EdgeInsets.only(left: 10),
-          // width: 100,
-          // width: 200,
+          padding: const EdgeInsets.only(left: 10),
           child: InkWell(
             onTap: (() {
               Navigator.of(context).pop();
             }),
             child: Row(
-              // mainAxisAlignment: M,
               children: <Widget>[
-                // SizedBox(width: 5,),
                 Icon(
                   Icons.arrow_back_ios,
                   color: Colors.black,
@@ -122,30 +127,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         actions: <Widget>[
-          TextButton(
-            child: _isEditMode
-                ? Text(
-                    "Done",
-                    style: TextStyle(color: Color.fromARGB(153, 0, 0, 0)),
-                  )
-                : Text(
-                    "Edit",
-                    style: TextStyle(color: Colors.black),
-                  ),
-            onPressed: () {
-              setState(() {
-                _isEditMode = !_isEditMode;
-                if (!_isEditMode) {
-                  BlocProvider.of<AuthenticationBloc>(context).add(
-                      UpdateProfile(
-                          firstName: _firstNameController.text,
-                          lastName: _lastNameController.text,
-                          address: _adressController.text,
-                          phone: _phoneNumberController.text,
-                          username: _userNameController.text));
-                }
-              });
+          BlocConsumer<ProfileBloc, ProfileState>(
+            listener: (context, state) {
+              if (state is UpdateFailed) {
+                _onWidgetDidBuild(_showAlertDialog(state.message));
+              }
+
+              if (state is UpdateSuccess) {
+                _onWidgetDidBuild(_showSuccessDialog());
+              }
             },
+            builder: (context, state) => TextButton(
+              child: _isEditMode
+                  ? Text(
+                      "Done",
+                      style: TextStyle(color: Color.fromARGB(153, 0, 0, 0)),
+                    )
+                  : Text(
+                      "Edit",
+                      style: TextStyle(color: Colors.black),
+                    ),
+              onPressed: () {
+                setState(() {
+                  _isEditMode = !_isEditMode;
+                  if (!_isEditMode) {
+                    BlocProvider.of<ProfileBloc>(context).add(UpdateProfile(
+                        firstName: _firstNameController.text,
+                        lastName: _lastNameController.text,
+                        address: _adressController.text,
+                        phone: _phoneNumberController.text,
+                        username: _userNameController.text));
+                  }
+                });
+              },
+            ),
           ),
           SizedBox(
             width: 10,
@@ -346,56 +361,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         TextEditingController();
                     if (_isEditMode) {
                       showModalBottomSheet(
-                        isScrollControlled: true,
                         context: context,
                         builder: (BuildContext context) {
-                          return Padding(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
-                              child: SizedBox(
-                                child: Center(
-                                  child: Form(
-                                    key: passKey,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 40),
-                                            child: Theme(
-                                              data: Theme.of(context).copyWith(
-                                                // hintStyle: TextStyle(color: Colors.grey),
-                                                inputDecorationTheme:
-                                                    InputDecorationTheme(
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            25.0),
-                                                  ),
-                                                ),
-                                              ),
-                                              child: TextFormField(
-                                                obscureText: true,
-                                                controller: oldController,
-                                                validator: (value) =>
-                                                    value!.isEmpty
-                                                        ? "Enter a value"
-                                                        : null,
-                                                decoration:
-                                                    const InputDecoration(
-                                                        hintText:
-                                                            "old password"),
-                                              ),
-                                            )),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 40),
-                                            child: Theme(
+                          return SingleChildScrollView(
+                            child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: 10,
+                                    bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom +
+                                        50),
+                                child: SizedBox(
+                                  child: Center(
+                                    child: Form(
+                                      key: passKey,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 40),
+                                              child: Theme(
                                                 data:
                                                     Theme.of(context).copyWith(
                                                   // hintStyle: TextStyle(color: Colors.grey),
@@ -410,7 +397,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 ),
                                                 child: TextFormField(
                                                   obscureText: true,
-                                                  controller: newController,
+                                                  controller: oldController,
                                                   validator: (value) =>
                                                       value!.isEmpty
                                                           ? "Enter a value"
@@ -418,58 +405,94 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   decoration:
                                                       const InputDecoration(
                                                           hintText:
-                                                              "new password"),
-                                                ))),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        BlocConsumer<ProfileBloc, ProfileState>(
-                                          listener: (context, state) {
-                                            print("hello");
-                                            print(newController.text);
-                                            if (state is PasswordFailed) {
-                                              _onWidgetDidBuild(
-                                                  _showAlertDialog(
-                                                      state.message));
-                                            }
+                                                              "old password"),
+                                                ),
+                                              )),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 40),
+                                              child: Theme(
+                                                  data: Theme.of(context)
+                                                      .copyWith(
+                                                    // hintStyle: TextStyle(color: Colors.grey),
+                                                    inputDecorationTheme:
+                                                        InputDecorationTheme(
+                                                      border:
+                                                          OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(25.0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: TextFormField(
+                                                    obscureText: true,
+                                                    controller: newController,
+                                                    validator: (value) =>
+                                                        value!.isEmpty
+                                                            ? "Enter a value"
+                                                            : null,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            hintText:
+                                                                "new password"),
+                                                  ))),
+                                          const SizedBox(
+                                            height: 30,
+                                          ),
+                                          BlocConsumer<ProfileBloc,
+                                              ProfileState>(
+                                            listener: (context, state) {
+                                              print(newController.text);
+                                              if (state is PasswordFailed) {
+                                                _onWidgetDidBuild(
+                                                    _showAlertDialog(
+                                                        state.message));
+                                              }
 
-                                            if (state is PasswordSuccess) {
-                                              _onWidgetDidBuild(
-                                                  _showSuccessDialog());
-                                            }
-                                          },
-                                          builder: (context, state) =>
-                                              FlatButton(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 100),
-                                            color: Colors.black,
-                                            textColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(18.0),
-                                            ),
-                                            onPressed: () async {
-                                              if (passKey.currentState!
-                                                  .validate()) {
-                                                BlocProvider.of<ProfileBloc>(
-                                                        context)
-                                                    .add(UpdatePassword(
-                                                        old: oldController.text,
-                                                        newPass: newController
-                                                            .text));
+                                              if (state is PasswordSuccess) {
+                                                _onWidgetDidBuild(
+                                                    _showSuccessDialog());
                                               }
                                             },
-                                            child: const Text(
-                                              "Update",
-                                              textAlign: TextAlign.center,
+                                            builder: (context, state) =>
+                                                FlatButton(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 100),
+                                              color: Colors.black,
+                                              textColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(18.0),
+                                              ),
+                                              onPressed: () async {
+                                                if (passKey.currentState!
+                                                    .validate()) {
+                                                  BlocProvider.of<ProfileBloc>(
+                                                          context)
+                                                      .add(UpdatePassword(
+                                                          old: oldController
+                                                              .text,
+                                                          newPass: newController
+                                                              .text));
+                                                }
+                                              },
+                                              child: const Text(
+                                                "Update",
+                                                textAlign: TextAlign.center,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ));
+                                )),
+                          );
                         },
                       );
                     }
@@ -489,97 +512,105 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     if (_isEditMode) {
                       showModalBottomSheet(
-                        isScrollControlled: true,
                         context: context,
                         builder: (BuildContext context) {
-                          return Padding(
-                              padding: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).viewInsets.bottom),
-                              child: SizedBox(
-                                child: Center(
-                                  child: Form(
-                                    key: emailKey,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 40),
-                                            child: Theme(
-                                              data: Theme.of(context).copyWith(
-                                                // hintStyle: TextStyle(color: Colors.grey),
-                                                inputDecorationTheme:
-                                                    InputDecorationTheme(
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            25.0),
+                          return SingleChildScrollView(
+                            child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: 10,
+                                    bottom: MediaQuery.of(context)
+                                        .viewInsets
+                                        .bottom),
+                                child: SizedBox(
+                                  child: Center(
+                                    child: Form(
+                                      key: emailKey,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: 40),
+                                              child: Theme(
+                                                data:
+                                                    Theme.of(context).copyWith(
+                                                  // hintStyle: TextStyle(color: Colors.grey),
+                                                  inputDecorationTheme:
+                                                      InputDecorationTheme(
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              25.0),
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              child: TextFormField(
-                                                controller: newEmail,
-                                                validator: (value) =>
-                                                    value!.isEmpty
-                                                        ? "Enter a value"
-                                                        : null,
-                                                decoration:
-                                                    const InputDecoration(
-                                                        hintText: "New email"),
-                                              ),
-                                            )),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        BlocConsumer<ProfileBloc, ProfileState>(
-                                          listener: (context, state) {
-                                            print("hello");
-                                            if (state is EmailFailed) {
-                                              _onWidgetDidBuild(
-                                                  _showAlertDialog(
-                                                      state.message));
-                                            }
+                                                child: TextFormField(
+                                                  controller: newEmail,
+                                                  validator: (value) =>
+                                                      value!.isEmpty
+                                                          ? "Enter a value"
+                                                          : null,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          hintText:
+                                                              "New email"),
+                                                ),
+                                              )),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          const SizedBox(
+                                            height: 30,
+                                          ),
+                                          BlocConsumer<ProfileBloc,
+                                              ProfileState>(
+                                            listener: (context, state) {
+                                              print("hello");
+                                              if (state is EmailFailed) {
+                                                _onWidgetDidBuild(
+                                                    _showAlertDialog(
+                                                        state.message));
+                                              }
 
-                                            if (state is EmailSuccess) {
-                                              _onWidgetDidBuild(
-                                                  _showSuccessDialog());
-                                            }
-                                          },
-                                          builder: (context, state) =>
-                                              FlatButton(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 100),
-                                            color: Colors.black,
-                                            textColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(18.0),
-                                            ),
-                                            onPressed: () async {
-                                              if (emailKey.currentState!
-                                                  .validate()) {
-                                                BlocProvider.of<ProfileBloc>(
-                                                        context)
-                                                    .add(UpdateEmail(
-                                                        email: newEmail.text));
+                                              if (state is EmailSuccess) {
+                                                _onWidgetDidBuild(
+                                                    _showSuccessDialog());
                                               }
                                             },
-                                            child: const Text(
-                                              "Update",
-                                              textAlign: TextAlign.center,
+                                            builder: (context, state) =>
+                                                FlatButton(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 100),
+                                              color: Colors.black,
+                                              textColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(18.0),
+                                              ),
+                                              onPressed: () async {
+                                                if (emailKey.currentState!
+                                                    .validate()) {
+                                                  BlocProvider.of<ProfileBloc>(
+                                                          context)
+                                                      .add(UpdateEmail(
+                                                          email:
+                                                              newEmail.text));
+                                                }
+                                              },
+                                              child: const Text(
+                                                "Update",
+                                                textAlign: TextAlign.center,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ));
+                                )),
+                          );
                         },
                       );
                     }

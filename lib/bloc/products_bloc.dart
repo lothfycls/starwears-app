@@ -13,15 +13,30 @@ part 'products_state.dart';
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ProductsService productsService = ProductsService();
   AuthenticationBloc authenticationBloc;
+  List<Product> categoryProducts = [];
   ProductsBloc({required this.authenticationBloc}) : super(ProductsInitial()) {
     on<GetProductsByCategory>((event, emit) async {
       try {
         List<Product> products =
             await productsService.getCategoryProduct(event.categoryId);
+        categoryProducts = products;
+        print(categoryProducts.length);
+        print("aw");
         emit(ProductsReady(products: products));
       } catch (e) {
         emit(ProductsFailed(error: e.toString()));
       }
+    });
+    on<GetProductsOnSearch>((event, emit) async {
+      // try {
+      print(categoryProducts.length);
+      List<Product> products = categoryProducts
+          .where((product) => product.name.toLowerCase().contains(event.input.toLowerCase()))
+          .toList();
+      emit(ProductsReady(products: products));
+      /*} catch (e) {
+        emit(ProductsFailed(error: e.toString()));
+      }*/
     });
     on<GetCelebrityProducts>((event, emit) async {
       try {
@@ -34,6 +49,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     });
     on<GetBrandProducts>((event, emit) async {
       try {
+        print(event.brandId);
         List<Product> products =
             await productsService.getBrandProducts(event.brandId);
         emit(ProductsReady(products: products));
@@ -54,34 +70,46 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     });
     on<GetEndedProducts>((event, emit) async {
       try {
+        emit(UploadState());
         List<Product> products = await productsService.getEndedProducts();
+        if (products.isEmpty) {
+          throw Exception("No products");
+        }
         emit(ProductsReady(products: products));
       } catch (e) {
-        emit(ProductsFailed(error: e.toString()));
+        emit(EndedProductsFailed(error: e.toString()));
       }
     });
     on<GetActiveProducts>((event, emit) async {
       try {
+        emit(UploadState());
         List<Product> products = await productsService.getActiveProducts();
+        if (products.isEmpty) {
+          throw Exception("No products");
+        }
         emit(ProductsReady(products: products));
       } catch (e) {
-        emit(ProductsFailed(error: e.toString()));
+        emit(ActiveProductsFailed(error: e.toString()));
       }
     });
 
     on<GetUserBidProducts>((event, emit) async {
       try {
+        emit(UploadState());
         final currentId = authenticationBloc.userId;
         if (currentId != null) {
           List<Product> products =
               await productsService.getUserBidProducts(currentId);
-          print(products.length.toString() + "is.lengt");
+          if (products.isEmpty) {
+            throw Exception("No products");
+          }
           emit(ProductsReady(products: products));
         } else {
-          throw Exception("You're not logged in");
+          emit(
+              UserNotAuthenticated(error: "Please login to view this section"));
         }
       } catch (e) {
-        emit(ProductsFailed(error: e.toString()));
+        emit(UserBidProductsFailed(error: e.toString()));
       }
     });
     on<GetUserActiveBids>((event, emit) async {
@@ -90,6 +118,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         if (currentId != null) {
           List<Product> products =
               await productsService.getActiveBids(currentId);
+          if (products.isEmpty) {
+            throw Exception("No products");
+          }
           emit(ProductsReady(products: products));
         } else {
           throw Exception("You're not logged in");

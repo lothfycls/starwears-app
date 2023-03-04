@@ -9,6 +9,11 @@ class PasswordFailed extends ProfileState {
 
   PasswordFailed(this.message);
 }
+class UpdateFailed extends PasswordFailed{
+  UpdateFailed(super.message);
+
+}
+class UpdateSuccess extends ProfileState{}
 class EmailFailed extends ProfileState {
   final String message;
 

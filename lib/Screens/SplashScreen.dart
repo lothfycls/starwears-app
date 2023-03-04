@@ -13,29 +13,19 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _onWidgetDidBuild(() => Future.delayed(Duration(seconds: 5), () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => introScreen(),
-            ),
-          );
-        }));
-    return Scaffold(
-        body: Container(
-      color: Colors.white,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/logo.png'),
-            SizedBox(
-              height: 10,
-            ),
-            Text('STARWEARS'),
-          ],
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => introScreen(),
         ),
-      ),
-    ));
+      );
+    });
+    return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+            child: CircularProgressIndicator(
+          color: Colors.black,
+        )));
   }
 }
