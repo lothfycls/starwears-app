@@ -121,7 +121,6 @@ class _OrderScreenState extends State<OrderScreen> {
                     listener: (context, state) {
                       if (state is OrderAdded) {
                         BlocProvider.of<OrdersBloc>(context).add(InitOrder());
-                        ////order has been placed
                         _onWidgetDidBuild(() async {
                           Navigator.push(
                             context,
@@ -131,7 +130,6 @@ class _OrderScreenState extends State<OrderScreen> {
                           ).then((value) {
                             BlocProvider.of<SingleproductBloc>(context).add(
                                 GetSingleProduct(productId: widget.productId));
-
                             BlocProvider.of<RelationshipBloc>(context).add(
                                 GetRelationShip(productId: widget.productId));
                             Navigator.pop(context);
@@ -145,6 +143,10 @@ class _OrderScreenState extends State<OrderScreen> {
                                   content: Text("Order already exists"),
                                 )).then((value) {
                           BlocProvider.of<OrdersBloc>(context).add(InitOrder());
+                           BlocProvider.of<SingleproductBloc>(context).add(
+                                GetSingleProduct(productId: widget.productId));
+                            BlocProvider.of<RelationshipBloc>(context).add(
+                                GetRelationShip(productId: widget.productId));
                           Navigator.pop(context);
                         });
                       }

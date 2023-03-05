@@ -78,22 +78,17 @@ class ProductsService {
   Future watchListExist(int productId) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     String? watchlistString = _prefs.getString("watchlist");
-    List<Product> prods = [];
     if (watchlistString != null) {
       List<dynamic> products = json.decode(watchlistString);
       bool existe = false;
-      print("okeeyey");
       for (var element in products) {
-        print(element["productId"]);
-        print(productId);
         if (element["productId"] as int == productId) {
-          print(element["productId"]);
-          print("helelelele");
           existe = true;
         }
       }
       return existe;
     }
+    return false;
   }
 
   Future getCategoryProduct(int id) async {

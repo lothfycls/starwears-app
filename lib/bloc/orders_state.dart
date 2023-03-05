@@ -40,3 +40,5 @@ class OrdersFailed extends OrdersState {
 
   OrdersFailed({required this.error});
 }
+class OrdersLoading extends OrdersState{}
+class OrderLoading extends OrdersState{}

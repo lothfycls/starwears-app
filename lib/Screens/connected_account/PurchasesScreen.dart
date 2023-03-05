@@ -162,26 +162,25 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                 onTap: () {
                                   print(state.orders[index].state);
                                   if (state.orders[index].state != "PAID") {
+                                    print(state.orders[index].id);
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (_) => PendingOrder(
-                                                  orderId: state
-                                                      .orders[index].id,
+                                                  orderId:
+                                                      state.orders[index].id,
                                                 ))).then((value) async {
-                                     ordersBloc
-                                          .add(GetPendingOrders());
+                                      ordersBloc.add(GetPendingOrders());
                                     });
                                   } else {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (_) => OrderTracking(
-                                                  orderId: state
-                                                      .orders[index].id,
+                                                  orderId:
+                                                      state.orders[index].id,
                                                 ))).then((value) {
-                                     ordersBloc
-                                          .add(GetSuccessOrders());
+                                      ordersBloc.add(GetSuccessOrders());
                                     });
                                   }
                                 },
@@ -255,6 +254,12 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                 ),
                               );
                             },
+                          ),
+                        );
+                      } else if (state is OrdersLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
                           ),
                         );
                       } else {

@@ -245,7 +245,13 @@ class _OrderTrackingState extends State<OrderTracking> {
                           style: TextStyle(color: Color.fromARGB(255, 184, 187, 190)),
                         ),
                       ]));
-            } else {
+            } else if (state is OrderLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.black,
+                          ),
+                        );
+                      }else {
               return const Center(
                 child: Text("No order details"),
               );

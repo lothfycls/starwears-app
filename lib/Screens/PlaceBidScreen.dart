@@ -28,7 +28,7 @@ class PlaceBidScreen extends StatefulWidget {
 
 class _PlaceBidScreenState extends State<PlaceBidScreen> {
   double? _bid = 0;
-  final currencyFormat = NumberFormat.simpleCurrency();
+  final currencyFormat = NumberFormat.simpleCurrency(decimalDigits: 2);
 
   GlobalKey<FormState> formKey = GlobalKey();
   final TextEditingController _controller = TextEditingController();
@@ -124,7 +124,7 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                                     symbol: currencyFormat.currencySymbol),
                               ],
                               decoration: InputDecoration(
-                                hintText: 'Type your bid...',
+                                hintText: '\$0.00',
                                 border: InputBorder.none,
                               ),
                             ),
@@ -150,12 +150,12 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                     Container(
                       height: 45,
                       width: double.infinity,
-                      margin:const EdgeInsets.symmetric(horizontal: 30),
+                      margin: const EdgeInsets.symmetric(horizontal: 30),
                       child: RaisedButton(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50.0)),
                         color: Colors.black,
-                        child:const Text(
+                        child: const Text(
                           'Review Your Bid',
                           style: TextStyle(color: Colors.white),
                         ),
@@ -187,7 +187,7 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                 ),
               ));
         } else {
-          return Center(
+          return const Center(
             child: Text("You can't bid temporarily"),
           );
         }
@@ -207,8 +207,8 @@ class CurrencyTextInputFormatter extends TextInputFormatter {
     final double? value = double.tryParse(newValue.text);
 
     if (value != null) {
-      final currencyFormat =
-          NumberFormat.currency(locale: 'en_US', symbol: symbol);
+      final currencyFormat = NumberFormat.currency(
+          locale: 'en_US', symbol: symbol, decimalDigits: 2);
       final formattedValue = currencyFormat.format(value);
 
       return TextEditingValue(

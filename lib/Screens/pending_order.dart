@@ -43,7 +43,7 @@ class _PendingOrderState extends State<PendingOrder> {
             // width: 200,
             child: InkWell(
               onTap: (() {
-                Navigator.of(context).pop();
+        Navigator.pop(context, true);
               }),
               child: Row(
                 // mainAxisAlignment: M,
@@ -181,6 +181,12 @@ class _PendingOrderState extends State<PendingOrder> {
                               color: Color.fromARGB(255, 184, 187, 190)),
                         ),
                       ]));
+            } else if (state is OrderLoading) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+              );
             } else {
               return const Center(
                 child: Text("No order details"),

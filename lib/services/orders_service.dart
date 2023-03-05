@@ -28,7 +28,6 @@ class OrderService {
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
     final json = jsonDecode(response.body);
-
     if (response.statusCode == 201) {
       return json;
     } else {
@@ -70,7 +69,7 @@ class OrderService {
         await http.get(Uri.parse(url + detailUrl + "/" + clientId.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      return Order.fromDetail(json[0]);
+      return Order.fromDetail(json);
     } else {
       throw Exception(json["message"]);
     }
