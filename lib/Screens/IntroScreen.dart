@@ -1,27 +1,52 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:starwears/Screens/HomeScreen.dart';
-import 'package:starwears/Screens/SignUpScreen.dart';
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
 
-class introScreen extends StatefulWidget {
+class IntroScreen extends StatefulWidget {
   @override
-  _introScreenState createState() => _introScreenState();
+  _IntroScreenState createState() => _IntroScreenState();
 }
 
-class _introScreenState extends State<introScreen> {
+class _IntroScreenState extends State<IntroScreen> {
   int _currentIndex = 0;
-  final List<String> _imageUrls = [
-    'https://picsum.photos/id/1/800/400',
-    'https://picsum.photos/id/0/800/400',
-    'https://picsum.photos/id/2/800/400',
-    'https://picsum.photos/id/3/800/400',
+
+  final List<String> videos = [
+    "assets/videos/1.m4v",
+    "assets/videos/2.m4v",
+    "assets/videos/3.m4v",
+    "assets/videos/4.m4v"
   ];
   final List<String> _texts = [
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim. 1',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim.2',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim.3',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam et ante eget quam faucibus vehicula sed quis leo. Praesent dignissim.4'
+    'Welcome to Stars Clothes Auction! Bid on the latest fashion trends and get a chance to win them at unbeatable prices. Sign up now to start bidding.',
+    'Browse our collection of designer clothes, set your bid amount and wait for the auction to end. The highest bidder wins the product at the end of the auction period.',
+    'Keep an eye on the bidding history and choose the right moment to place your bid. Set a maximum bid amount and let the app do the work for you.',
+    'If you win an auction, the app will notify you and guide you through the payment process. Once payment is confirmed, your product will be delivered to your doorstep in no time.'
   ];
+  late ChewieController chewieController;
+  @override
+  void dispose() {
+    super.dispose();
+    chewieController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    chewieController = ChewieController(
+      videoPlayerController: VideoPlayerController.asset(videos[_currentIndex]),
+      looping: true,
+      autoPlay: true,
+      showControls: false,
+      showOptions: false,
+      showControlsOnInitialize: false,
+      autoInitialize: true,
+      allowFullScreen: true,
+    );
+
+    chewieController.setVolume(0.0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,43 +54,91 @@ class _introScreenState extends State<introScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Stack(children: [
-            Container(
-              height: 450,
-              child: PageView.builder(
-                itemCount: _imageUrls.length,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-                itemBuilder: (context, index) {
-                  return ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(100),
-                        // topRight: Radius.circular(100),
-                      ),
-                      child: Image.asset(
-                          fit: BoxFit.fill, "assets/images/imagecarousel.png"));
-                },
-              ),
-            ),
-            Positioned(
-              top: 40,
-              left: 0,
-              right: 0,
-              child: Image.asset(
-                color: Colors.white,
-                'assets/images/logo.png',
-                height: 50,
-              ),
-            ),
-          ]),
-          Container(
+          SizedBox(
+            height: 500,
+            child: Stack(
+              alignment: Alignment.topCenter,
+              children: [
+               SizedBox(
+                  height: 500,
+                  child: PageView.builder(
+                    itemCount: videos.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentIndex = index;
+                        chewieController = ChewieController(
+                          videoPlayerController: VideoPlayerController.asset(
+                              videos[_currentIndex]),
+                          looping: true,
+                          autoPlay: true,
+                          showControls: false,
+                          showOptions: false,
+                          showControlsOnInitialize: false,
+                          autoInitialize: true,
+                          allowFullScreen: true,
+                        );
+
+                        chewieController.setVolume(0.0);
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return SizedBox(
+                          height: 500,
+                          child: ShaderMask(
+                              shaderCallback: (Rect bounds) {
+                                return const LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [Colors.transparent, Colors.black],
+                                ).createShader(Rect.fromLTRB(
+                                    0, 0, bounds.width, bounds.height));
+                              },
+                              blendMode: BlendMode.dstIn,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: _currentIndex == 0
+                                      ? Radius.circular(100)
+                                      : Radius.circular(0),
+                                  bottomRight: _currentIndex == 3
+                                      ? Radius.circular(100)
+                                      : Radius.circular(0),
+
+                                  // topRight: Radius.circular(100),
+                                ),
+                                child: Chewie(
+                                  controller: chewieController,
+                                ),
+                              )));
+                    },
+                  ),
+                ),
+              
+              Positioned(
+                  top: 40,
+                  left: 0,
+                  right: 0,
+                  child: ShaderMask(
+                    shaderCallback: (Rect bounds) {
+                      return const LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [Colors.transparent, Colors.black],
+                      ).createShader(
+                          Rect.fromLTRB(0, 0, bounds.width, bounds.height));
+                    },
+                    blendMode: BlendMode.dstIn,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 50,
+                    ),
+                  )),
+            ]),
+          ),
+          SizedBox(
             height: 50,
             child: Center(
               child: DotsIndicator(
-                dotsCount: _imageUrls.length,
+                dotsCount: videos.length,
                 position: _currentIndex.toDouble(),
                 decorator: DotsDecorator(
                   activeColor: Colors.black,
@@ -80,14 +153,15 @@ class _introScreenState extends State<introScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(30.0),
-            child: Text(
-              _texts[_currentIndex],
-              textAlign: TextAlign.center,
+            child: Align(
+              alignment: Alignment.center,
+              child: Text(
+                _texts[_currentIndex],
+                textAlign: TextAlign.start,
+              ),
             ),
           ),
-          SizedBox(
-            height: 15,
-          ),
+          const Spacer(),
           Center(
             child: RaisedButton(
               padding: EdgeInsets.symmetric(horizontal: 50),
@@ -107,13 +181,26 @@ class _introScreenState extends State<introScreen> {
                   );
                 } else {
                   setState(() {
-                    _currentIndex = (_currentIndex + 1) % _imageUrls.length;
+                    _currentIndex = (_currentIndex + 1) % videos.length;
+                    chewieController = ChewieController(
+      videoPlayerController: VideoPlayerController.asset(videos[_currentIndex]),
+      looping: true,
+      autoPlay: true,
+      showControls: false,
+      showOptions: false,
+      showControlsOnInitialize: false,
+      autoInitialize: true,
+      allowFullScreen: true,
+    );
+
+    chewieController.setVolume(0.0);
                   });
                 }
                 // Handle the button press
               },
             ),
           ),
+          const Spacer(),
         ],
       ),
     );

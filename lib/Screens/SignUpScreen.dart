@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
@@ -47,6 +48,104 @@ class _SignUpScreenState extends State<SignUpScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callback();
     });
+  }
+
+  _showAgreement() {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: const Text('User Agreement'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    RichText(
+                        text: const TextSpan(
+                            style: TextStyle(
+                                color: Colors.black, fontFamily: "Inter"),
+                            children: [
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text:
+                                  "To use our services, you must register and create an account with us. You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text: "Registration and Account\n"),
+                          TextSpan(
+                              text:
+                                  "You can bid on any product listed on our platform. Bidding starts at the minimum bid amount and increases in increments set by the app. The highest bidder at the end of the auction period wins the product.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text: "Bidding Process\n"),
+                          TextSpan(
+                              text:
+                                  "You can bid on any product listed on our platform. Bidding starts at the minimum bid amount and increases in increments set by the app. The highest bidder at the end of the auction period wins the product.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text: "Payment and Delivery\n"),
+                          TextSpan(
+                              text:
+                                  "If you win an auction, you must complete the payment process within the specified time period. We will provide you with the payment instructions and options. Once payment is confirmed, your product will be delivered to your designated address.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text: "User Obligations\n"),
+                          TextSpan(
+                              text:
+                                  "You agree to use our services for lawful purposes only and to comply with all applicable laws and regulations. You will not use our app to engage in any fraudulent or illegal activities. You are also responsible for any content you post on our platform and must ensure that it does not infringe on any third-party rights.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text: "Intellectual Property\n"),
+                          TextSpan(
+                              text:
+                                  "All content and materials on our platform, including trademarks, logos, and copyrights, are owned by us or our partners. You are not allowed to use our content or materials for any commercial or non-commercial purposes without our prior written consent.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text: "Limitation of Liability\n"),
+                          TextSpan(
+                              text:
+                                  "We are not liable for any damages or losses arising from your use of our app or from any products you purchase through our platform. We are not responsible for any errors or omissions in the product listings or for any disputes between users.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text: "Privacy and Data Security\n"),
+                          TextSpan(
+                              text:
+                                  "We respect your privacy and are committed to protecting your personal information. We collect and use your information in accordance with our privacy policy, which you can view on our app.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text: "Changes and Updates\n"),
+                          TextSpan(
+                              text:
+                                  "We reserve the right to modify, update, or terminate our services or user agreement at any time without prior notice. It is your responsibility to check our app regularly for any updates or changes to the user agreement.\n\n"),
+                          TextSpan(
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                              text:
+                                  "By using our app, you agree to these terms and conditions. If you do not agree with any of the terms or conditions, please do not use our app.\n"),
+                        ])),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Agree'),
+                  onPressed: () {
+                    // Perform some action when the user agrees.
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _value = true;
+                    });
+                  },
+                ),
+                TextButton(
+                  child: Text('Disagree'),
+                  onPressed: () {
+                    // Perform some action when the user disagrees.
+                    Navigator.of(context).pop();
+                    setState(() {
+                      _value = false;
+                    });
+                  },
+                ),
+              ],
+            ));
   }
 
   _showAlertDialog(errorMsg) {
@@ -223,13 +322,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
               CheckboxListTile(
                 controlAffinity: ListTileControlAffinity.leading,
                 title: RichText(
-                  text: const TextSpan(
+                  text: TextSpan(
                     children: [
                       TextSpan(
                           text: 'I agree to the Starwears ',
                           style: TextStyle(color: Colors.black)),
                       TextSpan(
                           text: 'User Agreement and Privacy Policy',
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              _showAgreement();
+                              // Add your onTap function here
+                            },
                           style: TextStyle(color: Colors.blue)),
                     ],
                   ),

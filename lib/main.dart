@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:starwears/Screens/IntroScreen.dart';
+import 'package:starwears/Screens/SignUpScreen.dart';
 import 'package:starwears/Screens/SplashScreen.dart';
 import 'package:starwears/bloc/authentication_bloc.dart';
 import 'package:starwears/bloc/banner_bloc.dart';
@@ -142,7 +141,10 @@ class _ChooseState extends State<Choose> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      buildWhen: (previous, current) => previous != current && (current is !LoginFailed) && (current is !CreationFailed), 
+      buildWhen: (previous, current) =>
+          previous != current &&
+          (current is! LoginFailed) &&
+          (current is! CreationFailed),
       builder: (context, state) {
         if (state is AuthSuccess) {
           return HomeScreen();
