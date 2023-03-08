@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -12,7 +13,9 @@ import 'package:starwears/widgets/BidCard.dart';
 import 'package:starwears/widgets/CategoryCard.dart';
 
 import '../bloc/relationship_bloc.dart';
+import '../main.dart';
 import '../widgets/BrandCard.dart';
+import 'LoginScreen.dart';
 
 class ReviewBidScreen extends StatefulWidget {
   final double bidAmount;
@@ -52,7 +55,7 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
         }).then((val) {
       BlocProvider.of<BidBloc>(context).add(InitBid());
 
-      Navigator.pop(context);
+      Navigator.pop(context, false);
     });
   }
 
@@ -188,7 +191,7 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "\$${widget.bidAmount}",
+                                "€${widget.bidAmount}",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -202,14 +205,14 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "\$ 25",
+                                "€ 25",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 height: 10,
                               ),
                               Text(
-                                "\$ $total",
+                                "€ $total",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -225,10 +228,42 @@ class _ReviewBidScreenState extends State<ReviewBidScreen> {
                     ),
                     BlocListener<BidBloc, BidState>(
                       listener: (context, state) {
-                        if (state is BidsFailed) {
-                          _onWidgetDidBuild(
-                              () => _showAlertDialog(state.error, context));
+                        if (state is UserNotLogged) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            AwesomeDialog(
+                              context: context,
+                              dialogType: DialogType.warning,
+                              animType: AnimType.rightSlide,
+                              btnOkColor: Colors.black,
+                              title: 'Sign in Required',
+                              desc: 'This action required to Sign in',
+                              btnCancelOnPress: () {},
+                              btnOkOnPress: () {
+                                outerNavigator.currentState!.push(
+                                    MaterialPageRoute(
+                                        builder: (_) => const LoginScreen()));
+                              },
+                            ).show();
+                          });
                         }
+                        if (state is BidsFailed) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.warning,
+                                animType: AnimType.rightSlide,
+                                btnOkColor: Colors.black,
+                                title: "Bid can't be placed",
+                                desc:
+                                    "You can't bid with price lower than the highest bid",
+                                btnCancelOnPress: () {},
+                                btnOkText: "Bid again",
+                                btnOkOnPress: () {
+                                  Navigator.pop(context, false);
+                                }).show();
+                          });
+                        }
+
                         if (state is BidAdded) {
                           _showSuccesDialog(context);
                         }

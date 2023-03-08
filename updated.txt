@@ -1,9 +1,0 @@
-auctionBId, acutionEnd, now same: trending
-pub dev package
-auction end with now : ch7el ba9ilih bah ykmal
-Moment package calcul direct
-upcoming products : owner
-function format time public
-
-endpoint product details
-brands: owner, bids, _count, owner[name]

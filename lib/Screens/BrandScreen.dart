@@ -142,7 +142,6 @@ class _BrandScreenState extends State<BrandScreen> {
             Expanded(
               child: BlocBuilder<ProductsBloc, ProductsState>(
                 builder: (context, state) {
-                  print(state);
                   if (state is ProductsReady) {
                     return ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 10),

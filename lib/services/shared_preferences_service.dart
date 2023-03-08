@@ -23,7 +23,6 @@ class SharedPreferencesService {
   void _onCreate(Database db, int version) async {
     await db.execute(
         "CREATE TABLE IF NOT EXISTS User(id INTEGER PRIMARY KEY,phone TEXT,email TEXT,firstName TEXT,lastName TEXT,address TEXT,username TEXT)");
-    debugPrint("Created tables");
   }
  Future removeUser() async {
     var dbClient = await db;

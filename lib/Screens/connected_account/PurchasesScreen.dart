@@ -26,11 +26,9 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
 
   void _onChanged(bool value) {
     if (value == true) {
-      print("value1");
       BlocProvider.of<OrdersBloc>(context).add(GetSuccessOrders());
     }
     if (value == false) {
-      print("value0");
       BlocProvider.of<OrdersBloc>(context).add(GetPendingOrders());
     }
     setState(() {
@@ -152,7 +150,6 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                   ),
                   BlocBuilder<OrdersBloc, OrdersState>(
                     builder: (context, state) {
-                      print(state);
                       if (state is OrdersReady) {
                         return Expanded(
                           child: ListView.builder(
@@ -160,9 +157,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                             itemBuilder: (BuildContext context, int index) {
                               return InkWell(
                                 onTap: () {
-                                  print(state.orders[index].state);
                                   if (state.orders[index].state != "PAID") {
-                                    print(state.orders[index].id);
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -230,7 +225,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
                                           Row(
                                             children: [
                                               Text(
-                                                "\$${state.orders[index].product!.lastPrice}",
+                                                "€${state.orders[index].product!.lastPrice}",
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 23,

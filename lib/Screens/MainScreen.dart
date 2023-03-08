@@ -37,7 +37,6 @@ class _MainScreenState extends State<MainScreen> {
     BlocProvider.of<ProductsBloc>(context).add(GetTrendingProducts());
     BlocProvider.of<NewlistingsBloc>(context).add(GetListings());
     _scrollController.addListener(() {
-      print(_scrollController.offset);
       if (_scrollController.offset > 100) {
         setState(() {
           showCarousel = false;
@@ -57,6 +56,7 @@ class _MainScreenState extends State<MainScreen> {
     IndexProvider indexProvider = Provider.of<IndexProvider>(context);
 
     return CustomScrollView(
+      
       slivers: [
         HomeCarou(showCarousel: showCarousel),
         //HomeCarousel(showCarousel: showCarousel),
@@ -86,11 +86,11 @@ class _MainScreenState extends State<MainScreen> {
                     );
                   },
                   child: Container(
-                    margin: EdgeInsets.only(right: 20),
+                    margin: const EdgeInsets.only(right: 20),
                     child: Row(
                       children: [
                         IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.arrow_right_alt,
                             size: 30,
                           ),
@@ -112,7 +112,7 @@ class _MainScreenState extends State<MainScreen> {
           child: BlocBuilder<ProductsBloc, ProductsState>(
               builder: (context, state) {
             if (state is ProductsReady) {
-              return Container(
+              return SizedBox(
                 height: 340,
                 // width: 300,
                 child: ListView.builder(

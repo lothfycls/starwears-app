@@ -15,7 +15,6 @@ class CelebrityBloc extends Bloc<CelebrityEvent, CelebrityState> {
         emit(CelebritiesReady(celebrities: celebrities));
       } catch (e) {
         emit(CelebritiesFailed(error: e.toString()));
-        print(e.toString());
       }
     });
   }

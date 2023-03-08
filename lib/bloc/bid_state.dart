@@ -20,6 +20,7 @@ class OutBidded extends BidState {}
 class AlreadyBidded extends BidState {}
 
 class WonBid extends BidState {}
+class UserNotLogged extends BidState{}
 
 class LostBid extends BidState {}
 

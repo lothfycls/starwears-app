@@ -43,16 +43,14 @@ class _AccountScreenState extends State<AccountScreen> {
               size: 22,
             ),
             onPressed: () async {
+              BlocProvider.of<AuthenticationBloc>(context).add(InitAuth());
               SharedPreferences _prefs = await SharedPreferences.getInstance();
               SharedPreferencesService sharedPreferencesService =
                   SharedPreferencesService();
-            await  sharedPreferencesService.removeUser();
-            //  _prefs.remove('id');
-              //_prefs.remove('email');
-
-              outerNavigator.currentState!.pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  (route) => false);
+              await sharedPreferencesService.removeUser();
+              outerNavigator.currentState!.push(
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+              );
               // Perform some action when the button is pressed
             },
           ),

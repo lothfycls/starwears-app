@@ -26,7 +26,6 @@ class WatchlistBloc extends Bloc<WatchlistEvent, WatchlistState> {
       final newList = products
           .where((element) => element.state as String == "Sold")
           .toList();
-      print(newList.length);
       emit(WatchListReady(products: newList));
     });
     on<RemoveWatchList>((event, emit) async {

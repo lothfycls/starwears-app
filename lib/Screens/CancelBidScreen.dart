@@ -18,7 +18,6 @@ class _CancelBidScreenState extends State<CancelBidScreen> {
   final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    print(_bid);
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
@@ -70,7 +69,10 @@ class _CancelBidScreenState extends State<CancelBidScreen> {
               SizedBox(
                 height: 20,
               ),
-              Text("You will be Charged 10% of your final bid",style: TextStyle(fontWeight: FontWeight.bold),),
+              Text(
+                "You will be Charged 10% of your final bid",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               SizedBox(
                 height: 10,
               ),
@@ -126,21 +128,21 @@ class _CancelBidScreenState extends State<CancelBidScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "\$ 15,999",
+                                "€ 15,999",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 height: 10,
                               ),
                               Text(
-                                "\$5",
+                                "€5",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 height: 10,
                               ),
                               Text(
-                                "\$ 16,024",
+                                "€ 16,024",
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               SizedBox(

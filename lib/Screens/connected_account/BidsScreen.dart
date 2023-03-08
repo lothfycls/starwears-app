@@ -207,7 +207,7 @@ class _BidsScreenState extends State<BidsScreen> {
                                           Row(
                                             children: [
                                               Text(
-                                                "\$ ${state.products[index].lastPrice}",
+                                                "€ ${state.products[index].lastPrice}",
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 23,

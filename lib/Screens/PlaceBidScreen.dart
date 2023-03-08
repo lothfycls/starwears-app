@@ -28,13 +28,13 @@ class PlaceBidScreen extends StatefulWidget {
 
 class _PlaceBidScreenState extends State<PlaceBidScreen> {
   double? _bid = 0;
-  final currencyFormat = NumberFormat.simpleCurrency(decimalDigits: 2);
+  final currencyFormat =
+      NumberFormat.simpleCurrency(decimalDigits: 2, locale: 'fr');
 
   GlobalKey<FormState> formKey = GlobalKey();
   final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    print(_bid);
     return BlocBuilder<SingleproductBloc, SingleproductState>(
       builder: (context, state) {
         if (state is SingleProductReady) {
@@ -94,7 +94,7 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                           ),
                           Container(
                             child: Text(
-                              "\$14,000  + \$25 shipping",
+                              "€25 shipping",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -124,7 +124,7 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                                     symbol: currencyFormat.currencySymbol),
                               ],
                               decoration: InputDecoration(
-                                hintText: '\$0.00',
+                                hintText: '€0.00',
                                 border: InputBorder.none,
                               ),
                             ),
@@ -166,7 +166,7 @@ class _PlaceBidScreenState extends State<PlaceBidScreen> {
                               MaterialPageRoute(
                                   builder: (context) => ReviewBidScreen(
                                         bidAmount: double.parse(_controller.text
-                                            .replaceFirst("\$", "")),
+                                            .replaceFirst("€", "")),
                                         productId: widget.productId,
                                         maxBid: widget.maxBid,
                                         date: widget.date,
@@ -207,8 +207,8 @@ class CurrencyTextInputFormatter extends TextInputFormatter {
     final double? value = double.tryParse(newValue.text);
 
     if (value != null) {
-      final currencyFormat = NumberFormat.currency(
-          locale: 'en_US', symbol: symbol, decimalDigits: 2);
+      final currencyFormat =
+          NumberFormat.currency(locale: 'en_US', symbol: "€", decimalDigits: 2);
       final formattedValue = currencyFormat.format(value);
 
       return TextEditingValue(

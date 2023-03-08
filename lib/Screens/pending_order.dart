@@ -43,7 +43,7 @@ class _PendingOrderState extends State<PendingOrder> {
             // width: 200,
             child: InkWell(
               onTap: (() {
-        Navigator.pop(context, true);
+                Navigator.pop(context, true);
               }),
               child: Row(
                 // mainAxisAlignment: M,
@@ -130,7 +130,6 @@ class _PendingOrderState extends State<PendingOrder> {
                                 await makePayment(
                                     "${state.order.total}", state.order);
                               } catch (e) {
-                                print("Exception stripe");
                               }
                             },
                           ),
@@ -208,7 +207,6 @@ class _PendingOrderState extends State<PendingOrder> {
           .then((value) {});
       displayPaymentSheet(order);
     } catch (e, s) {
-      print('exception:$e$s');
     }
   }
 
@@ -252,7 +250,6 @@ class _PendingOrderState extends State<PendingOrder> {
         const AlertDialog(
           content: Text("Payment couldn't be proceeded, Please try again"),
         );
-        print('Error is:--->$error $stackTrace');
       });
     } on StripeException catch (e) {
       showDialog(
@@ -287,12 +284,10 @@ class _PendingOrderState extends State<PendingOrder> {
         body: body,
       );
       // ignore: avoid_print
-      print('Payment Intent Body->>> ${response.body.toString()}');
       return jsonDecode(response.body);
     } catch (err) {
       // ignore: avoid_print
 
-      print('err charging user: ${err.toString()}');
     }
   }
 
@@ -372,7 +367,7 @@ class OrderInfos extends StatelessWidget {
                     width: 46,
                   ),
                   Text(
-                    "\$ $total",
+                    "€ $total",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

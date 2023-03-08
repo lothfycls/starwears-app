@@ -22,7 +22,6 @@ import 'package:starwears/bloc/singleproduct_bloc.dart';
 import 'package:starwears/bloc/watchlist_bloc.dart';
 import 'package:starwears/models/user.dart';
 import 'package:starwears/services/shared_preferences_service.dart';
-import 'package:starwears/stripe_page.dart';
 
 import 'Providers/IndexProvider.dart';
 import 'Screens/HomeScreen.dart';
@@ -95,10 +94,10 @@ class MyApp extends StatelessWidget {
         title: 'starwears',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          appBarTheme:
-              const AppBarTheme(
-                iconTheme: IconThemeData(
-                  color: Colors.black,)),
+          appBarTheme: const AppBarTheme(
+              iconTheme: IconThemeData(
+            color: Colors.black,
+          )),
           fontFamily: 'Inter',
         ),
         navigatorKey: outerNavigator,
@@ -143,7 +142,7 @@ class _ChooseState extends State<Choose> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      buildWhen: (previous, current) => previous != current,
+      buildWhen: (previous, current) => previous != current && (current is !LoginFailed) && (current is !CreationFailed), 
       builder: (context, state) {
         if (state is AuthSuccess) {
           return HomeScreen();

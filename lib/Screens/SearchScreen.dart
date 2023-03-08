@@ -107,7 +107,6 @@ class _SearchScreenState extends State<SearchScreen> {
             BlocBuilder<CategoryBloc, CategoryState>(
               builder: (context, state) {
                 if (state is CategoriesReady) {
-                  print(state.categories.length);
                   return Container(
                     height: 40,
                     margin: const EdgeInsets.only(left: 20),
@@ -153,7 +152,6 @@ class _SearchScreenState extends State<SearchScreen> {
             BlocBuilder<ProductsBloc, ProductsState>(
               builder: (context, state) {
                 if (state is ProductsReady) {
-                  print(state.products.length);
                   return Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 10),

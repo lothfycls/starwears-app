@@ -21,7 +21,6 @@ class Celebrity {
     for (var element in json) {
           List<String> pictureUrls = [];
       for (var picture in element["urlPictures"]) {
-        print(picture['url']);
         pictureUrls.add(picture["url"]);
       }
       var products = element["products"];

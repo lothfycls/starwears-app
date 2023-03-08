@@ -51,18 +51,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   _showAlertDialog(errorMsg) {
     return showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text(
-                  'Sign Up Failed',
-                  style: TextStyle(color: Colors.black),
-                ),
-                content: Text(errorMsg),
-              );
-            })
-        .then((val) =>
-            BlocProvider.of<AuthenticationBloc>(context).add(InitAuth()));
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Sign Up Failed',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        });
   }
 
   bool? _value = false;
@@ -82,7 +80,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             children: [
               // Logo
               Image.asset('assets/images/logo.png'),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
 
@@ -256,7 +254,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               BlocConsumer<AuthenticationBloc, AuthenticationState>(
                 listener: (context, state) {
                   if (state is CreationFailed) {
-                    _onWidgetDidBuild(_showAlertDialog(state.message));
+                    _onWidgetDidBuild(() => _showAlertDialog(state.message));
                   }
                   if (state is AuthSuccess) {
                     SharedPreferencesService shared =

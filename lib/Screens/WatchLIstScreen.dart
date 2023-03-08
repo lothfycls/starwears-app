@@ -6,6 +6,7 @@ import 'package:starwears/bloc/products_bloc.dart';
 import 'package:starwears/bloc/watchlist_bloc.dart';
 
 import '../bloc/authentication_bloc.dart';
+import '../utils/utils.dart';
 import 'LoginScreen.dart';
 import 'Notifications.dart';
 import 'ProductScreen.dart';
@@ -57,7 +58,7 @@ class _WatchListScreenState extends State<WatchListScreen> {
           ),
           actions: <Widget>[
             IconButton(
-              padding: EdgeInsets.only(right: 15),
+              padding: const EdgeInsets.only(right: 15),
               icon: Icon(
                 Icons.notifications_outlined,
                 color: Colors.black,
@@ -182,33 +183,42 @@ class _WatchListScreenState extends State<WatchListScreen> {
                                         width:
                                             MediaQuery.of(context).size.width /
                                                 2,
-                                        child: Text(
-                                          state.products[index].description,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                          overflow: TextOverflow.clip,
+                                        child: Flexible(
+                                          child: Text(
+                                            state.products[index].description,
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                            overflow: TextOverflow.clip,
+                                          ),
                                         ),
                                       ),
                                       SizedBox(height: 10),
                                       Row(
                                         children: [
-                                          Text(
-                                            "\$${state.products[index].lastPrice}",
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 23,
-                                              color: Color(0xffEB9B00),
+                                          Flexible(
+                                            flex: 3,
+                                            child: Text(
+                                              "${Utils.formatCurrency(state.products[index].lastPrice)}",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 23,
+                                                color: Color(0xffEB9B00),
+                                              ),
                                             ),
                                           ),
-                                          SizedBox(width: 40),
-                                          Text("Bids: " +
-                                              state.products[index].bidsCount
-                                                  .toString()),
-                                          SizedBox(width: 15),
-                                          Text(
-                                              state.products[index].auctionEnd),
+                                          const SizedBox(width: 40),
+                                          Flexible(
+                                            child: Text("Bids: " +
+                                                state.products[index].bidsCount
+                                                    .toString()),
+                                          ),
+                                          const SizedBox(width: 15),
+                                          Flexible(
+                                            child: Text(state
+                                                .products[index].auctionEnd),
+                                          ),
                                         ],
                                       ),
                                     ],

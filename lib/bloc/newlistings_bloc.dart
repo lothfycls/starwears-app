@@ -15,7 +15,6 @@ class NewlistingsBloc extends Bloc<NewlistingsEvent, NewlistingsState> {
       try {
         final List<Listing> _banners = await bannersService.getNewListings();
         banners = _banners;
-        print(banners.length);
         if (banners.isEmpty) {
           emit(ListingsFailed(error: "No upcoming products yet"));
         }

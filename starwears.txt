@@ -1,0 +1,6 @@
+address
+search : go to search screen
+14400 shipping should be last last bidder:
+popup bidding
+add notifications in all screens
+login: user not found

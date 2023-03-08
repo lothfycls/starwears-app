@@ -1,8 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:starwears/bloc/newlistings_bloc.dart';
 import 'package:transparent_image/transparent_image.dart';
+
+import '../Providers/IndexProvider.dart';
+import '../Screens/Notifications.dart';
 
 class HomeCarou extends StatefulWidget {
   final bool showCarousel;
@@ -22,34 +26,51 @@ class _HomeCarouState extends State<HomeCarou> {
         toolbarHeight: 60,
         elevation: 0.0,
         pinned: true,
-        title: Container(
-          margin: const EdgeInsets.symmetric(vertical: 20),
-          height: 45,
-          decoration: const BoxDecoration(
-            // color: Colors.white,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(20),
-              bottomRight: Radius.circular(20),
-            ),
-          ),
-          child: Container(
-            height: 40,
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F0F0),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const TextField(
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                hintStyle: TextStyle(color: Color(0xFFBEBEBE)),
-                alignLabelWithHint: true,
-                hintText: 'Search',
-                border: InputBorder.none,
-                suffixIcon: Icon(
-                  Icons.search,
+        actions: <Widget>[
+          Container(
+              margin: const EdgeInsets.only(right: 10),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white, // set the background color here
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Icons.notifications_outlined,
                   color: Colors.black,
+                  size: 25,
                 ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const NotificationsScreen()));
+                  // Perform some action when the button is pressed
+                },
+              )),
+        ],
+        title: Container(
+          height: 45,
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF0F0F0),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: TextField(
+            readOnly: true,
+            onTap: () {
+              IndexProvider indexProvider =
+                  Provider.of<IndexProvider>(context, listen: false);
+              indexProvider.setCurrentIndex(1);
+            },
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              hintStyle: TextStyle(color: Color(0xFFBEBEBE)),
+              alignLabelWithHint: true,
+              hintText: 'Search',
+              border: InputBorder.none,
+              suffixIcon: Icon(
+                Icons.search,
+                color: Colors.black,
               ),
             ),
           ),
@@ -80,7 +101,7 @@ class _HomeCarouState extends State<HomeCarou> {
                               },
                               enableInfiniteScroll: true,
                               initialPage: 0,
-                              aspectRatio: 0.5,
+                              aspectRatio: 1,
                               viewportFraction: 1,
                               autoPlay: true,
                               autoPlayInterval: const Duration(seconds: 2),
@@ -111,7 +132,7 @@ class _HomeCarouState extends State<HomeCarou> {
                                     Center(
                                       child: FadeInImage.memoryNetwork(
                                         fit: BoxFit.cover,
-                                        height: 300,
+                                        height: 350,
                                         placeholder: kTransparentImage,
                                         image: state.listings[index].image,
                                       ),

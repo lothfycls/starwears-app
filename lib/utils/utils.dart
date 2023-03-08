@@ -5,7 +5,7 @@ class Utils {
 
   static String formatCurrency(double amount) {
     final formatter = NumberFormat.currency(
-      symbol: '\$',
+      symbol: '€',
       decimalDigits: 2,
     );
     return formatter.format(amount);

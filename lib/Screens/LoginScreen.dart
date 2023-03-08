@@ -45,18 +45,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _showAlertDialog(errorMsg) {
     return showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text(
-                  'Login Failed',
-                  style: TextStyle(color: Colors.black),
-                ),
-                content: Text(errorMsg),
-              );
-            })
-        .then((val) =>
-            BlocProvider.of<AuthenticationBloc>(context).add(InitAuth()));
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              'Login Failed',
+              style: TextStyle(color: Colors.black),
+            ),
+            content: Text(errorMsg),
+          );
+        });
+    /* .then((val) =>
+            BlocProvider.of<AuthenticationBloc>(context).add(InitAuth()));*/
   }
 
   GlobalKey<FormState> formKey = GlobalKey();
@@ -235,11 +235,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
 
               BlocConsumer<AuthenticationBloc, AuthenticationState>(
+                listenWhen: (previous, current) => previous != current,
                 listener: (context, state) {
-                  print(state);
                   if (state is LoginFailed) {
-                    /*_onWidgetDidBuild(() =>*/ _showAlertDialog(
-                        state.message); //);
+                    _showAlertDialog(state.message); //);
                   }
 
                   if (state is AuthSuccess) {
@@ -247,10 +246,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         SharedPreferencesService();
                     shared.upDateSharedPreferences(
                         state.email, state.id, "", "", "", "", "");
-                    /* _onWidgetDidBuild(() =>*/ Navigator.pushAndRemoveUntil(
+                    Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => HomeScreen()),
-                        (route) => false); //);
+                        (route) => false);
                   }
                 },
                 builder: (context, state) {

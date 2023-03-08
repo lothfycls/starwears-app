@@ -242,16 +242,17 @@ class _OrderTrackingState extends State<OrderTracking> {
                         const SizedBox(height: 10),
                         Text(
                           state.order.paymentWay,
-                          style: TextStyle(color: Color.fromARGB(255, 184, 187, 190)),
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 184, 187, 190)),
                         ),
                       ]));
             } else if (state is OrderLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.black,
-                          ),
-                        );
-                      }else {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                ),
+              );
+            } else {
               return const Center(
                 child: Text("No order details"),
               );
@@ -331,7 +332,7 @@ class OrderInfos extends StatelessWidget {
                     width: 46,
                   ),
                   Text(
-                    "\$ $total",
+                    "€ $total",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

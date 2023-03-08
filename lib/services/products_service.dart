@@ -24,7 +24,6 @@ class ProductsService {
   Future getRelationShip(int productId, int clientId) async {
     final String uri =
         url + relationShip + productId.toString() + "/" + clientId.toString();
-    print(uri);
     final response = await http.get(Uri.parse(uri));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -92,9 +91,7 @@ class ProductsService {
   }
 
   Future getCategoryProduct(int id) async {
-    print(id);
     final String uri = url + categoryEndpoint + id.toString();
-    print(uri);
     final response = await http.get(Uri.parse(uri));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -106,7 +103,6 @@ class ProductsService {
 
   Future getSingleProduct(int productId) async {
     final String uri = url + singleProduct + productId.toString();
-    print(uri);
     final response = await http.get(Uri.parse(uri));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -121,7 +117,6 @@ class ProductsService {
         await http.get(Uri.parse(url + celebrityEndpoint + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Product.fromJson(json);
     } else {
       throw Exception(json["message"]);
@@ -133,7 +128,6 @@ class ProductsService {
         await http.get(Uri.parse(url + brandEndpoint + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Product.fromJson(json);
     } else {
       throw Exception(json["message"]);
@@ -144,7 +138,6 @@ class ProductsService {
     final response = await http.get(Uri.parse(url + trending));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("rani f trending");
 
       return Product.fromJson(json);
     } else {
@@ -167,19 +160,7 @@ class ProductsService {
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
       int i = 0;
-      /*for (Map<String, dynamic> jsonObject in json) {
-        final imageEntry = <String, dynamic>{
-          "productImages": [
-            {
-              "url":
-                  "https://www.valoisvintage-paris.com/8033-thickbox_default/dress-black-chanel-t-44.jpg"
-            }
-          ]
-        };
-        jsonObject.addEntries(imageEntry.entries);
-        json[i] = jsonObject;
-        i++;
-      }*/
+    
       return Product.fromJson(json);
     } else {
       throw Exception(json["message"]);
@@ -190,7 +171,6 @@ class ProductsService {
     final response = await http.get(Uri.parse(url + userBids + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Product.fromJson(json);
     } else {
       throw Exception(json["message"]);
@@ -202,7 +182,6 @@ class ProductsService {
         await http.get(Uri.parse(url + activeBids + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Product.fromJson(json);
     } else {
       throw Exception(json["message"]);
@@ -213,7 +192,6 @@ class ProductsService {
     final response = await http.get(Uri.parse(url + wonBids + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Product.fromJson(json);
     } else {
       throw Exception(json["message"]);
@@ -224,7 +202,6 @@ class ProductsService {
     final response = await http.get(Uri.parse(url + lostBids + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Product.fromJson(json);
     } else {
       throw Exception(json["message"]);

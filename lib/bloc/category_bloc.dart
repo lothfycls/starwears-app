@@ -15,7 +15,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         List<Category> categories = await categoriesService.getCategories();
         currentCategories = categories;
         for (var element in currentCategories) {
-          print(element.id);
         }
         emit(CategoriesReady(categories: categories));
       } catch (e) {

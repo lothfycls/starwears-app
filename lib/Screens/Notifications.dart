@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starwears/bloc/notifications_bloc.dart';
+import 'package:starwears/main.dart';
 
 import 'LoginScreen.dart';
 
@@ -74,9 +75,11 @@ class _NotificationsState extends State<NotificationsScreen> {
                           const SizedBox(
                             width: 10,
                           ),
-                          Text(state.notifications[index].message,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16)),
+                          Flexible(
+                            child: Text(state.notifications[index].message,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -100,8 +103,7 @@ class _NotificationsState extends State<NotificationsScreen> {
                 desc: 'This action required to Sign in',
                 btnCancelOnPress: () {},
                 btnOkOnPress: () {
-                  Navigator.push(
-                      context,
+                  outerNavigator.currentState!.push(
                       MaterialPageRoute(
                           builder: (context) => const LoginScreen()));
                 },

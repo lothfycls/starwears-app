@@ -22,7 +22,6 @@ class CelebritiesService {
     final response = await http.get(Uri.parse(url + getCelebritiesProducts+id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Celebrity.fromJson(json);
     } else {
       throw Exception(json["message"]);

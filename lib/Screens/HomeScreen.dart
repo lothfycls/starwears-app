@@ -55,62 +55,62 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     IndexProvider indexProvider = Provider.of<IndexProvider>(context);
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        floatingActionButton: GestureDetector(
-          onTap: () {
-            _onItemTapped(2, indexProvider);
-          },
-          child: Container(
-            height: 50,
-            width: 50,
-            child: Image.asset(
-                color:
-                    indexProvider.currentIndex == 2 ? Colors.red : Colors.black,
-                "assets/images/logo.png"),
-          ),
-        ),
-        floatingActionButtonLocation:
-            FloatingActionButtonLocation.miniCenterDocked,
-        body: _children[indexProvider.currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.red,
-          iconSize: 35,
-          unselectedItemColor: Colors.black,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.star),
-              // icon:  Image.asset("assets/images/wachlist.png", color: Colors.black),
-              label: '',
+    return Consumer<IndexProvider>(
+      builder: (BuildContext context, value, Widget? child) {
+        return Scaffold(
+            resizeToAvoidBottomInset: false,
+            floatingActionButton: GestureDetector(
+              onTap: () {
+                _onItemTapped(2, indexProvider);
+              },
+              child: Container(
+                height: 50,
+                width: 50,
+                child: Image.asset(
+                    color: value.currentIndex == 2 ? Colors.red : Colors.black,
+                    "assets/images/logo.png"),
+              ),
             ),
-            BottomNavigationBarItem(
-              // icon: Image.asset("assets/images/search.png", color: Colors.black),
-              icon: Icon(Icons.search_outlined),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Container(height: 10),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.gavel),
-              // icon:  Image.asset("assets/images/auction.png", color: Colors.black),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              // icon:  Image.asset("assets/images/profile.png", color: Colors.black),
-              icon: Icon(Icons.person),
-              label: '',
-            ),
-          ],
-          currentIndex: indexProvider.currentIndex,
-          onTap: (index) {
-            _onItemTapped(index, indexProvider);
-          },
-        ),
-      ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.miniCenterDocked,
+            body: _children[value.currentIndex],
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: Colors.red,
+              iconSize: 35,
+              unselectedItemColor: Colors.black,
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.star),
+                  // icon:  Image.asset("assets/images/wachlist.png", color: Colors.black),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  // icon: Image.asset("assets/images/search.png", color: Colors.black),
+                  icon: Icon(Icons.search_outlined),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Container(height: 10),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.gavel),
+                  // icon:  Image.asset("assets/images/auction.png", color: Colors.black),
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  // icon:  Image.asset("assets/images/profile.png", color: Colors.black),
+                  icon: Icon(Icons.person),
+                  label: '',
+                ),
+              ],
+              currentIndex: value.currentIndex,
+              onTap: (index) {
+                _onItemTapped(index, indexProvider);
+              },
+            ));
+      },
     );
   }
 }

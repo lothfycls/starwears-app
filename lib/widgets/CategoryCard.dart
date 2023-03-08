@@ -59,7 +59,7 @@ class CategoryCard extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "\$" + price,
+                    "€" + price,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,

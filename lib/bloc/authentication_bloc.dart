@@ -18,7 +18,6 @@ class AuthenticationBloc
   String homeAdress = "";
   String username = "";
   AuthenticationBloc() : super(AuthenticationInitial()) {
-    print(state);
     on<InitAuth>((event, emit) async {
       emit(AuthLoading());
       emit(AuthenticationInitial());
@@ -31,7 +30,11 @@ class AuthenticationBloc
         email = data["email"];
         emit(AuthSuccess(email: email!, id: userId!));
       } catch (e) {
-        emit(CreationFailed(e.toString().substring(10)));
+        if (e.toString() == "Exception: [email must be an email]") {
+          emit(CreationFailed("Please enter a valid email"));
+        } else {
+          emit(CreationFailed(e.toString().substring(11)));
+        }
       }
     });
     on<LoginUser>((event, emit) async {
@@ -40,13 +43,12 @@ class AuthenticationBloc
         Map<String, dynamic> data = await authService.login(event.user);
         userId = data["id"];
         email = data["email"];
-        print(userId);
         emit(AuthSuccess(email: email!, id: userId!));
       } catch (e) {
-        if (e.toString() == "user not found") {
-          emit(LoginFailed("User with this email doesn't exist yet"));
-        } else {
+        if (e.toString() == "Exception: password dosn't match") {
           emit(LoginFailed("Your password is incorrect"));
+        } else {
+          emit(LoginFailed("User with this email doesn't exist yet"));
         }
       }
     });
@@ -60,7 +62,7 @@ class AuthenticationBloc
         phoneNumber = event.phone;
         homeAdress = event.address;
         username = event.username;
-        print(userId);
+        (userId);
         emit(AuthSuccess(email: email!, id: userId!));
       } catch (e) {
         emit(LoginFailed(e.toString().substring(10)));

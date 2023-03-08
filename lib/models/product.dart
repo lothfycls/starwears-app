@@ -134,9 +134,7 @@ class Product {
           lastPrice: element["lastPrice"].toDouble(),
           condition: element["condition"]));
     }
-    print("single");
 
-    print("added worked");
     return products;
   }
 

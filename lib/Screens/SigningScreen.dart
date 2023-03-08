@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starwears/Screens/Notifications.dart';
 import 'package:starwears/Screens/connected_account/AccountScreen.dart';
 import 'package:starwears/Screens/LoginScreen.dart';
 import 'package:starwears/Screens/SignUpScreen.dart';
@@ -23,7 +24,6 @@ class _SigningScreenState extends State<SigningScreen> {
         builder: (context, state) {
       if (state is AuthSuccess) {
         return AccountScreen();
-     
       } else {
         return Scaffold(
           backgroundColor: Colors.white,
@@ -49,6 +49,10 @@ class _SigningScreenState extends State<SigningScreen> {
                   size: 22,
                 ),
                 onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>const NotificationsScreen()));
                   // Perform some action when the button is pressed
                 },
               ),
@@ -93,7 +97,7 @@ class _SigningScreenState extends State<SigningScreen> {
                     ),
                     onPressed: () {
                       outerNavigator.currentState!.push(
-                  MaterialPageRoute(builder: (_) => SignUpScreen()),
+                        MaterialPageRoute(builder: (_) => SignUpScreen()),
                       );
                     },
                     child: Text(
@@ -116,10 +120,9 @@ class _SigningScreenState extends State<SigningScreen> {
                       borderRadius: BorderRadius.circular(18.0),
                     ),
                     onPressed: () {
-                       outerNavigator.currentState!.push(
-                  MaterialPageRoute(builder: (_) => LoginScreen()),
+                      outerNavigator.currentState!.push(
+                        MaterialPageRoute(builder: (_) => LoginScreen()),
                       );
-                      
                     },
                     child: Text(
                       "Login",
@@ -127,7 +130,6 @@ class _SigningScreenState extends State<SigningScreen> {
                     ),
                   ),
                 ),
-              
               ],
             ),
           ),

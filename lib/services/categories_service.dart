@@ -11,7 +11,6 @@ class CategoriesService {
     final response = await http.get(Uri.parse(url + getAllCategoriesEndpoint));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Category.fromJson(json);
     } else {
       throw Exception(json["message"]);

@@ -9,6 +9,7 @@ import 'package:starwears/Screens/PlaceBidScreen.dart';
 import 'package:starwears/Screens/ProductDetailsScreen.dart';
 import 'package:starwears/Screens/ProductScreen.dart';
 import 'package:starwears/bloc/bid_bloc.dart';
+import 'package:starwears/bloc/singleproduct_bloc.dart';
 import 'package:starwears/utils/utils.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -137,7 +138,7 @@ class _BidCardState extends State<BidCard> {
                 trimExpandedText: 'Show less',
               ),
             ),
-            const SizedBox(height: 10),
+            const Spacer(),
             Flexible(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -160,40 +161,35 @@ class _BidCardState extends State<BidCard> {
                     onPressed: () {},
                   ),
                   const SizedBox(width: 5),
-                  GestureDetector(
-                    onTap: () {
+                  FlatButton(
+                    height: 20,
+                    minWidth: 55,
+                    padding: EdgeInsets.all(0),
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            color: widget.state == "Active"
+                                ? Colors.green
+                                : Colors.red,
+                            width: 1,
+                            style: BorderStyle.solid),
+                        borderRadius: BorderRadius.circular(1)),
+                    child: Text(widget.state == "Active" ? 'Place bid' : 'Sold',
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 10)),
+                    onPressed: () {
+                    if(widget.state == "Active"){
+ BlocProvider.of<SingleproductBloc>(context)
+                          .add(GetSingleProduct(productId: widget.product.id));
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => ProductScreen(
+                              builder: ((context) => PlaceBidScreen(
+                                    date: widget.product.auctionEnd,
+                                    maxBid: widget.product.lastPrice.toInt(),
                                     productId: widget.product.id,
-                                  )));
+                                  ))));
+                    } 
                     },
-                    child: SizedBox(
-                      width: 55,
-                      child: FlatButton(
-                        height: 15,
-                        padding: EdgeInsets.all(0),
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: widget.state == "Active"
-                                    ? Colors.green
-                                    : Colors.red,
-                                width: 1,
-                                style: BorderStyle.solid),
-                            borderRadius: BorderRadius.circular(1)),
-                        child: Text(
-                            widget.state == "Active" ? 'Place bid' : 'Sold',
-                            style: const TextStyle(
-                                color: Colors.black, fontSize: 10)),
-                        onPressed: () {
-                          MaterialPageRoute(
-                              builder: ((context) => ProductScreen(
-                                    productId: widget.product.id,
-                                  )));
-                        },
-                      ),
-                    ),
                   ),
                 ],
               ),

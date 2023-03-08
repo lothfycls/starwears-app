@@ -13,7 +13,6 @@ class RelationshipBloc extends Bloc<RelationshipEvent, RelationshipState> {
   RelationshipBloc({required this.authenticationBloc})
       : super(RelationshipInitial()) {
     on<GetRelationShip>((event, emit) async {
-      print("bkhix");
 
        try {
       final currentId = authenticationBloc.userId;
@@ -22,21 +21,17 @@ class RelationshipBloc extends Bloc<RelationshipEvent, RelationshipState> {
             await productsService.getRelationShip(event.productId, currentId);
        switch (relationship.state) {
           case "outbided":
-            print("yes");
             emit(OutbiddedState(relationship: relationship));
             break;
           case "never":
-            print("nev");
 
             emit(NeverState(relationship: relationship));
             break;
           case "already":
-            print("yeales");
 
             emit(AlreadyState(relationship: relationship));
             break;
           case "won":
-            print("won");
 
             emit(WonState(relationship: relationship));
             break;

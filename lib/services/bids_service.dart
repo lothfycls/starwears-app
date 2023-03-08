@@ -15,7 +15,6 @@ class BidService {
     final response = await http.get(Uri.parse(url + userBid + id.toString()));
     final json = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      print("worked");
       return Bid.fromJson(json);
     } else {
       throw Exception(json["message"]);

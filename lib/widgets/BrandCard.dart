@@ -50,7 +50,7 @@ class BrandCard extends StatelessWidget {
                 children: [
                   Flexible(
                     child: Text(
-                      "\$${product.lastPrice}",
+                      "€${product.lastPrice}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,

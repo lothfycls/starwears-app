@@ -20,8 +20,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         List<Product> products =
             await productsService.getCategoryProduct(event.categoryId);
         categoryProducts = products;
-        print(categoryProducts.length);
-        print("aw");
         emit(ProductsReady(products: products));
       } catch (e) {
         emit(ProductsFailed(error: e.toString()));
@@ -29,7 +27,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     });
     on<GetProductsOnSearch>((event, emit) async {
       // try {
-      print(categoryProducts.length);
       List<Product> products = categoryProducts
           .where((product) => product.name.toLowerCase().contains(event.input.toLowerCase()))
           .toList();
@@ -49,7 +46,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     });
     on<GetBrandProducts>((event, emit) async {
       try {
-        print(event.brandId);
         List<Product> products =
             await productsService.getBrandProducts(event.brandId);
         emit(ProductsReady(products: products));

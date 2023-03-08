@@ -21,11 +21,10 @@ class BidBloc extends Bloc<BidEvent, BidState> {
               amount: event.amount, productId: event.productId, id: currentId));
           emit(BidAdded());
         } else {
-          throw Exception("You're not logged in");
+          emit(UserNotLogged());
         }
       } catch (e) {
-        print(e.toString());
-        emit(BidsFailed(error: e.toString()));
+        emit(BidsFailed(error: e.toString().substring(10)));
       }
     });
     on<GetUserRelationShip>((event, emit) async {
@@ -55,7 +54,6 @@ class BidBloc extends Bloc<BidEvent, BidState> {
           throw Exception("You're not logged in");
         }
       } catch (e) {
-        print(e.toString());
         emit(BidsFailed(error: e.toString()));
       }
     });

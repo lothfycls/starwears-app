@@ -446,16 +446,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           BlocConsumer<ProfileBloc,
                                               ProfileState>(
                                             listener: (context, state) {
-                                              print(newController.text);
                                               if (state is PasswordFailed) {
                                                 _onWidgetDidBuild(
-                                                    _showAlertDialog(
+                                                 ()=>   _showAlertDialog(
                                                         state.message));
                                               }
 
                                               if (state is PasswordSuccess) {
                                                 _onWidgetDidBuild(
-                                                    _showSuccessDialog());
+                                                 ()=>   _showSuccessDialog());
                                               }
                                             },
                                             builder: (context, state) =>
@@ -566,7 +565,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           BlocConsumer<ProfileBloc,
                                               ProfileState>(
                                             listener: (context, state) {
-                                              print("hello");
                                               if (state is EmailFailed) {
                                                 _onWidgetDidBuild(
                                                     _showAlertDialog(

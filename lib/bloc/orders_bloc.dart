@@ -26,7 +26,6 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
           throw Exception("You're not logged in");
         }
       } catch (e) {
-        print(e.toString());
         emit(OrderFailed(error: e.toString()));
       }
     });
@@ -41,7 +40,6 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
           throw Exception("You're not logged in");
         }
       } catch (e) {
-        print(e.toString());
         emit(OrderFailed(error: e.toString()));
       }
     });
@@ -66,8 +64,6 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       try {
         final currentId = authenticationBloc.userId;
         if (currentId != null) {
-          print("event");
-          print(event.id);
           Order order = await orderService.getOrderDetail(event.id);
           emit(OrderDetail(order: order));
         } else {
