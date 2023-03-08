@@ -2,25 +2,33 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleDevelopmentRegion</key>
-  <string>en</string>
-  <key>CFBundleExecutable</key>
-  <string>App</string>
-  <key>CFBundleIdentifier</key>
-  <string>io.flutter.flutter.app</string>
-  <key>CFBundleInfoDictionaryVersion</key>
-  <string>6.0</string>
-  <key>CFBundleName</key>
-  <string>App</string>
-  <key>CFBundlePackageType</key>
-  <string>FMWK</string>
-  <key>CFBundleShortVersionString</key>
-  <string>1.0</string>
-  <key>CFBundleSignature</key>
-  <string>????</string>
-  <key>CFBundleVersion</key>
-  <string>1.0</string>
-  <key>MinimumOSVersion</key>
-  <string>9.0</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Privacy - Location Always and When In Use Usage Description</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Cette application utilise la caméra pour scanner une carte bancaire</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>App</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.starwears.app.subbundle</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>App</string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>MinimumOSVersion</key>
+	<string>13.0</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Privacy - Location Always Usage Description</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Privacy - Location When In Use Usage Description</string>
 </dict>
 </plist>
