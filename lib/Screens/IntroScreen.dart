@@ -42,7 +42,7 @@ class _IntroScreenState extends State<IntroScreen> {
       showOptions: false,
       showControlsOnInitialize: false,
       autoInitialize: true,
-      allowFullScreen: true,
+      allowFullScreen: true,aspectRatio: 3/4
     );
 
     chewieController.setVolume(0.0);
@@ -55,12 +55,15 @@ class _IntroScreenState extends State<IntroScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SizedBox(
-            height: 500,
-            child: Stack(
-              alignment: Alignment.topCenter,
-              children: [
-               SizedBox(
-                  height: 500,
+            height: 700,
+            child: Stack(alignment: Alignment.topCenter, children: [
+              Positioned(
+                top: 0,
+                left:0,
+                right:0,
+                
+                child: AspectRatio(
+                  aspectRatio: 3/4,
                   child: PageView.builder(
                     itemCount: videos.length,
                     onPageChanged: (index) {
@@ -75,6 +78,7 @@ class _IntroScreenState extends State<IntroScreen> {
                           showOptions: false,
                           showControlsOnInitialize: false,
                           autoInitialize: true,
+                          aspectRatio: 3/4,
                           allowFullScreen: true,
                         );
 
@@ -83,36 +87,37 @@ class _IntroScreenState extends State<IntroScreen> {
                     },
                     itemBuilder: (context, index) {
                       return SizedBox(
-                          height: 500,
-                          child: ShaderMask(
-                              shaderCallback: (Rect bounds) {
-                                return const LinearGradient(
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                  colors: [Colors.transparent, Colors.black],
-                                ).createShader(Rect.fromLTRB(
-                                    0, 0, bounds.width, bounds.height));
-                              },
-                              blendMode: BlendMode.dstIn,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: _currentIndex == 0
-                                      ? Radius.circular(100)
-                                      : Radius.circular(0),
-                                  bottomRight: _currentIndex == 3
-                                      ? Radius.circular(100)
-                                      : Radius.circular(0),
+                        height: 650,
+                        child: ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return const LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [Colors.transparent, Colors.black],
+                              ).createShader(Rect.fromLTRB(
+                                  0, 0, bounds.width, bounds.height));
+                            },
+                            blendMode: BlendMode.dstIn,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: _currentIndex == 0
+                                    ? Radius.circular(100)
+                                    : Radius.circular(0),
+                                bottomRight: _currentIndex == 3
+                                    ? Radius.circular(100)
+                                    : Radius.circular(0),
 
-                                  // topRight: Radius.circular(100),
-                                ),
-                                child: Chewie(
-                                  controller: chewieController,
-                                ),
-                              )));
+                                // topRight: Radius.circular(100),
+                              ),
+                              child: Chewie(
+                                controller: chewieController,
+                              ),
+                            )),
+                      );
                     },
                   ),
                 ),
-              
+              ),
               Positioned(
                   top: 40,
                   left: 0,
@@ -183,17 +188,19 @@ class _IntroScreenState extends State<IntroScreen> {
                   setState(() {
                     _currentIndex = (_currentIndex + 1) % videos.length;
                     chewieController = ChewieController(
-      videoPlayerController: VideoPlayerController.asset(videos[_currentIndex]),
-      looping: true,
-      autoPlay: true,
-      showControls: false,
-      showOptions: false,
-      showControlsOnInitialize: false,
-      autoInitialize: true,
-      allowFullScreen: true,
-    );
+                      videoPlayerController:
+                          VideoPlayerController.asset(videos[_currentIndex]),
+                      looping: true,
+                      autoPlay: true,
+                      showControls: false,
+                      showOptions: false,
+                      showControlsOnInitialize: false,
+                      autoInitialize: true,
+                      aspectRatio: 3/4,
+                      
+                    );
 
-    chewieController.setVolume(0.0);
+                    chewieController.setVolume(0.0);
                   });
                 }
                 // Handle the button press
